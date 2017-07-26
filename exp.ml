@@ -263,14 +263,14 @@ let rec factor l =
                 (getToken (SPECIAL ")"))) & exp) ==>
                     (fun (((a,b),d),e) ->
                         QUANT(Intern.intern_exists,[],e,(APPL (Intern.intern_true,[])))))
-            (*||| ((((((getToken (ID "EXISTS")) & (getToken (SPECIAL "(")))) &
-                varList) & (getToken (SPECIAL ")")) & exp) ==>
+            ||| (((((((getToken (ID "EXISTS")) & (getToken (SPECIAL "(")))) &
+                varList) & (getToken (SPECIAL ")"))) & exp) ==>
                     (fun ((((a,b),c),d),e) ->
-                        QUANT(Intern.intern_exists,c,e,(APPL (Intern.intern_true,[])))))*)
-            (*||| ((((getToken (SPECIAL "[")) & (exp_list &
+                        QUANT(Intern.intern_exists,c,e,(APPL (Intern.intern_true,[])))))
+            ||| (((getToken (SPECIAL "[")) & ((exp_list &
                 (getToken (SPECIAL "]")))
                     ==> (fun (l,_) -> make_exp_list l)) |||
-                ((getToken (SPECIAL "]")) ==> (fun (x) -> make_exp_list []))) ==> (fun (_,l) -> l))*)
+                ((getToken (SPECIAL "]")) ==> (fun (x) -> make_exp_list []))) ==> (fun (_,l) -> l))
             ||| (((((((((getToken (SPECIAL "{")) & exp) & (getToken (SPECIAL "["))) &
                 varList) & (getToken (SPECIAL "]"))) &
                 (getToken (SPECIAL ":"))) & exp) & (getToken (SPECIAL "}")))
