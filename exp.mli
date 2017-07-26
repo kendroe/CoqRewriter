@@ -21,10 +21,10 @@
 
 type exp = VAR of int
          | MARKED_VAR of int
-         | QUANT of (int * (int * T.Type) list * exp * exp)
+         | QUANT of (int * (int * Type.etype) list * exp * exp)
          | APPL of (int * exp list)
-         | LET of (exp * T.Type * exp *exp)
-         | CASE of exp * T.Type * ((Exp * exp) list)
+         | LET of (exp * Type.etype * exp *exp)
+         | CASE of exp * Type.etype * ((exp * exp) list)
          | INDEX of (exp * int * int)
          | HIGHLIGHT of exp
          | NORMAL of exp
@@ -45,7 +45,7 @@ val allSymbols: exp -> (int list) ;;
 (*
  * Subterm retrieval
  *)
-exception BadSubterm ;
+exception BadSubterm ;;
 val getSubterm : exp -> (int list) -> exp ;;
 val replaceSubterm : exp -> (int list) -> exp ->exp ;;
 val subtermCount : exp -> int ;;
