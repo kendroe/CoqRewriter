@@ -20,14 +20,14 @@
 
 type disc ;;
 type 'a expDisc ;;
-type ('a,'b) listDisc ;
+type ('a,'b) listDisc ;;
 type smallDisc ;;
 
 val newSmall: smallDisc ;;
 val addSmall: smallDisc -> (int list) -> smallDisc ;;
 val findSmall: smallDisc -> Exp.exp -> (Exp.exp list) ;;
 
-val new: disc ;;
+val newDisc: disc ;;
 val add: (int -> bool) -> disc -> Exp.exp -> disc ;;
 val makeAC: int -> disc -> disc ;;
 val find: (int -> bool) -> disc -> Exp.exp -> Exp.exp list ;;
