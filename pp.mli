@@ -48,7 +48,7 @@ val addParseDirectives : ppenv -> string -> ppenv ;;
 val ppExp : ppenv -> Exp.exp -> int ->
             (string list * ((int list * int * int * int * int) list)) ;;
 
-exception ParseFailure of string * int * int ;;
+exception ParseFailure of (string * int * int) ;;
 
 val ppOneLine : ppenv -> Exp.exp -> string ;;
 

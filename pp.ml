@@ -99,7 +99,7 @@ let print_directive p = match p with
   | _ -> "Other"
   ;;
 
-let get_position sl = ((size (hd sl)),(length sl)-1) ;;
+let get_position sl = ((String.length (List.hd sl)),(List.length sl)-1) ;;
 
 let new_sl = [""]
 
@@ -113,7 +113,7 @@ let rec make_indent n = match n with
 
 let add_return_indent sl i = add_string (add_return sl) (make_indent i) ;;
 
-let last_line_length (f::r) = size f ;;
+let last_line_length (f::r) = String.length f ;;
 
 (*********************************************************************)
 
@@ -167,7 +167,7 @@ let get_parse_breaks ppenv name =
 let rec has_match p e = match (p,e) with
   | ((VAR x),_) -> true
   | ((APPL (f1,l1)),(APPL (f2,l2))) ->
-    if f1=f2 && length l1=length l2 then
+    if f1=f2 && List.length l1=List.length l2 then
         has_match_list l1 l2
     else false
   | (_,_) -> false
@@ -179,10 +179,10 @@ and has_match_list l1 l2 = match (l1,l2) with
 
 exception FailedMatch ;;
 
-let rec u_match s pos p e = match ((VAR x),y) with
-  | (x,pos,y)::s
+let rec u_match s pos p e = match (p,e) with
+  | ((VAR x),y) -> (x,pos,y)::s
   | ((APPL (f1,l1)),(APPL (f2,l2))) ->
-    if f1=f2 && length l1 = length l2 then
+    if f1=f2 && List.length l1 = List.length l2 then
         u_match_list s pos 0 l1 l2
     else
         raise FailedMatch
@@ -196,7 +196,7 @@ let mmatch a b = u_match [] [] a b ;;
 
 exception SubstDomain ;;
 
-let getExp l v = match l with
+let rec getExp l v = match l with
   | [] -> raise SubstDomain
   | ((x,pos,e)::r) ->
     if x=v then e else getExp r v
@@ -217,7 +217,7 @@ let rec add_string_limit sl s wid force =
         if not(force) && last_line_length sl2 > wid then raise FailedPrint else sl2
     ;;
 
-let split_pattern l = match l with
+let rec split_pattern l = match l with
   | [] -> ([],[])
   | (TVAR ("","",0)::r) -> ([],r)
   | (f::r) -> let (l1,l2) = split_pattern r
@@ -237,17 +237,17 @@ let rec strip_last l = match l with
 
 let exp_replace_with_suffix e fv n =
     let rec ms l = match l with
-          | [] -> empty
-          | (a::b) -> addPair (ms b) a
-                     (VAR (Intern.intern ((decode a) ^ "_" ^ (string_of_int n))))
+          | [] -> Subst.empty
+          | (a::b) -> Subst.addPair (ms b) a
+                     (VAR (Intern.intern ((Intern.decode a) ^ "_" ^ (string_of_int n))))
     in
-        subst (ms fv) e
+        Subst.subst (ms fv) e
     ;;
 
 let rec token_replace_with_suffix l fv n = match l with
   | [] -> []
   | (TVAR (v,m,i)::r) ->
-    TVAR(if member (intern v) fv then v ^ "_" ^ (string_of_int (n:int)) else v,m,i)::
+    TVAR((if List.mem (Intern.intern v) fv then v ^ "_" ^ (string_of_int (n:int)) else v),m,i)::
     token_replace_with_suffix r fv n
   | (f::r) -> f::(token_replace_with_suffix r fv n)
   ;;
@@ -263,7 +263,7 @@ let rec repeat_center l m n count = match (l,m) with
   | ((a::b),m) -> a::(repeat_center b (m-1) (n-1) count)
   ;;
 
-let extend l n = match (l,n) with
+let rec extend l n = match (l,n) with
   | ([a],0) -> []
   | ([a],n) -> if n<0 then [] else a::(extend [a] (n-1))
   | ((a::b),n) -> a::(extend b (n-1))
@@ -276,7 +276,7 @@ let rec remove_empties l = match l with
   ;;
 
 let stretch (APPL (f,l)) (ParsePattern (s,p,(APPL (f2,l2)),tl),breaks) =
-    if length l=length l2 then
+    if List.length l=List.length l2 then
         (ParsePattern (s,p,(APPL (f2,l2)),remove_empties tl),breaks)
     else match(split_pattern tl) with
        | (_,[]) -> (ParsePattern (s,p,(APPL (f2,l2)),tl),breaks)
@@ -285,8 +285,8 @@ let stretch (APPL (f,l)) (ParsePattern (s,p,(APPL (f2,l2)),tl),breaks) =
         let (pre,mid) = split_pattern tl in
         let (middle,post) = split_pattern mid in
         let ll = last l2 in
-        let fv = getFreeVars ll in
-        let repeat_count = (length l)-(length l2)+1 in
+        let fv = Context.getFreeVars ll in
+        let repeat_count = (List.length l)-(List.length l2)+1 in
         let rec replicate_exp n = match n with
               | 0 -> []
               | n ->
@@ -297,8 +297,8 @@ let stretch (APPL (f,l)) (ParsePattern (s,p,(APPL (f2,l2)),tl),breaks) =
           | n ->
             (token_replace_with_suffix middle fv (repeat_count-n))@(replicate_tokens (n-1)) in
         let new_tl = pre@(replicate_tokens repeat_count)@post in
-        let b1 = length pre in
-        let b2 = b1+(length middle) in
+        let b1 = List.length pre in
+        let b2 = b1+(List.length middle) in
         let new_breaks = List.map
             (fun (ol,bl) ->
                  (repeat_center (extend ol b2) b1 b2 repeat_count,
@@ -333,10 +333,10 @@ let int_get_patterns ppenv exp mode prec =
                                   | ParsePattern (s,p,e,tl) ->
                                          prec < p &&
                                          non_appl e &&
-                                         not(member mode defaults) &&
+                                         not(List.mem mode defaults) &&
                                          usable_in_mode ppenv mode s &&
                                          has_match e exp
-                                  | _ -> false) get_directives ppenv) in
+                                  | _ -> false) (get_directives ppenv)) in
     let rec first_stretch_match l = match l with
           | [] -> []
           | (f::r) ->
@@ -348,26 +348,26 @@ let int_get_patterns ppenv exp mode prec =
                 else
                     first_stretch_match r in
     let p = first_stretch_match patterns in
-        if length p > 0 then
+        if List.length p > 0 then
             [List.hd p]
-        else if length patterns3 > 0 then
+        else if List.length patterns3 > 0 then
             [List.hd patterns3]
                 else
             []
     ;;
 
-let p_cache = ref newExpItem (*: ((string * int * (directive * (((Break list) * (bool list)) list)) list) ExpDisc) ref*)
+let p_cache = ref Disc.newExpItem (*: ((string * int * (directive * (((Break list) * (bool list)) list)) list) ExpDisc) ref*)
 
 let get_patterns ppenv exp mode prec =
-    let res = findExpItem (!p_cache) exp |> (fn (s,i,dl) => s=mode && i=prec)
+    let res = List.filter (fun (s,i,dl) -> s=mode && i=prec) (Disc.findExpItem (!p_cache) exp)
     in
         if res=[] then
             let dl = int_get_patterns ppenv exp mode prec
             in
-                 p_cache := addExpItem (!p_cache) exp (mode,prec,dl) ;
+                 p_cache := Disc.addExpItem (!p_cache) exp (mode,prec,dl) ;
                  dl
         else
-            let (s,i,dl) = (hd res) in dl
+            let (s,i,dl) = (List.hd res) in dl
     ;;
 
 let rec print_breaks b = match b with
@@ -385,8 +385,8 @@ let rec recPpExp ppenv exp wid one_line mode sl prefix markers indent failup pre
         val _ = print ("pattern length = " ^ (string_of_int (length patterns)) ^ "\n")*)
     let (start_x,start_y) = get_position sl in
     let rec pe l = match l with
-          | [] -> (defaultPpProcess ppenv exp wid one_line mode sl prefix markers indent force
-                      handle FailedPrint => if failup then raise FailedPrint else (add_return (add_string sl "*No parse*"),markers))
+          | [] -> (try defaultPpProcess ppenv exp wid one_line mode sl prefix markers indent force
+                      with FailedPrint -> if failup then raise FailedPrint else (add_return (add_string sl "*No parse*"),markers))
           | (f::r) -> (try recPpProcess ppenv exp wid one_line sl prefix markers indent f force
                       with FailedPrint -> if failup then raise FailedPrint else (add_return (add_string sl "*No parse*"),markers)) in
     let (new_sl,new_markers) = pe patterns in
@@ -400,7 +400,7 @@ and recPpProcess ppenv exp wid one_line sl prefix markers indent (ParsePattern (
           | (a::b) -> try recPpProcessBreak ppenv exp wid one_line sl prefix markers indent (ParsePattern (s,prec,e,p)) a parse_marks (force && b=[])
                             with FailedPrint -> rppb b
     in
-        rppb (if one_line && length parse_breaks > 0 then [([ForbidBreak],[false])] else parse_breaks)
+        rppb (if one_line && List.length parse_breaks > 0 then [([ForbidBreak],[false])] else parse_breaks)
 and recPpProcessBreak ppenv exp wid one_line sl prefix markers indent (ParsePattern (s,prec,e,p)) (ol,bl) parse_marks force =
     (*let val _ = print ("Testing " ^ (prExp e) ^ " " ^ (print_tokens p) ^ " " ^ (prExp exp) ^ " " ^ (print_breaks ol) ^ "\n")*)
     let rec build_holders l = match l with
@@ -434,35 +434,35 @@ and recPpProcessBreak ppenv exp wid one_line sl prefix markers indent (ParsePatt
                        | (SYMBOL s) -> (add_string_limit sl s wid force,markers)
                        | (NUMBER n) -> (add_string_limit sl (string_of_int n) wid force,markers)
                        | (SPECIAL s) -> (add_string_limit sl s wid force,markers)
-                       | (TVAR (v,m,prec)) -> recPpExp ppenv (getExp theta (intern v)) wid (blf || one_line) m sl ((getPos theta (intern v))@prefix) markers ind true prec force in
+                       | (TVAR (v,m,prec)) -> recPpExp ppenv (getExp theta (Intern.intern v)) wid (blf || one_line) m sl ((getPos theta (Intern.intern v))@prefix) markers indent true prec force in
             let rec add_nl_tok sl marksers indent t force = match t with
                        | (ID s) -> (add_string_limit sl s wid force,markers)
                        | (SYMBOL s) -> (add_string_limit sl s wid force,markers)
                        | (NUMBER n) -> (add_string_limit sl (string_of_int n) wid force,markers)
                        | (SPECIAL " ") -> (sl,markers)
                        | (SPECIAL s) -> (add_string_limit sl s wid force,markers)
-                       | (TVAR (v,m,prec)) -> recPpExp ppenv (getExp theta (intern v)) wid (blf || one_line) m sl ((getPos theta (intern v))@prefix) markers indent true prec force in
+                       | (TVAR (v,m,prec)) -> recPpExp ppenv (getExp theta (Intern.intern v)) wid (blf || one_line) m sl ((getPos theta (Intern.intern v))@prefix) markers indent true prec force in
             let ((new_sl,new_markers),new_ind) =
                     if one_line then
-                        (add_tok sl markers tf force,ind)
+                        (add_tok sl markers tf force,indent)
                     else match olf with
-                           | ForbidBreak -> (add_tok sl markers tf force,ind)
-                           | OptionalBreak(nn) -> (try (add_tok sl markers tf false,ind)
+                           | ForbidBreak -> (add_tok sl markers tf force,indent)
+                           | OptionalBreak(nn) -> (try (add_tok sl markers tf false,indent)
                                                    with FailedPrint -> ((add_nl_tok (add_return_indent sl (indent+nn)) markers (indent+nn) tf force),indent+nn))
                            | RequiredBreak(nn) -> (add_nl_tok (add_return_indent sl (indent+nn)) markers (indent+nn) tf force,indent+nn)
             in
-                process new_sl new_holders new_markers (n+1) tr (next olf olr) (next blf blr) new_ind
+                process new_sl new_holders new_markers (n+1) tr (next olf olr) (next blf blr)
     in
-        process sl holders markers 0 p ol bl indent
+        process sl holders markers 0 p ol bl
 and defaultPpProcess ppenv e wid one_line t sl prefix markers indent force = match (e,t) with
   | ((STRING s),"identifier") ->
     (add_string_limit sl s wid force, markers)
   | ((NUM n),"natural") ->
     (add_string_limit sl (string_of_int n) wid force, markers)
   | ((VAR x),"default") ->
-    (add_string_limit sl (decode x) wid force, markers)
+    (add_string_limit sl (Intern.decode x) wid force, markers)
   | ((MARKED_VAR x),"default") ->
-    (add_string_limit sl ((decode x) ^ "'") wid force, markers)
+    (add_string_limit sl ((Intern.decode x) ^ "'") wid force, markers)
   | ((NUM n),"default") ->
     (add_string_limit sl (string_of_int n) wid force,
      markers)
@@ -470,10 +470,10 @@ and defaultPpProcess ppenv e wid one_line t sl prefix markers indent force = mat
     (add_string_limit sl ("\"" ^ s ^ "\"") wid force,
      markers)
   | ((CHAR s),"default") ->
-    (add_string_limit sl ("'" ^ (str s) ^ "'") wid force,
+    (add_string_limit sl ("'" ^ (String.make 1 s) ^ "'") wid force,
      markers)
   | ((APPL (f,l)),"default") ->
-    (try let sl1 = add_string_limit sl ((decode f) ^ (if length l > 0 then "(" else "") ^ (if (length l)=0 && ((decode f) <"A" || (decode f) > "ZZZZ") then "()" else "")) wid force in
+    (try let sl1 = add_string_limit sl ((Intern.decode f) ^ (if List.length l > 0 then "(" else "") ^ (if (List.length l)=0 && ((Intern.decode f) <"A" || (Intern.decode f) > "ZZZZ") then "()" else "")) wid force in
         (*val _ = print ("*** Default on " ^ (prExp (APPL (f,l))) ^ "\n") ;*)
     let rec add_p sl markers n l = match l with
           | [] -> (sl,markers)
@@ -490,7 +490,7 @@ and defaultPpProcess ppenv e wid one_line t sl prefix markers indent force = mat
         (sl2,markers2)
     with FailedPrint -> if one_line then
         raise FailedPrint
-    else let sl1 = add_string_limit sl ((decode f) ^ (if length l > 0 then "(" else "") ^ (if length l=0 && (((decode f) < "A" ||  (decode f) > "ZZZ")) then "()" else "")) wid force in
+    else let sl1 = add_string_limit sl ((Intern.decode f) ^ (if List.length l > 0 then "(" else "") ^ (if List.length l=0 && (((Intern.decode f) < "A" ||  (Intern.decode f) > "ZZZ")) then "()" else "")) wid force in
          let rec add_p sl markers n l = match l with
                | [] -> (sl,markers)
                | [a] ->
@@ -544,11 +544,11 @@ and defaultPpProcess ppenv e wid one_line t sl prefix markers indent force = mat
 and varPpProcess l wid force sl = match l with
   | [] -> sl
   | [(v,t)] ->
-    if Type.notType t then add_string_limit sl (decode v) wid force
-                   else add_string_limit sl ((decode v) ^ ":" ^ (T.unparse t)) wid force
+    if Type.notetype t then add_string_limit sl (Intern.decode v) wid force
+                   else add_string_limit sl ((Intern.decode v) ^ ":" ^ (Type.unparse t)) wid force
   | ((v,t)::r) ->
     varPpProcess r wid force
-       (if Type.notType t then add_string_limit sl (Intern.decode v) wid force
+       (if Type.notetype t then add_string_limit sl (Intern.decode v) wid force
         else add_string_limit sl ((Intern.decode v) ^ ":" ^ (Type.unparse t)) wid force)
   ;;
 
@@ -560,7 +560,7 @@ let rec filter_print l = match l with
   | (a::b) -> a::(filter_print b)
   ;;
 
-let filter_input l = match l with
+let rec filter_input l = match l with
   | [] -> []
   | ((PrintPattern (t,i,e,l))::r) -> filter_input r
   | ((InputPattern (t,i,e,l))::r) ->
@@ -569,23 +569,23 @@ let filter_input l = match l with
   ;;
 
 let ppExp ppenv exp wid =
-    let xxx = p_cache := newExpItem in
+    let xxx = p_cache := Disc.newExpItem in
     let (f,r) = ppenv in
     let ppenv = (filter_print f,r) in
     let (sl,markers) = recPpExp ppenv exp wid false "default" new_sl [] [] 0 false 0 true in
-        (sl,map (fn (a,b,c,d,e) => (rev a,b,c,d,e)) markers)
+        (sl,List.map (fun (a,b,c,d,e) -> (List.rev a,b,c,d,e)) markers)
     ;;
 
 let ppOneLine ppenv exp =
     let (f,r) = ppenv in
     let ppenv = (filter_print f,r) in
     let (sl,markers) = recPpExp ppenv exp 10000 true "default" new_sl [] [] 0 false 0 true in
-        (hd sl)
+        (List.hd sl)
     ;;
 
 let split t =
     let rec spl n f l = match l with
-          | [] -> raise Failure t
+          | [] -> raise (Failure t)
           | ((SPECIAL "(")::r) ->
             spl (n+1) ((SPECIAL "(")::f) r
           | ((SPECIAL "{")::r) ->
@@ -600,7 +600,7 @@ let split t =
             spl (n-1) ((SPECIAL "]")::f) r
           | ((SPECIAL ":")::r) ->
             if n=0 then
-                (rev f,r)
+                (List.rev f,r)
             else
                 spl n ((SPECIAL ":")::f) r
           | (fr::r) -> spl n (fr::f) r
@@ -627,10 +627,10 @@ let process_tokens l = match l with
                 (TVAR ("","",0))::(pt r)
             else
                 pt (f::r)
-          | t -> raise Failure t
+          | t -> raise (Failure t)
     in
         pt r
-  | x -> raise Failure x ;;
+  | x -> raise (Failure x) ;;
 
 let process_break name l = match l with
   | (escape::r) ->
@@ -663,17 +663,17 @@ let process_break name l = match l with
           | ((ID "ol")::r) ->
             pe ol true r
           | (_::r) -> pb ol bl r
-          | t -> raise Failure t in
+          | t -> raise (Failure t) in
         let (ol,bl) = pb ForbidBreak true r
     in
         ParseBreak (name,ol,bl)
-  | x -> raise Failure x ;;
+  | x -> raise (Failure x) ;;
 
 let parse_pattern tokens =
     let (name,prec,r) = match tokens with
                                | ((ID n)::(NUMBER i)::r) -> (n,i,r)
                                | ((ID n)::r)             -> (n,10000,r)
-                               | _      -> raise Failure tokens in
+                               | _      -> raise (Failure tokens) in
     let (e_toks,p_toks) = split r in
     let _ = tokenParseExp e_toks in
         ParsePattern (name,prec,tokenParseExp e_toks,process_tokens p_toks) ;;
@@ -681,7 +681,7 @@ let parse_pattern tokens =
 let rec parse_int_list l = match l with
   | [NUMBER n] -> [n]
   | ((NUMBER n)::(SPECIAL ",")::r) -> n::(parse_int_list r)
-  | t -> raise Failure t
+  | t -> raise (Failure t)
   ;;
 
 let rec build_default_breaks l n = match l with
@@ -796,11 +796,11 @@ let parseDirective s =
                       ParseBreak ((s ^ "_d"),[ForbidBreak],[true]);
                       ParsePermit ("default",(s ^ "_d"));
                       ParsePermit ("default",(s2 ^ "_d"))]
-           | [(ID "permit"),(ID m),(ID r)] -> [ParsePermit (m,r)]
+           | [(ID "permit");(ID m);(ID r)] -> [ParsePermit (m,r)]
            | ((ID "break")::(ID name)::r)  -> [process_break name r]
            | ((ID "mark")::(ID name)::(NUMBER s)::(NUMBER e)::r)
                                            -> [ParseMark (name,parse_int_list r,s,e)]
-           | _                             -> raise Failure t
+           | _                             -> raise (Failure t)
     ;;
 
 let addParseDirectives pp s =
@@ -824,30 +824,30 @@ let rec indent n = match n with
   | 0 -> ""
   | n -> " " ^ (indent (n-1)) ;;
 
-let print_trie i t = match t with
+let rec print_trie i t = match t with
   | (TrieToken (t,tl)) ->
     (indent i) ^ "Case " ^ (print_tokens [t]) ^ "\n" ^
-    (foldr op^ "" (map (print_trie (i+2)) tl))
+    (List.fold_right ( ^ ) (List.map (print_trie (i+2)) tl) "")
   | (TrieResult (p,e,tl)) ->
     (indent i) ^ "Result " ^ (string_of_int p) ^ " " ^ (prExp e) ^ " " ^
     (print_tokens tl) ^ "\n" ;;
 
-let print_trie_set l = match l with
+let rec print_trie_set l = match l with
   | [] -> ""
   | ((s,tl)::r) ->
-    "Mode: " ^ s ^ "\n" ^ (foldr op^ "" (map (print_trie 2) tl)) ^
+    "Mode: " ^ s ^ "\n" ^ (List.fold_right ( ^ ) (List.map (print_trie 2) tl) "") ^
     (print_trie_set r) ;;
 
 let build_trie patterns mode =
-    let sequences = List.filter (fun x -> match x with | (ParsePattern (s,i,e,tl)) ->
+    let sequences = List.fold_left List.append [] (List.map (fun x -> match x with | (ParsePattern (s,i,e,tl)) ->
                         if usable_in_mode (patterns,[]) mode s then
                             [(i,e,tl,[])]
-                        else [] | _ -> []) patterns in
+                        else [] | _ -> []) patterns) in
     let rec similar_token t1 t2 = match (t1,t2) with
           | ((TVAR (s1,s2,i1)),(TVAR (t1,t2,i2))) ->
             s2=t2 && i1=i2
           | (x,y) -> x=y in
-    let rec has_similar tok = match l with
+    let rec has_similar tok l = match l with
           | [] -> false
           | (a::b) ->
             (similar_token tok a) || (has_similar tok b) in
@@ -866,13 +866,13 @@ let build_trie patterns mode =
                 (TVAR (s1,s2,prec))
           | x -> x in
     let rename_var n1 n2 (i,e,tl,rest) =
-        let u = addPair empty (intern n1) (VAR (intern n2))
+        let u = Subst.addPair Subst.empty (Intern.intern n1) (VAR (Intern.intern n2))
         in
-            (i, subst u e, map (rename_token n1 n2) tl, rest) in
+            (i, Subst.subst u e, List.map (rename_token n1 n2) tl, rest) in
     let rec rv count t = match t with
           | (i,e,(TVAR (s1,s2,prec)::r),rest) ->
             rename_var s1 ("v" ^ (string_of_int count)) (i,e,(TVAR (s1,s2,prec)::r),rest)
-          | rv -> x in
+          | x -> x in
     let rec make_name tv count = match tv with
           | (TVAR (n,m,prec)) -> (TVAR (("v" ^ (string_of_int count)),m,prec))
           | t -> t in
@@ -884,15 +884,15 @@ let build_trie patterns mode =
         (i,e,ss toks,rest) in
     let rec carry_ac_stuff s = match s with
           | (i,e,(TVAR ("","",0))::f::r,[]) ->
-            (i,e,f::r,[(TVAR ("","",0)),f])
+            (i,e,f::r,[(TVAR ("","",0));f])
           | (i,e,(TVAR ("","",0))::r,x) ->
             (i,e,[],x@((TVAR ("","",0))::r))
           | (i,e,x,[]) -> (i,e,x,[])
           | (i,e,(f::r),x) -> (i,e,(f::r),x@[f]) in
     let rec btt token count seqs =
             let seqs2 = List.filter (fun (i,e,toks,rest) -> (not(toks=[]) &&
-                                     similar_token token (hd toks))) seqs in
-            let seqs3 = List.map (fun (i,e,toks,rest) -> (i,e,tl toks,rest)) (List.map (rv count) seqs2)
+                                     similar_token token (List.hd toks))) seqs in
+            let seqs3 = List.map (fun (i,e,toks,rest) -> (i,e,List.tl toks,rest)) (List.map (rv count) seqs2)
             in
                 TrieToken (make_name token count,bt (count+1) seqs3)
         and bt count seqs =
@@ -900,10 +900,10 @@ let build_trie patterns mode =
             let exps = List.map (fun (i,e,toks,rest) -> TrieResult (i,e,rest))
                                 (List.filter (fun (i,e,toks,rest) -> toks=[]) seqs) in
             let nseqs = (List.map
-                             (fun (i,e,toks,rest) -> (hd toks))
+                             (fun (i,e,toks,rest) -> (List.hd toks))
                              (List.filter (fun (i,e,toks,rest) -> not(toks=[])) seqs)) in
             let tokens = remove_similar_dups nseqs in
-            let stries = map (fun (tok) -> btt tok count seqs) tokens
+            let stries = List.map (fun (tok) -> btt tok count seqs) tokens
             in
                 stries@exps
     in
@@ -911,13 +911,13 @@ let build_trie patterns mode =
     ;;
 
 let usable_modes patterns s =
-    remove_dups (List.map
+    Mylist.remove_dups (List.map
                     (fun (ParsePermit (m,s)) -> m)
                     (List.filter (fun x -> match x with | (ParsePermit (m,ss)) -> s=ss | _ -> false) patterns))
     ;;
 
 let build_tries patterns =
-    let modes = remove_dups (List.filter (fun x -> match x with | (ParsePermit (m,s)) -> [m] | _ -> []) patterns) in
+    let modes = Mylist.remove_dups (List.fold_left List.append [] (List.map (fun x -> match x with | (ParsePermit (m,s)) -> [m] | _ -> []) patterns)) in
     let pats = List.map
                    (fun (ParsePattern (s,i,e,toks)) ->
                         List.map (fun (m) -> (ParsePattern (m,i,e,toks))) (usable_modes patterns s))
@@ -928,8 +928,9 @@ let build_tries patterns =
 
 let print_sub sub =
     List.fold_right (fun x -> (fun y -> (x ^ " " ^ y)))
-          (List.map (fun (x) -> ((decode x) ^ "->" ^ (prExp (apply sub x))))
-              (dom sub)) "" ;;
+          (List.map (fun (x) -> ((Intern.decode x) ^ "->" ^ (prExp (Subst.apply sub x))))
+              (Subst.dom sub)) "" ;;
+let min a b = if a < b then a else b ;;
 
 let rec find_min_prec t = match t with
   | (TrieResult (i,e,tl)) -> i
@@ -938,7 +939,7 @@ let rec find_min_prec t = match t with
 and find_min_prec_list l = match l with
   | [x] -> find_min_prec x
   | [] -> 100000
-  | (a::b) -> Int.min (find_min_prec a,find_min_prec_list b) ;;
+  | (a::b) -> min (find_min_prec a) (find_min_prec_list b) ;;
 
 let rec strip_prec prec l = match l with
   | [] -> []
@@ -971,11 +972,11 @@ and find_subterm_list v n l = match l with
     (subterm_xl [n] (find_subterm v f))@(find_subterm_list v (n+1) r) ;;
 
 let rec generate_ind e indices =
-    fold_left List.append []
+    List.fold_left List.append []
         (List.map (fun (v,i) ->
              let fs = find_subterm v e
              in
-                 Listg.fold_left List.append [] (List.map (fun (x) -> subterm_xlist x i) fs)
+                 List.fold_left List.append [] (List.map (fun (x) -> subterm_xlist x i) fs)
              ) indices)
 
 let rec strip_tokens l = match l with
@@ -987,7 +988,7 @@ let progression = ref (10000,"",0,0) ;;
 let reset_progression () =
     (progression := (10000,"",0,0)) ;;
 
-exception ParseFailure of string * int * int ;;
+exception ParseFailure of (string * int * int) ;;
 
 let rec int_mk_failure l = match l with
   | ((t,f,r,c,_,_)::_) -> (f,r,c)
@@ -996,55 +997,55 @@ let rec int_mk_failure l = match l with
 let mk_failure l =
     let (count,pfile,pr,pc) = !progression
     in
-        if count > length l then
+        if count > List.length l then
             let (file,r,c) = int_mk_failure l
             in
-                progression := (length l,file,r,c) ;
+                progression := (List.length l,file,r,c) ;
                 (file,r,c)
         else
             (pfile,pr,pc)
 
 let rec identifier_parse trie l = match l with
   | ((ID s,file,r1,c1,r2,c2)::r) -> (STRING s,r,[([],file,r1,c1,r2,c2)])
-  | x -> raise ParseFailure (mk_failure x)
+  | x -> raise (ParseFailure (mk_failure x))
 and natural_parse trie l = match l with
   | ((NUMBER n,file,r1,c1,r2,c2)::r) -> (NUM n,r,[([],file,r1,c1,r2,c2)])
-  | x -> raise ParseFailure (mk_failure x)
+  | x -> raise (ParseFailure (mk_failure x))
 and default_parse trie l = match l with
   | ((ID "ALL",f,rs,cs,_,_)::(SPECIAL "(",_,_,_,_,_)::r) ->
     let (vars,r1) = default_parse_vars trie r in
-    let t = getTokenRc (SPECIAL ":") r1 in
+    let t = Parser.getTokenRc (SPECIAL ":") r1 in
     let (r2,_,_,_,_,_,_) = List.hd t in
     let (p,r3,l1) = parse trie "default" 0 r2 in
-    let t = getTokenRc (SPECIAL ")") r3 in
+    let t = Parser.getTokenRc (SPECIAL ")") r3 in
     let (r4,_,_,_,_,_,_) = List.hd t in
     let (e,rest,l2) = parse trie "default" 0 r4 in
-    let (_,_,_,_,re,ce) = hd l2 in
-        ((QUANT (intern_all,vars,e,p)),rest,([],f,rs,cs,re,ce)::((subterm_x 0 l1)@(subterm_x 1 l2)))
+    let (_,_,_,_,re,ce) = List.hd l2 in
+        ((QUANT (Intern.intern_all,vars,e,p)),rest,([],f,rs,cs,re,ce)::((subterm_x 0 l1)@(subterm_x 1 l2)))
   | ((ID "EXISTS",f,rs,cs,_,_)::(SPECIAL "(",_,_,_,_,_)::r) ->
     let (vars,r1) = default_parse_vars trie r in
-    let t = getTokenRc (SPECIAL ")") r1 in
-    let (r2,_,_,_,_,_,_) = hd t in
+    let t = Parser.getTokenRc (SPECIAL ")") r1 in
+    let (r2,_,_,_,_,_,_) = List.hd t in
     let (e,rest,l) = parse trie "default" 0 r2 in
     let (_,_,_,_,re,ce) = List.hd l
     in
-        ((QUANT (intern_exists,vars,e,(APPL (intern_true,[])))),rest,
+        ((QUANT (Intern.intern_exists,vars,e,(APPL (Intern.intern_true,[])))),rest,
          ([],f,rs,cs,re,ce)::(subterm_x 0 l))
   | ((ID s,f,rs,cs,_,_)::(SPECIAL "'",_,_,_,re,ce)::r) ->
-    (MARKED_VAR (intern s), r, [([],f,rs,cs,re,ce)])
+    (MARKED_VAR (Intern.intern s), r, [([],f,rs,cs,re,ce)])
   | ((ID s,ff,rs,cs,_,_)::(SPECIAL "(",_,_,_,_,_)::r) ->
     let (f,r2,li) = parse trie "default" 0 r in
     let (l,r3,l2,re,ce) = default_parse_list 0 trie r2 in
-        (APPL (intern s,f::l),r3,([],ff,rs,cs,re,ce)::((subterm_x 0 li)@l2))
+        (APPL (Intern.intern s,f::l),r3,([],ff,rs,cs,re,ce)::((subterm_x 0 li)@l2))
   | ((ID s,f,rs,cs,re,ce)::r) ->
-    (VAR (intern s), r,[([],f,rs,cs,re,ce)])
+    (VAR (Intern.intern s), r,[([],f,rs,cs,re,ce)])
   | ((NUMBER n,f,rs,cs,re,ce)::r) ->
     (NUM n,r,[([],f,rs,cs,re,ce)])
   | ((QUOTE q,f,rs,cs,re,ce)::r) ->
     (STRING q,r,[([],f,rs,cs,re,ce)])
   | ((C_QUOTE q,f,rs,cs,re,ce)::r) ->
     (CHAR q,r,[([],f,rs,cs,re,ce)])
-  | _ -> raise ParseFailure (mk_failure r)
+  | r -> raise (ParseFailure (mk_failure r))
 and default_parse_list n trie l = match l with
   | ((SPECIAL ")",f,rs,cs,re,ce)::r) ->
     ([], r, [], re, ce)
@@ -1053,18 +1054,18 @@ and default_parse_list n trie l = match l with
     let (tr,rest, l2, re, ce) = default_parse_list (n+1) trie r2
     in
         (t::tr, rest, (subterm_x n l)@l2, re ,ce)
-  | l -> raise ParseFailure (mk_failure l)
+  | l -> raise (ParseFailure (mk_failure l))
 and default_parse_vars trie l = match l with
   | ((ID s,_,_,_,_,_)::(SPECIAL ",",_,_,_,_,_)::r) ->
     let (v2,r2) = default_parse_vars trie r
     in
-         ((intern s, T.Notype)::v2,r2)
+         ((Intern.intern s, Type.notype)::v2,r2)
   | ((ID s,_,_,_,_,_)::r) ->
-    ([(intern s, T.Notype)],r)
-  | r -> raise ParseFailure (mk_failure r)
+    ([(Intern.intern s, Type.notype)],r)
+  | r -> raise (ParseFailure (mk_failure r))
 and parse trie mode prec toks = trie_parse trie mode prec toks
 and trie_parse trie mode prec l =
-    try let (*val _ = print ("tokens before (" ^ mode ^ ") " ^ (print_tokens2 l) ^ "\n")
+    let (*val _ = print ("tokens before (" ^ mode ^ ") " ^ (print_tokens2 l) ^ "\n")
         val _ = print_trie_set trie*)
         (exp1,rest1,indices) = parse_no_prefix trie mode prec l
         (*val _ = print ("tokens after " ^ (print_tokens2 rest1) ^ "\n")*)
@@ -1077,43 +1078,42 @@ and trie_parse trie mode prec l =
               | (_::r) -> find_mode_var r in
         let trl = find_mode_var trl in
             (*val _ = print (foldr op^ "" (map (fn (v,i,tl) => ("Variable " ^ v ^ " " ^ (string_of_int i) ^ (foldr op^ "" (map (print_trie 4) tl)) ^ "\n")) trl))*)
-        let xxx = if trl=[] then raise ParseFailure (mk_failure l) else () in
+        let xxx = if trl=[] then raise (ParseFailure (mk_failure l)) else () in
         let rec continue_rule tl prec rest sub indl =
                 let tl = strip_prec prec tl in
                     (*val _ = print ("Continue rule " ^ (string_of_int prec) ^ "\n")
                 let xxx = print ((foldr op^ "" (map (print_trie 4) tl)) ^ "\n")*)
                 let rec cp l ll sub indl = match (l,ll) with
-                      | (_,[]) -> raise ParseFailure (mk_failure l)
+                      | (_,[]) -> raise (ParseFailure (mk_failure l))
                       | (l,((TrieToken (TVAR (v,m,i),tl))::r)) ->
                         if m=mode then
                            (sub,tl,v,i,l,NOEXP,indl)
                         else
                            (try let (exp1,rest,indices) = parse trie m i l
                             in
-                                cp rest tl (addPair sub (intern v) exp1) ((intern v,indices)::indl)
+                                cp rest tl (Subst.addPair sub (Intern.intern v) exp1) ((Intern.intern v,indices)::indl)
                             with ParseFailure _ -> cp l r sub indl)
                       | (((f,a,b,c,d,e)::rest),((TrieToken (t,tl))::r)) ->
                         if f=t then cp rest tl sub indl else cp ((f,a,b,c,d,e)::rest) r sub indl
                       | (l,((TrieResult (i,e,tl))::r)) ->
                         (sub,[],"",i,l,e,indl)
-                      | (l,_) -> raise ParseFailure (mk_failure l)
+                      | (l,_) -> raise (ParseFailure (mk_failure l))
                 in
                     cp rest tl sub indl in
          let rec continue_parse exp indices exp_prec ret_prec rest sub =
-                let xxx = if trl=[] then raise ParseFailure (mk_failure rest) else () in
-                let (var,_,_) = hd trl in
+                let xxx = if trl=[] then raise (ParseFailure (mk_failure rest)) else () in
+                let (var,_,_) = List.hd trl in
                 let trl = List.fold_right List.append
-                              []
                               (List.map
                                (fun (_,_,r) -> r)
                               (List.filter
-                               (fun (v,i,tl) -> i <= exp_prec) trl)) in
+                               (fun (v,i,tl) -> i <= exp_prec) trl)) [] in
                     (*val _ = print "continue_parse\n"*)
-                let (sub,tl,v,i,l,ex,indl) = continue_rule trl ret_prec rest sub [(intern var,indices)]
+                let (sub,tl,v,i,l,ex,indl) = continue_rule trl ret_prec rest sub [(Intern.intern var,indices)]
                     (*val _ = print ("var = " ^ var ^ "\n")*)
                 in
-                    (addPair sub (intern var) exp,tl,v,i,l,ex,indl) in
-        let rec decide_parse parent_prec ret_prec sub tl var toks indl =
+                    (Subst.addPair sub (Intern.intern var) exp,tl,v,i,l,ex,indl) in
+        try let rec decide_parse parent_prec ret_prec sub tl var toks indl =
                 let (*val _ = print ("decide_parse " ^ var ^ " " ^ (print_tokens2 toks) ^ " " ^ (Int.toString parent_prec) ^ " " ^ (Int.toString ret_prec) ^ "\n")
                     xxx = print ("sub = " ^ (print_sub sub) ^ "\n")*)
                     (exp2,toks,indices) = parse_no_prefix trie mode ret_prec toks
@@ -1122,12 +1122,12 @@ and trie_parse trie mode prec l =
             and decide_parse1 parent_prec ret_prec sub tl var exp_prec toks exp2 indices indl =
                (let (exp,rest,prec,indices) = initiate_parse exp2 toks indices ret_prec exp_prec in
                     (*val _ = print ("decide_parse0 " ^ (prExp exp) ^ " " ^ (print_tokens2 rest) ^ "\n")*)
-                let sub =  addPair sub (intern var) exp in
-                let indl = (intern var,indices)::indl in
+                let sub =  Subst.addPair sub (Intern.intern var) exp in
+                let indl = (Intern.intern var,indices)::indl in
                     (*val _ = print ("decide_parse1 " ^ (prExp exp) ^ " " ^ (print_tokens2 rest) ^ "\n")*)
                 let (sub,tl,v,i,l,exp3,indl) = continue_rule tl parent_prec rest sub indl in
                     (*val _ = print ("decide_parse2 " ^ (prExp exp2) ^ " " ^ (prExp exp3) ^ " " ^ (Int.toString i) ^ " " ^ (print_tokens2 l) ^ "\n")*)
-                let exp4 = subst sub exp3 in
+                let exp4 = Subst.subst sub exp3 in
                     if exp3=NOEXP then
                         decide_parse parent_prec ret_prec sub tl v l indl
                     else
@@ -1135,20 +1135,20 @@ and trie_parse trie mode prec l =
                 )
             and initiate_parse exp l indices ret_prec exp_prec =
                (try let (*val _ = print ("initiate2: " ^ (prExp exp) ^ " " ^ (print_tokens2 l) ^ " " ^ (Int.toString ret_prec) ^ " " ^ (Int.toString exp_prec) ^ "\n")*)
-                    (sub,tl,v,p,l3,exp2,indices2) = continue_parse exp indices exp_prec ret_prec l empty in
+                    (sub,tl,v,p,l3,exp2,indices2) = continue_parse exp indices exp_prec ret_prec l Subst.empty in
                     (*val _ = print ("initiate3: " ^ (prExp exp2) ^ " " ^ (print_tokens2 l3) ^ " " ^ (Int.toString p) ^ "\n")*)
                 let (e,r,prec,indices) =
                         if exp2=NOEXP then
                             decide_parse ret_prec p sub tl v l3 indices2
                         else
-                            (subst sub exp2,l3,p,generate_ind exp2 indices2)
+                            (Subst.subst sub exp2,l3,p,generate_ind exp2 indices2)
                 in
                     initiate_parse e r indices ret_prec prec
                 with ParseFailure (_) -> (exp,l,exp_prec,indices)) in
              let (e,r,p,indices) = initiate_parse exp1 rest1 indices 0 10000
         in
            (e,r,indices)
-        with ParseFailure _ -> (exp1,rest1,indices)
+        with (ParseFailure _) -> (exp1,rest1,indices)
 and parse_no_prefix trie mode prec toks = match mode with
   | "default" ->
     (try trie_parse_no_prefix trie "default" prec toks with ParseFailure (l) -> default_parse trie toks)
@@ -1161,10 +1161,10 @@ and trie_parse_no_prefix trie mode prec l =
     let trl = get_trie mode trie in
     let trl2 = List.filter (fun t -> match t with | (TrieToken (TVAR (v,m,i),tr)) -> not(m=mode) | _ -> true) trl in
     let rec get_token t l = match l with
-          | [] -> raise ParseFailure (mk_failure l)
+          | [] -> raise (ParseFailure (mk_failure []))
           | ((TrieToken(a,tr))::b) -> if t=a then tr else get_token t b
           | (_::b) -> get_token t b in
-    let xxxx = if l=[] then raise ParseFailure (mk_failure l) else () in
+    let xxxx = if l=[] then raise (ParseFailure (mk_failure l)) else () in
         (*val tok = hd l*)
     let rest = l in
         (*val trie2 = get_token tok trl*)
@@ -1177,17 +1177,17 @@ and trie_parse_no_prefix trie mode prec l =
           | (_,[]) ->
             let  r = get_results trie
             in
-                if r=[] then raise ParseFailure ("*END",0,0)
-                         else (subst sub (hd r),[],generate_ind (hd r) indices,re,ce)
-          | ([],(f::r)) -> raise ParseFailure(mk_failure (f::r))
+                if r=[] then raise (ParseFailure ("*END",0,0))
+                         else (Subst.subst sub (List.hd r),[],generate_ind (List.hd r) indices,re,ce)
+          | ([],(f::r)) -> raise (ParseFailure(mk_failure (f::r)))
           | (((TrieToken (TVAR (v,m,i),t))::rest),(f::r)) ->
             (try let
                  (*val _ = print ("parsing var " ^ v ^ " " ^ m ^ " " ^ (Int.toString i) ^ "\n")*)
-                 (exp,rest2,l) = parse trie m i (f::r) in
-             let (_,_,_,_,re,ce) = hd l
+                 (exp,rest2,l) = parse [("",trie)] m i (f::r) in
+             let (_,_,_,_,re,ce) = List.hd l
                  (*val _ = print "end parsing var\n"*)
              in
-                 process_trie t (addPair sub (intern v) exp) rest2 ((intern v,l)::indices) re ce
+                 process_trie t (Subst.addPair sub (Intern.intern v) exp) rest2 ((Intern.intern v,l)::indices) re ce
              with ParseFailure l -> process_trie rest sub (f::r) indices re ce)
           | (((TrieToken (t,tr))::rest),((f,f1,rs1,cs1,re1,ce1)::r)) ->
             if t=f then
@@ -1196,15 +1196,15 @@ and trie_parse_no_prefix trie mode prec l =
                 process_trie rest sub ((f,f1,rs1,cs1,re1,ce1)::r) indices re ce
           | (((TrieResult (i,e,tl))::rest),l) ->
             if i>=prec then
-                (subst sub e,l,generate_ind e indices,re,ce)
+                (Subst.subst sub e,l,generate_ind e indices,re,ce)
             else
                 process_trie rest sub l indices re ce
           | ((_::rest),(f::r)) ->
             process_trie rest sub (f::r) indices re ce
-          | (_,_) -> raise ParseFailure (mk_failure l) in
+          | (_,_) -> raise (ParseFailure (mk_failure l)) in
         (*val _ = print ("Processing " ^ (print_tokens2 rest) ^ "\n")*)
-    let (_,f,rs,cs,re,ce) = hd rest in
-    let (e,l,st,re,ce) = process_trie trl2 empty rest [] re ce
+    let (_,f,rs,cs,re,ce) = List.hd rest in
+    let (e,l,st,re,ce) = process_trie trl2 Subst.empty rest [] re ce
         (*val _ = print ("Result " ^ (print_tokens2 rest) ^ " " ^ (prExp e) ^ "\n")*)
     in
         (e,l,([],f,rs,cs,re,ce)::st)
