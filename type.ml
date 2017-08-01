@@ -45,6 +45,8 @@ type etype = V of tyvar
 let varCount = ref 0 ;; (* Count used in assigning new type variables *)
 type typeDef = (int * (etype list)) list ;;
 
+let emptyDef = [] ;;
+
 exception TypeError of (etype * etype * (int list)) ;;
 (*
  * Parsing/unparsing

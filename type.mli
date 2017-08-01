@@ -28,6 +28,7 @@ val parse: string -> etype ;;
 val parseDef: string -> typeDef ;;
 val parseWholeDef: string -> (etype * typeDef) ;;
 val unparseDef: typeDef -> string ;;
+val emptyDef : typeDef ;;
 (*
  * etype constructor and destructor functions
  *)
