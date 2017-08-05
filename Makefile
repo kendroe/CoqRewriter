@@ -6,7 +6,7 @@ export THREADS = yes
 
 # Define project "rewrite"
 define PROJ_rewrite
-  SOURCES = mylist.ml trie.ml intern.ml getfile.ml lex.ml parser.ml type.ml exp.ml expIntern.ml disc.ml context.ml subst.ml pp.ml env.ml
+  SOURCES = mylist.ml trie.ml intern.ml getfile.ml lex.ml parser.ml type.ml exp.ml expIntern.ml disc.ml context.ml subst.ml pp.ml env.ml trace.ml derive.ml
   RESULT = rewrite_test
 endef
 export PROJ_rewrite
