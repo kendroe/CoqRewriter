@@ -137,22 +137,23 @@ let get_relevant_constants e = try IntListMap.find e (!relevant_constant_cache)
                                with Not_found -> raise NoEntry ;;
 
 let add_relevant_constants e v =
-    relevant_constant_cache := IntListMap.insert e v (!relevant_constant_cache) ;;
+    relevant_constant_cache := IntListMap.add e v (!relevant_constant_cache) ;;
 
 (**** Has relevant constants *******************************************)
 
-val has_relevant_constant_cache = ref (IntListDict.empty : bool IntListDict.map)
+let has_relevant_constant_cache = ref (IntListMap.empty) ;;
 
-fun has_relevant_constants r e = case (IntListDict.find (!has_relevant_constant_cache,e::r))
-                    of SOME x => x
-                     | NONE   => raise NoEntry
+let has_relevant_constants r e = try IntListMap.find (e::r) (!has_relevant_constant_cache)
+                                 with Not_found -> raise NoEntry ;;
 
-fun add_has_relevant_constants r e v =
-    has_relevant_constant_cache := IntListDict.insert (!has_relevant_constant_cache,e::r,v)
+let add_has_relevant_constants r e v =
+    has_relevant_constant_cache := IntListMap.add (e::r) v (!has_relevant_constant_cache)
 
 (**** Rewrites failures ************************************************)
 
-let failure_cache = ref (SingleMap.empty)
+let failure_cache = ref (SingleMap.empty) ;;
+
+module IntBinarySet = Set.Make(Int64) ;;
 
 (*fun is_subset nil x = true
   | is_subset x nil = false
@@ -168,113 +169,108 @@ fun merge_sets nil x = x
     else if (f:int)<g then f::g::(merge_sets r e)
     else g::f::(merge_sets r e)*)
 
-fun is_subset nil s = true
-  | is_subset (f::r) s =
-    IntBinarySet.member (s,f) andalso is_subset r s
+let rec is_subset l s = match l with
+  | [] -> true
+  | (f::r) ->
+    IntBinarySet.mem f s && is_subset r s
 
-fun is_rewrite_failure rules e =
-    case (IntDict.find (!failure_cache,e))
-      of SOME x => is_subset rules x
-       | NONE   => false
+let is_rewrite_failure rules e =
+    try is_subset (List.map (Int64.of_int) rules) (SingleMap.find e (!failure_cache))
+    with Not_found -> false ;;
 
-fun add_rewrite_failure rules e =
-    (failure_cache := IntDict.insert (!failure_cache,e,
-        IntBinarySet.addList
-            (case (IntDict.find ((!failure_cache),e))
-               of SOME x => x
-                | NONE   => IntBinarySet.empty,rules)))
+let add_rewrite_failure rules e =
+    (failure_cache := SingleMap.add e
+        (List.fold_right (fun r -> (fun s -> IntBinarySet.add (Int64.of_int r) s)) rules
+            (try SingleMap.find e (!failure_cache)
+             with Not_found -> IntBinarySet.empty)
+            )
+        (!failure_cache)) ;;
 
 (**** Rewrites *********************************************************)
 
-val rewrite_cache = ref (IntListDict.empty : int IntListDict.map)
-val good_rewrite_cache = ref (IntListDict.empty : int IntListDict.map)
+let rewrite_cache = ref (IntListMap.empty) ;;
+let good_rewrite_cache = ref (IntListMap.empty) ;;
 
-val rewrite_reads = ref 0
-val good_rewrite_reads = ref 0
-val rewrite_writes = ref 0
+let rewrite_reads = ref 0
+let good_rewrite_reads = ref 0
+let rewrite_writes = ref 0
 
-fun save_good_rewrites () = (
+let save_good_rewrites () = (
     (*print ("Good reads = " ^ (Int.toString (!good_rewrite_reads)) ^ "\nReads = " ^ (Int.toString (!rewrite_reads)) ^ "\nWrites = " ^ (Int.toString (!rewrite_writes)) ^ "\n") ;
     good_rewrite_reads := 0 ;
     rewrite_reads := 0 ;
     rewrite_writes := 0 ;*)
-    rewrite_cache := IntListDict.empty ; ())
+    rewrite_cache := IntListMap.empty ; ())
 
-fun get_rewrite r e = (rewrite_reads := (!rewrite_reads)+1 ;
-                  case (IntListDict.find (!good_rewrite_cache,e::r))
-                    of SOME x => ((*good_rewrite_reads := (!good_rewrite_reads+1) ;*) x)
-             | NONE   => case (IntListDict.find (!rewrite_cache,e::r))
-                                           of SOME x => ((*good_rewrite_reads := (!good_rewrite_reads+1) ;*)
-                                                 good_rewrite_cache := IntListDict.insert (!rewrite_cache,e::r,x) ;
-                                                 x)
-                                    | NONE   => raise NoEntry)
+let get_rewrite r e = (rewrite_reads := (!rewrite_reads)+1 ;
+                  try (IntListMap.find (e::r) (!good_rewrite_cache))
+                  with Not_found ->
+                       try let x = IntListMap.find (e::r) (!rewrite_cache) in
+                           (good_rewrite_cache := (IntListMap.add (e::r) x (!rewrite_cache))) ; x
+                       with Not_found -> raise NoEntry)
 
-fun add_rewrite r e v =
-    ((*rewrite_writes := (!rewrite_writes)+1 ;*)
-     rewrite_cache := IntListDict.insert (!rewrite_cache,e::r,v))
+let add_rewrite r e v =
+    (*rewrite_writes := (!rewrite_writes)+1 ;*)
+     rewrite_cache := IntListMap.add (e::r) v (!rewrite_cache) ;;
 
 (**** Derived rules ****************************************************)
 
-val derived_cache = ref (IntDict.empty : int list IntDict.map)
+let derived_cache = ref (SingleMap.empty) ;;
 
-fun get_derived_rules e = case (IntDict.find (!derived_cache,e))
-                    of SOME x => x
-                     | NONE   => raise NoEntry
+let get_derived_rules e = try SingleMap.find e (!derived_cache)
+                          with Not_found -> raise NoEntry ;;
 
-fun add_derived_rules e v =
-    derived_cache := IntDict.insert (!derived_cache,e,v)
+let add_derived_rules e v =
+    derived_cache := SingleMap.add e v (!derived_cache) ;;
 
 (**** Introduced vars **************************************************)
 
-val introduced_cache = ref (IntDict.empty : int list IntDict.map)
+let introduced_cache = ref (SingleMap.empty) ;;
 
-fun get_introduced_vars e = case (IntDict.find (!introduced_cache,e))
-                    of SOME x => x
-                     | NONE   => raise NoEntry
+let get_introduced_vars e = try SingleMap.find e (!introduced_cache)
+                            with Not_found -> raise NoEntry ;;
 
-fun add_introduced_vars e v =
-    introduced_cache := IntDict.insert (!introduced_cache,e,v)
+let add_introduced_vars e v =
+    introduced_cache := SingleMap.add e v (!introduced_cache) ;;
 
 (**** Equal cache ******************************************************)
 
-val equal_cache = ref (DoubleIntDict.empty : bool DoubleIntDict.map)
+let equal_cache = ref (PairsMap.empty) ;;
 
-fun get_equal_terms e1 e2 = case (DoubleIntDict.find (!equal_cache,(e1,e2)))
-                    of SOME x => x
-                     | NONE   => raise NoEntry
+let get_equal_terms e1 e2 = try PairsMap.find (e1,e2) (!equal_cache)
+                            with Not_found -> raise NoEntry ;;
 
-fun add_equal_terms e1 e2 v =
-    equal_cache := DoubleIntDict.insert (!equal_cache,(e1,e2),v)
+let add_equal_terms e1 e2 v =
+    equal_cache := PairsMap.add (e1,e2) v (!equal_cache) ;;
 
 (**** Mark vars cache **************************************************)
 
-val mark_vars_cache = ref (IntDict.empty : int IntDict.map)
+let mark_vars_cache = ref (SingleMap.empty) ;;
 
-fun get_mark_vars e = case (IntDict.find (!mark_vars_cache,e))
-                    of SOME x => x
-                     | NONE   => raise NoEntry
+let get_mark_vars e = try SingleMap.find e (!mark_vars_cache)
+                      with Not_found -> raise NoEntry ;;
 
-fun add_mark_vars e v =
-    mark_vars_cache := IntDict.insert (!mark_vars_cache,e,v)
+let add_mark_vars e v =
+    mark_vars_cache := SingleMap.add e v (!mark_vars_cache)
 
 (*** Utilities *********************************************************)
 
-fun clear_cache () =
-   (rule_cache := IntDict.empty ;
-    urule_cache := IntDict.empty ;
-    rule_list_cache := IntListDict.empty ;
-    relevant_constant_cache := IntListDict.empty ;
-    good_rewrite_cache := IntListDict.empty ;
-    rewrite_cache := IntListDict.empty ;
-    unify_refine_cache := IntListDict.empty
-   )
+let clear_cache () =
+   (rule_cache := SingleMap.empty ;
+    urule_cache := SingleMap.empty ;
+    rule_list_cache := IntListMap.empty ;
+    relevant_constant_cache := IntListMap.empty ;
+    good_rewrite_cache := IntListMap.empty ;
+    rewrite_cache := IntListMap.empty ;
+    unify_refine_cache := IntListMap.empty
+   ) ;;
 
-fun complete_clear_cache () =
+let complete_clear_cache () =
    (clear_cache () ;
-    mark_vars_cache := IntDict.empty ;
-    match_cache := DoubleIntDict.empty ;
-    derived_cache := IntDict.empty ;
-    introduced_cache := IntDict.empty;
-    equal_cache := DoubleIntDict.empty
-   )
+    mark_vars_cache := SingleMap.empty ;
+    match_cache := PairsMap.empty ;
+    derived_cache := SingleMap.empty ;
+    introduced_cache := SingleMap.empty;
+    equal_cache := PairsMap.empty
+   ) ;;
 
