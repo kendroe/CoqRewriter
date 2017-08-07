@@ -423,22 +423,27 @@ let rec u_match env t1 t2 q theta = match (t1,t2) with
                     (match_consts v1 v2))))))
   | ((CASE (e1,t1,c1)),(CASE (e2,t2,c2))) ->
     let permutations = allMappings c1 c2 in
-    let matches = permutations <|
-            (fun (l) => List.fold_left
-                (fun theta -> (fun ((p1,c1),(p2,c2)) ->
-                 (match_consts p1 p2 >< theta) <| (fn (x,theta) => uu_match env c1 c2 (x::q) theta)
-                )) [theta] l
-            ) <| (fn (t) => uu_match env e1 e2 q t)
+    let matches = List.fold_left List.append [] (List.map
+                      (fun (t) -> uu_match env e1 e2 q t)
+                      (List.fold_left List.append [] (List.map
+                          (fun l -> List.fold_left
+                              (fun theta -> (fun ((p1,c1),(p2,c2)) ->
+                                  (List.fold_left List.append [] (List.map
+                                      (fun (x,theta) -> uu_match env c1 c2 (x::q) theta)
+                                      (List.combine (match_consts p1 p2) theta)))
+                          )) [theta] l
+                          ) permutations)))
     in
-        matches <> (fun (x) -> (x,[]))
+        List.map (fun (x) -> (x,[])) matches
   | ((QUANT (s1,v1,e1,p1)),(QUANT (s2,v2,e2,p2))) ->
     if (s1 = s2) && (List.length v1 = List.length v2) then
-         (List.filter (fun (t,r) -> r=[])
-         (List.fold_left [] List.append
-             (List.map (fun (t) -> u_match env p1 p2 (x::q) t)
-             (List.fold_left List.append [] (List.map
-                 (fun (x) -> uu_match env e1 e2 (x::q) theta)
-                 (allMappings (strip v1) (strip v2)))))))
+        (List.fold_left List.append [] (List.map
+            (fun (x) -> List.filter
+                            (fun (t,r) -> r=[])
+                            (List.fold_left List.append [] (List.map
+                                (fun (t) -> u_match env p1 p2 (x::q) t)
+                                (uu_match env e1 e2 (x::q) theta))))
+            (allMappings (strip v1) (strip v2))))
     else
         []
   | ((APPL (s,l)),e) ->
@@ -447,32 +452,38 @@ let rec u_match env t1 t2 q theta = match (t1,t2) with
             if s = s2 then
                 (if (Env.isAC env s) then
                     ac_match_pairs env s l l2 q theta
-                else if (isA env s) then
+                else if (Env.isA env s) then
                     []
-                else if (isC env s) then
+                else if (Env.isC env s) then
                     c_match_pairs env l l2 q theta
                 else
-                    u_match_pairs env l l2 q theta <>
-                    (fun (t) -> (t,[])))
+                    (List.map
+                        (fun (t) -> (t,[]))
+                        (u_match_pairs env l l2 q theta)))
             else
                 []
       | _ ->
             [])
   | (t1,t2) -> if t1=t2 then [(theta,[])] else []
 and uu_match env e p q theta =
-    u_match env e p q theta |> (fn (t,r) => r = []) <>
-    (fn (t,r) => t)
+    (List.map
+        (fun (t,r) -> t)
+        (List.filter
+            (fun (t,r) -> r = [])
+            (u_match env e p q theta)))
 and c_match_pairs env l l2 q theta =
     if (List.length l)=(List.length l2) then
-        allMappings l l2
-            <| (fn (x) => match_mapping env x q theta)
-            <> (fn (x) => (x,[]))
+        (List.map
+            (fun (x) -> (x,[]))
+            (List.fold_left List.append [] (List.map
+                (fun (x) -> match_mapping env x q theta)
+                (allMappings l l2))))
     else
         []
 and match_mapping env l q theta = match l with
   | [] -> [theta]
   | ((t1,t2)::b) ->
-    List.fold_left [] (List.map
+    List.fold_left List.append [] (List.map
         (fun (t) -> match_mapping env b q t)
         (uu_match env t1 t2 q theta))
 and ac_match_pairs env s l l2 q theta =
@@ -486,10 +497,14 @@ and match_vars env vars rest s q theta =
     if (List.length vars)=(List.length rest) then
         match_single_vars env vars rest s q theta
     else if (List.length vars)<(List.length rest) then
-        ((all_picks vars) <| (fn (p,r) =>
-            ((match_multiple_var env p rest ((List.length rest)-(List.length r)) s q
-                                 theta) <|
-             (fn (theta,rest) => match_single_vars env r rest s q theta))))@
+        (List.fold_left List.append [] (List.map
+            (fun (p,r) ->
+            (List.fold_left List.append [] (List.map
+                (fun (theta,rest) -> match_single_vars env r rest s q theta)
+                (match_multiple_var env p rest ((List.length rest)-(List.length r)) s q theta)
+            )))
+            (all_picks vars))
+         )@
          (match_single_vars env vars rest s q theta)
     else
         []
@@ -497,11 +512,12 @@ and match_multiple_var env v terms n s q theta =
     if n=1 then
         match_single_var env v terms s q theta
     else
-        (if member v (Subst.dom theta) then
+        (if List.mem v (Subst.dom theta) then
              []
          else
-             (all_n_picks terms n) <>
-             (fn (p,r) => (Subst.addPair theta v (APPL (s,p)),r)))
+             (List.map
+                 (fun (p,r) -> (Subst.addPair theta v (APPL (s,p)),r))
+                 (all_n_picks terms n)))
 and match_single_vars env l rest s q theta = match l with
   | [] -> [(theta,rest)]
   | (a::b) ->
@@ -509,11 +525,14 @@ and match_single_vars env l rest s q theta = match l with
        (fun (t,rest) -> match_single_vars env b rest s q t)
        (match_single_var env a rest s q theta)))
 and match_single_var env v rest s q theta =
-    (List.filter (fun (t,r) -> r=[])
-        (List.map
-            (fun (tt,r) -> (tt,delete_one t rest))
             (List.fold_left List.append [] (List.map (fun (t) ->
-                ((u_match env (VAR v) t q theta))) rest))))
+                (
+                    (List.map
+                        (fun (tt,r) -> (tt,Mylist.delete_one t rest))
+                        (List.filter (fun (t,r) -> r=[])
+                            (u_match env (VAR v) t q theta)))
+                )) rest
+            ))
 and match_terms env l l2 q theta = match l with
   | [] -> [(theta,l2)]
   | (a::b) ->
@@ -525,10 +544,10 @@ and match_term env term l q theta = match l with
   | (a::b) ->
     (List.map
         (fun (theta) -> (theta,b))
-        (match_term env term b q theta))@
+        (uu_match env term a q theta))@
      (List.map
-         (fun (theta,rest) -> [(theta,a::rest)])
-         (uu_match env term a q theta))
+         (fun (theta,rest) -> (theta,a::rest))
+         (match_term env term b q theta))
 and u_match_pairs env l1 l2 q theta = match (l1,l2) with
   | ([],[]) -> [theta]
   | ((a::b),[]) -> []
@@ -668,9 +687,9 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
     if s = s2 then
        (if (Env.isAC env s) then
             ac_unify_pairs env s l l2 q theta1 theta2
-        else if (isA env s) then
+        else if (Env.isA env s) then
             []
-        else if (isC env s) then
+        else if (Env.isC env s) then
             c_unify_pairs env l l2 q theta1 theta2
         else
             u_unify_pairs env l l2 q theta1 theta2 <>
@@ -757,7 +776,7 @@ and unify_single_vars1 env l rest s q theta1 theta2 = match l with
 and unify_single_var1 env v rest s q theta1 theta2 =
     (List.fold_left List.append (List.map (fun (t) ->
         (List.map
-            (fun (t1,t2,r1,r2) -> (t1,t2,delete_one t rest,[]))
+            (fun (t1,t2,r1,r2) -> (t1,t2,Mylist.delete_one t rest,[]))
             (List.filter
                 (fun (t1,t2,r1,r2) -> r1=[] && r2=[])
                 (u_unify env v t q theta1 theta2))
@@ -787,7 +806,7 @@ and unify_single_var2 env rest v s q theta1 theta2 =
     (List.fold_left List.append (List.map
         (fun (t) ->
             (List.map
-                (fun (t1,t2,r1,r2) -> (t1,t2,[],delete_one t rest))
+                (fun (t1,t2,r1,r2) -> (t1,t2,[],Mylist.delete_one t rest))
                 (List.filter
                     (fun (t1,t2,r1,r2) -> r1=[] && r2=[])
                     (u_unify env t v q theta1 theta2)))) rest) [])
