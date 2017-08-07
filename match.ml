@@ -559,17 +559,17 @@ and u_match_pairs env l1 l2 q theta = match (l1,l2) with
 
 let rec thematch env p e = match (p,e) with
   | ((REF p),(REF e)) ->
-   (try (get_match p e) with NoEntry ->
+   (try (Cache.get_match p e) with Cache.NoEntry ->
     let r = thematch env (ExpIntern.decode_exp (REF p)) (ExpIntern.decode_exp (REF e))
     in
-        add_match p e r ;
+        Cache.add_match p e r ;
         r)
   | (p,e) ->
-    let _ = Trace.trace "rewriteRule" (fn (x) => "match " ^ (prExp p) ^ " " ^ (prExp e)) in
+    let _ = Trace.trace "rewriteRule" (fun (x) -> "match " ^ (prExp p) ^ " " ^ (prExp e)) in
     let _ = Trace.indent () in
     let res = u_match env p e [] Subst.empty in
     let _ = Trace.undent () in
-    let _ = Trace.trace "rewriteRule" (fn (x) => "end match " ^ (prExp p) ^ " " ^ (prExp e)) in
+    let _ = Trace.trace "rewriteRule" (fun (x) -> "end match " ^ (prExp p) ^ " " ^ (prExp e)) in
         res
     ;;
 
@@ -588,7 +588,7 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
     let d1 = depth1 v1 q in
     let d2 = depth3 v2 q in
         if d1 = -1 && d2= -1 then
-           (if (List.memv1 (Subst.dom theta1)) then
+           (if (List.mem v1 (Subst.dom theta1)) then
                 List.map (fun (t2,r) -> (theta1,t2,r,[]))
                     (u_match env (VAR v2) (Subst.apply theta1 v1) (swap q) theta2)
             else if (List.mem v2 (Subst.dom theta2)) then
@@ -609,9 +609,10 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
                 else
                     match e with
                       | (APPL (s,l)) -> if (Env.isAC env s) then
-                                             match_unassigned_var env
-                                                 v l s q theta1 <>
-                                             (fn (theta1,x) => (theta1,theta2,x,[]))
+                                             (List.map
+                                                 (fun (theta1,x) -> (theta1,theta2,x,[]))
+                                                 (match_unassigned_var env
+                                                 v l s q theta1))
                                          else
                                              [(Subst.addPair theta1 v e,theta2,[],[])]
                       | _             -> [(Subst.addPair theta1 v e,theta2,[],[])])
@@ -629,9 +630,10 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
                 else
                     match e with
                       | (APPL (s,l)) -> if (Env.isAC env s) then
-                                             match_unassigned_var env
-                                                 v l s q theta2 <>
-                                             (fn (theta2,x) => (theta1,theta2,[],x))
+                                             (List.map
+                                                 (fun (theta2,x) -> (theta1,theta2,[],x))
+                                                 (match_unassigned_var env
+                                                 v l s q theta2))
                                          else
                                              [(theta1,Subst.addPair theta2 v e,[],[])]
                       | _             -> [(theta1,Subst.addPair theta2 v e,[],[])])
@@ -651,21 +653,21 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
   | ((LET (v1,t1,e1,b1)),(LET (v2,t2,e2,b2))) ->
     (List.map
         (fun (t1,t2) -> (t1,t2,[],[]))
-        (List.fold_left List.append (List.map (fun (t1,t2) -> uu_unify env e1 e2 q t1 t2)
-        (List.fold_list List.append (List.map (fun (x) -> uu_unify env b1 b2 (x::q) theta1 theta2)
-        (match_consts v1 v2)) [])) []))
+        (List.fold_left List.append [] (List.map (fun (t1,t2) -> uu_unify env e1 e2 q t1 t2)
+        (List.fold_left List.append [] (List.map (fun (x) -> uu_unify env b1 b2 (x::q) theta1 theta2)
+        (match_consts v1 v2))))))
   | ((CASE (e1,t1,c1)),(CASE (e2,t2,c2))) ->
     let permutations = allMappings c1 c2 in
-    let matches = List.fold_left List.append (List.map
+    let matches = List.fold_left List.append [] (List.map
             (fun (t1,t2) -> uu_unify env e1 e2 q t1 t2)
-            (List.fold_left List.append (List.map
+            (List.fold_left List.append [] (List.map
             (fun (l) -> List.fold_left
                  (fun thetal -> (fun ((p1,c1),(p2,c2)) ->
-                     (List.fold_left List.append (List.map (fun (x,(theta1,theta2)) -> uu_unify env c1 c2 (x::q) theta1 theta2)
-                     (List.combine (match_consts p1 p2) thetal)) [])
+                     (List.fold_left List.append [] (List.map (fun (x,(theta1,theta2)) -> uu_unify env c1 c2 (x::q) theta1 theta2)
+                     (List.combine (match_consts p1 p2) thetal)))
                  )) [(theta1,theta2)] l
             )
-            permutations) [])) []
+            permutations)))
 
     in
         List.map
@@ -673,14 +675,14 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
             matches
   | ((QUANT (s1,v1,e1,p1)),(QUANT (s2,v2,e2,p2))) ->
     if (s1 = s2) && (List.length v1 = List.length v2) then
-         List.fold_left List.append (List.map
+         List.fold_left List.append [] (List.map
             (fun (x) ->
                        List.filter
                            (fun (t1,t2,r1,r2) -> r1=[] && r2=[])
-                           (List.fold_left (List.map
+                           (List.fold_left List.append [] (List.map
                                (fun (t1,t2) -> u_unify env p1 p2 (x::q) t1 t2)
-                               (uu_unify env e1 e2 (x::q) theta1 theta2)) []))
-            (allMappings (strip v1) (strip v2))) []
+                               (uu_unify env e1 e2 (x::q) theta1 theta2))))
+            (allMappings (strip v1) (strip v2)))
     else
         []
   | ((APPL (s,l)),(APPL (s2,l2))) ->
@@ -692,8 +694,9 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
         else if (Env.isC env s) then
             c_unify_pairs env l l2 q theta1 theta2
         else
-            u_unify_pairs env l l2 q theta1 theta2 <>
-            (fn (t1,t2) => (t1,t2,[],[])))
+            (List.map
+                (fun (t1,t2) -> (t1,t2,[],[]))
+                (u_unify_pairs env l l2 q theta1 theta2)))
     else
         []
   | (t1,t2) -> if t1=t2 then [(theta1,theta2,[],[])] else []
@@ -707,23 +710,25 @@ and c_unify_pairs env l l2 q theta1 theta2 =
     if (List.length l)=(List.length l2) then
         (List.map
             (fun (x,y) -> (x,y,[],[]))
-            (List.fold_append List.nil (List.map
+            (List.fold_left List.append [] (List.map
                 (fun (x) -> unify_mapping env x q theta1 theta2)
-                (allMappings l l2)) []))
+                (allMappings l l2))))
     else
         []
 and unify_mapping env l q theta1 theta2 = match l with
   | [] -> [(theta1,theta2)]
   | ((t1,t2)::b) ->
-    uu_unify env t1 t2 q theta1 theta2 <| (fn (t1,t2) => unify_mapping env b q t1 t2)
+    (List.fold_left List.append [] (List.map
+        (fun (t1,t2) -> unify_mapping env b q t1 t2)
+        (uu_unify env t1 t2 q theta1 theta2)))
 and ac_unify_pairs env s l l2 q theta1 theta2 =
     let (vars1,terms1) = separateVariables q l in
     let (vars2,terms2) = separateVariables q l2 in
-        (List.fold_left List.append (List.map
+        (List.fold_left List.append [] (List.map
             (fun (theta1,theta2,rest1,rest2) -> if vars1=[] && vars2=[]
                             then [(theta1,theta2,rest1,rest2)]
                             else unify_vars env vars1 rest1 vars2 rest2 s q theta1 theta2)
-            (unify_terms env terms1 terms2 q theta1 theta2)) [])
+            (unify_terms env terms1 terms2 q theta1 theta2)))
 and unify_vars env vars1 rest1 vars2 rest2 s q theta1 theta2 =
     let v1=List.map (fun (x) -> VAR x) vars1 in
     let v2=List.map (fun (x) -> VAR x) vars2 in
@@ -735,22 +740,22 @@ and unify_vars env vars1 rest1 vars2 rest2 s q theta1 theta2 =
         if (List.length vars1)+(List.length rest1)=(List.length vars2)+(List.length rest2) then
             unify_single_vars1 env (v1@rest1) (v2@rest2) s q theta1 theta2
         else if (List.length vars1)+(List.length rest1)<(List.length vars2)+(List.length rest2) then
-            (List.fold_left List.append (List.map
+            (List.fold_left List.append [] (List.map
                 (fun (p,r) ->
-                    (List.fold_left List.append (List.map
+                    (List.fold_left List.append [] (List.map
                         (fun (theta1,theta2,rest,_) -> unify_single_vars1 env r rest s q theta1 theta2)
-                            (unify_multiple_var1 env p (rest2@v2) ((List.length rest2)+(List.length vars2)-(List.length rest1)-(List.length vars1)+1) s q theta1 theta2)) []))
-(all_picks v1)) [])@
+                            (unify_multiple_var1 env p (rest2@v2) ((List.length rest2)+(List.length vars2)-(List.length rest1)-(List.length vars1)+1) s q theta1 theta2))))
+(all_picks v1)))@
              (unify_single_vars1 env (v1@rest1) (v2@rest2) s q theta1 theta2)
         else
-            (List.fold_left List.append (List.map
+            (List.fold_left List.append [] (List.map
                 (fun (p,r) ->
-                    (List.fold_left List.append (List.map
+                    (List.fold_left List.append [] (List.map
                         (fun (theta1,theta2,_,rest) -> unify_single_vars2 env rest r s q theta1 theta2)
                              (unify_multiple_var2 env (rest1@v1) p ((List.length rest1)+(List.length vars1)-(List.length rest2)-(List.length vars2)+1) s q
                                       theta1 theta2)
-                    ) []))
-                (all_picks v2)) [])@
+                    )))
+                (all_picks v2)))@
              (unify_single_vars2 env (v1@rest1) (v2@rest2) s q theta1 theta2)
 and unify_multiple_var1 env v terms n s q theta1 theta2 =
     let (VAR vv) = v
@@ -770,17 +775,17 @@ and unify_multiple_var1 env v terms n s q theta1 theta2 =
 and unify_single_vars1 env l rest s q theta1 theta2 = match l with
   | [] -> [(theta1,theta2,rest,[])]
   | (a::b) ->
-       (List.fold_left List.append (List.map
+       (List.fold_left List.append [] (List.map
            (fun (t1,t2,rest,_) -> unify_single_vars1 env b rest s q t1 t2)
-           (unify_single_var1 env a rest s q theta1 theta2)) [])
+           (unify_single_var1 env a rest s q theta1 theta2)))
 and unify_single_var1 env v rest s q theta1 theta2 =
-    (List.fold_left List.append (List.map (fun (t) ->
+    (List.fold_left List.append [] (List.map (fun (t) ->
         (List.map
             (fun (t1,t2,r1,r2) -> (t1,t2,Mylist.delete_one t rest,[]))
             (List.filter
                 (fun (t1,t2,r1,r2) -> r1=[] && r2=[])
                 (u_unify env v t q theta1 theta2))
-            )) rest) [])
+            )) rest))
 and unify_multiple_var2 env terms v n s q theta1 theta2 =
     let (VAR vv) = v
         (*val _ = print "mv2\n"
@@ -799,48 +804,48 @@ and unify_multiple_var2 env terms v n s q theta1 theta2 =
 and unify_single_vars2 env rest l s q theta1 theta2 = match l with
   | [] -> [(theta1,theta2,[],rest)]
   | (a::b) ->
-        (List.fold_left List.append (List.map
+        (List.fold_left List.append [] (List.map
             (fun (t1,t2,_,rest) -> unify_single_vars2 env rest b s q t1 t2)
-            (unify_single_var2 env rest a s q theta1 theta2)) [])
+            (unify_single_var2 env rest a s q theta1 theta2)))
 and unify_single_var2 env rest v s q theta1 theta2 =
-    (List.fold_left List.append (List.map
+    (List.fold_left List.append [] (List.map
         (fun (t) ->
             (List.map
                 (fun (t1,t2,r1,r2) -> (t1,t2,[],Mylist.delete_one t rest))
                 (List.filter
                     (fun (t1,t2,r1,r2) -> r1=[] && r2=[])
-                    (u_unify env t v q theta1 theta2)))) rest) [])
+                    (u_unify env t v q theta1 theta2)))) rest))
 and unify_terms env l l2 q theta1 theta2 = match (l,l2) with
   | ([],_) -> [(theta1,theta2,l2,[])]
   | (l1,_) -> [(theta1,theta2,[],l1)]
   | ((a::b),l2) ->
-    (List.fold_left List.append (List.map
+    (List.fold_left List.append [] (List.map
         (fun (theta1,theta2,rest) -> unify_terms env b rest q theta1 theta2)
-        (unify_term env a l2 q theta1 theta2)) [])
+        (unify_term env a l2 q theta1 theta2)))
 and unify_term env term l q theta1 theta2 = match l with
   | [] -> []
   | (a::b) ->
-    (List.fold_left List.append (List.map
-        (fun (theta1,theta2) -> [(theta1,theta2,b)])
-        (uu_unify env term a q theta1 theta2)) []) @
-    (List.fold_left List.append (List.map
-        (fun (theta1,theta2,rest) -> [(theta1,theta2,a::rest)])) [])
+    (List.map
+        (fun (theta1,theta2) -> (theta1,theta2,b))
+        (uu_unify env term a q theta1 theta2)) @
+    (List.map
+        (fun (theta1,theta2,rest) -> (theta1,theta2,a::rest)))
         (unify_term env term b q theta1 theta2)
 and u_unify_pairs env l1 l2 q theta1 theta2 = match (l1,l2) with
   | ([],[]) -> [(theta1,theta2)]
   | ((a::b),[]) -> []
   | ([],(a::b)) -> []
   | ((a::b),(c::d)) ->
-       (List.fold_left List.append (List.map
+       (List.fold_left List.append [] (List.map
            (fun (t1,t2) -> u_unify_pairs env b d q t1 t2)
-           (uu_unify env a c q theta1 theta2)) []) ;;
+           (uu_unify env a c q theta1 theta2))) ;;
 
-let unify env p e = match (p,e) with
+let rec unify env p e = match (p,e) with
   | ((REF p),(REF e)) ->
-   (try (get_unify p e) with NoEntry ->
+   (try (Cache.get_unify p e) with Cache.NoEntry ->
     let r = unify env (ExpIntern.decode_exp (REF p)) (ExpIntern.decode_exp (REF e))
     in
-        add_unify p e r ;
+        Cache.add_unify p e r ;
         r
     )
   | (p,e) ->
@@ -855,19 +860,19 @@ let unify env p e = match (p,e) with
 
 let rec all_smaller env l s = match l with
   | [] -> true
-  | (a::b) -> (hasSmallerPrecedence env a s) &&
+  | (a::b) -> (Env.hasSmallerPrecedence env a s) &&
     (all_smaller env b s)
   ;;
 
 let rec all_smaller_list env l l2 = match l2 with
   | [] -> false
-  | (l,(a::b)) -> (all_smaller env l a) || (all_smaller_list env l b)
+  | (a::b) -> (all_smaller env l a) || (all_smaller_list env l b)
   ;;
 
 let rec smaller_list env f l = match l with
   | [] -> true
   | (a::b) ->
-    (hasSmallerPrecedence env f a) && (smaller_list env f b)
+    (Env.hasSmallerPrecedence env f a) && (smaller_list env f b)
   ;;
 
 let rec member_eq env x l = match l with
@@ -877,8 +882,8 @@ let rec member_eq env x l = match l with
 let rec has_forbidden env t =
     hf env t []
 and hf env t bound =
-    (intersect (getFreeVars t) bound)=[] &&
-    member_eq env t (getForbids env) || hfs env t bound
+    (Mylist.intersect (Context.getFreeVars t) bound)=[] &&
+    member_eq env t (Env.getForbids env) || hfs env t bound
 and hfs env e bound = match e with
   | (APPL (f,l)) ->
     let rec h l = match l with
@@ -912,7 +917,7 @@ let rec remove_ed env a l = match l with
 let rec remove_equal_dups env l = match l with
   | [] -> []
   | (a::b) ->
-    ((Trace.trace "rewriteRule" (fun (xx) -> "equal_dups " ^ (Int.toString (List.length (a::b))))) ;
+    ((Trace.trace "rewriteRule" (fun (xx) -> "equal_dups " ^ (string_of_int (List.length (a::b))))) ;
     a::(remove_equal_dups env (remove_ed env a b)))
   ;;
 
@@ -923,11 +928,11 @@ let rec swallow_symbols env s exps t =
                           (fun (a,b) -> List.map (Subst.apply a) (Subst.dom a))
                           (List.filter
                               (fun (a,b) -> b=[])
-                              (List.fold_left List.append (List.map
-                                  (fun (x) -> thematch env x t) exps) [])) in
+                              (List.fold_left List.append [] (List.map
+                                  (fun (x) -> thematch env x t) exps))) in
         (*val _ = Trace.trace "match" (fn (x) => "Matches:")
     let _ = Trace.trace_list "match" (fn (x) => (map prExp (foldr append [] matches)))*)
-        if matches=[] then [t] else List.fold_right append [] (List.map (swallow_symbols env s exps) (hd matches))
+        if matches=[] then [t] else List.fold_right List.append (List.map (swallow_symbols env s exps) (List.hd matches)) []
     ;;
 
 let rec pair_map env s ex  l = match (ex,l) with
@@ -943,23 +948,23 @@ let rec extend_list l n = match (l,n) with
   ;;
 
 let map_list env s l f =
-    let ex = getExpanders env s
-        ex2 = if f>0 then filterList env s (extend_list ex f) else ex
+    let ex = Env.getExpanders env s in
+    let ex2 = if f>0 then Env.filterList env s (extend_list ex f) else ex
     in
         pair_map env s ex2 l
     ;;
 
 let rec equal_smaller env x y =
-    if member_eq env x (getForbids env) then
+    if member_eq env x (Env.getForbids env) then
         false
-    else if member_eq env y (getForbids env) then
+    else if member_eq env y (Env.getForbids env) then
         true
     else es env x y
 and es env p e = match (p,e) with
-  | ((VAR x),_) -> List.mem x (getFreeVars e)
+  | ((VAR x),_) -> List.mem x (Context.getFreeVars e)
   | ((MARKED_VAR x),_) ->
-    if (getFreeVars e)=[] then
-        member x (getMarkedVars e)
+    if (Context.getFreeVars e)=[] then
+        List.mem x (Context.getMarkedVars e)
     else
         true
   | ((NUM n),(APPL (s,l))) -> true
@@ -972,12 +977,12 @@ and es env p e = match (p,e) with
   | ((CHAR n),(VAR v)) -> true
   | ((STRING s),(VAR v)) -> true
   | ((APPL (s1,ll1)),(APPL (s2,ll2))) ->
-    let _ = Trace.trace "match" (fn (x) => "comparing " ^ (prExp (APPL (s1,ll1))) ^ " " ^ (prExp (APPL (s2,ll2)))) in
-    let l1=map_list env s1 (filterList env s1 ll1) (List.length ll1) in
-    let l2=map_list env s2 (filterList env s2 ll2) (List.length ll2) in
-    let res=if (hasEqualPrecedence env s1 s2) then
+    let _ = Trace.trace "match" (fun (x) -> "comparing " ^ (prExp (APPL (s1,ll1))) ^ " " ^ (prExp (APPL (s2,ll2)))) in
+    let l1=map_list env s1 (Env.filterList env s1 ll1) (List.length ll1) in
+    let l2=map_list env s2 (Env.filterList env s2 ll2) (List.length ll2) in
+    let res=if (Env.hasEqualPrecedence env s1 s2) then
                     not(List.mem false (List.map (fun (x) -> equal_smaller_than_list env x l2) l1))
-                else if (hasSmallerPrecedence env s1 s2) then
+                else if (Env.hasSmallerPrecedence env s1 s2) then
                     all_smaller env l1 (APPL (s2,l2))
                 else
                     equal_smaller_than_list env (APPL (s1,l1)) l2
@@ -985,9 +990,9 @@ and es env p e = match (p,e) with
         if res || (l1=ll1 && l2=ll2) then
             res
         else
-            let res2=if (hasEqualPrecedence env s1 s2) then
+            let res2=if (Env.hasEqualPrecedence env s1 s2) then
                          not(List.mem false (List.map (fun (x) -> equal_smaller_than_list env x l1) l2))
-                     else if (hasSmallerPrecedence env s2 s1) then
+                     else if (Env.hasSmallerPrecedence env s2 s1) then
                          all_smaller env l2 (APPL (s1,l1))
                      else
                          equal_smaller_than_list env (APPL (s2,l2)) l1
@@ -996,9 +1001,9 @@ and es env p e = match (p,e) with
                 else
                     let l1=map_list env s1 ll1 0 in
                     let l2=map_list env s2 ll2 0 in
-                        if (hasEqualPrecedence env s1 s2) then
+                        if (Env.hasEqualPrecedence env s1 s2) then
                             not(List.mem false (List.map (fun (x) -> equal_smaller_than_list env x l2) l1))
-                        else if (hasSmallerPrecedence env s1 s2) then
+                        else if (Env.hasSmallerPrecedence env s1 s2) then
                             all_smaller env l1 (APPL (s2,l2))
                         else
                             equal_smaller_than_list env (APPL (s1,l1)) l2
