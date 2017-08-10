@@ -155,7 +155,7 @@ let extended_subst sub r vars =
     if vars=[] then
         Subst.subst sub r
     else
-        let residue = Mylist.difference (Context.getFreeVars r) (Subst.dom sub) in
+        (let residue = Mylist.difference (Context.getFreeVars r) (Subst.dom sub) in
         let _ = Trace.trace "rewriteRule" (fun (xx) -> ("enter subst: " ^ (prExp r))) in
         let sub2 = List.fold_right
                             (fun v -> (fun s ->
@@ -168,7 +168,7 @@ let extended_subst sub r vars =
         let res = Subst.subst sub2 (Context.unmarkVars r) in
         let _ = Trace.trace "rewriteRule" (fun (xx) -> ("subst: " ^ (prExp res))) in
         let _ = (Trace.indent () ; Trace.undent ()) in
-            res
+            res)
         ;;
 
 let rec delete_subs a l x vars env = match l with
