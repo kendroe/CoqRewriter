@@ -305,7 +305,8 @@ let rec collect_symbol sym l = match l with
 let newDisc = [] ;;
 
 let add ac d (APPL (v,[l;r;c])) =
-    let res = addTrace d (mkTrace ac l) (ExpIntern.intern_exp ac (APPL (v,[l;r;c]))) ;
+    let t = ExpIntern.intern_exp ac (APPL (v,[l;r;c])) in
+    let res = addTrace d (mkTrace ac l) (ExpIntern.intern_exp ac (APPL (v,[l;r;c])))
         (*val _ = trace "Disc" (fn (x) => ("Adding: " ^ (prExp (APPL (v,[l,r,c])))))
         val _ = trace "Disc" (fn (x) => ("Trace: " ^ (maketlstring (mkTrace ac (APPL (v,[l,r,c]))))))
         val _ = trace "Disc" (fn (x) => ("Old disc: " ^ (makedcstring d)))

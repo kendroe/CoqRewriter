@@ -569,7 +569,7 @@ let addp gac d e = match e with
   ;;
 
 let addProperty env e = match e with
-  | (APPL (f,[])) -> env
+  | (APPL (f,[])) -> (print_string "Here0" ; env)
   | (APPL (1,ll)) ->
     if List.mem (Property (APPL (Intern.intern_oriented_rule,ll)))
               (envItemGet (getEnvItemList env) (rule_exp_sym (APPL (intern_oriented_rule,ll)))) then
@@ -593,9 +593,9 @@ let addProperty env e = match e with
         let gac = (isAorC env) in
         let fl = flatten env (APPL (intern_unoriented_rule,ll))
         in
-            (setPropDisc
+            setPropDisc
                 (setEnvItemList env (addItem (getEnvItemList env) (Property fl)))
-                (Disc.add gac (getPropDisc env) fl))
+                (Disc.add gac (getPropDisc env) fl)
   | x -> (print_string ("bad prop " ^ (prExp x) ^ "\n") ; env) ;;
 
 let rec member_i env a l = match l with
@@ -1580,8 +1580,14 @@ let l2 =
      parseRule "y==z { not(x==0#1) } = rtimes(x,y)==rtimes(x,z)"
     ] ;;
 
-let emptyEn1 = (List.fold_right (fun p -> (fun env -> addProperty env p)) l2
-		(List.fold_right (fun i -> (fun t -> addItem t i)) l1
+let x = List.fold_right (fun p -> (fun env -> addProperty env p)) l2 ;;
+let y = List.fold_right (fun i -> (fun t -> addItem t i)) l1 ;;
+let z = Disc.newDisc ;;
+let p = Pp.emptyPpenv ;;
+let ns = Disc.newSmall ;;
+
+let emptyEn1 = (x
+		(y
                  (Array.make 0 []),
                  Disc.newDisc,
                  Disc.newDisc,

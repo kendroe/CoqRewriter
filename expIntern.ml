@@ -111,10 +111,10 @@ open Exp;;
 let intern_count = ref 1 ;;
 let array_size = ref 100 ;;
 
-let decode_array = ref (Array.make 100 (ref NOEXP)) ;;
-let rec_decode_array = ref (Array.make 100 (ref NOEXP)) ;;
-let parent_array : (int list) IntListMap.t ref array ref = ref (Array.make 100 (ref (IntListMap.empty))) ;;
-let special_construct_array = ref (Array.make 100 (ref (false : bool))) ;;
+let decode_array = ref (Array.init 100 (fun x -> (ref NOEXP))) ;;
+let rec_decode_array = ref (Array.init 100 (fun x -> (ref NOEXP))) ;;
+let parent_array : (int list) IntListMap.t ref array ref = ref (Array.init 100 (fun x -> (ref (IntListMap.empty)))) ;;
+let special_construct_array = ref (Array.init 100 (fun x -> (ref (false : bool)))) ;;
 
 let nil_ac_symbol_encode : int SingleMap.t ref = ref (SingleMap.empty) ;;
 let nil_symbol_encode : int SingleMap.t ref = ref (SingleMap.empty) ;;
@@ -195,7 +195,7 @@ let ac_equal f s = match f s with
 let addIntern exp sc =
     let r = !intern_count in
     let old_array_size = !array_size in
-       (if (!intern_count)=(!array_size) then
+       if (!intern_count)=(!array_size) then
            (array_size := (((!array_size) * 4) / 3) ;
             decode_array := Array.init (!array_size)
                             (fun (x) -> if x < old_array_size then
@@ -218,7 +218,7 @@ let addIntern exp sc =
                                        else
                                            ref false) ; ())
         else
-            ()) ;
+            () ;
         intern_count := (!intern_count) + 1 ;
         (Array.get (!decode_array) r) := exp ;
         (Array.get (!rec_decode_array) r) := int_decode_exp exp ;
