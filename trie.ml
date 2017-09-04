@@ -63,7 +63,7 @@ let rec trieA t l vl = match t,l with
   | ((Result ([],v)),[]) -> Result ([],vl)
   | ((Result (f::r,v)),[]) ->
     ResultMapping (vl,Array.init 96 (fun (x) -> if x=ord2 f then Result (r,v) else Default))
-  | ((Result (nil,v)),(f::r)) ->
+  | ((Result ([],v)),(f::r)) ->
     ResultMapping (v,Array.init 96 (fun (x) -> if x=ord2 f then Result (r,vl) else Default))
   | ((Result (f1::r1,v)),(f2::r2)) ->
     if f1=f2 then
@@ -79,11 +79,12 @@ let rec trieA t l vl = match t,l with
 let explode str =
   let rec exp a b =
     if a < 0 then b
-    else exp (a - 1) (str.[a] :: b)
-  in
-  exp (String.length str - 1) [];;
+    else exp (a - 1) ((String.get str a) :: b) in
+  let x = exp (String.length str - 1) [] in
+  (*let l = print_string ("Exploded " ^ str ^ " to " ^ (string_of_int (List.length x)) ^ "\n") in*)
+      x ;;
 
-let trieAdd (def,t) s v = (def,trieA t (explode s) v);;
+let trieAdd (def,t) s v = (def,trieA t (explode s) v) ;;
 
 let rec trieF t def l2 = match t with
   | Default -> def
@@ -95,7 +96,7 @@ let rec trieF t def l2 = match t with
                              | [] -> v
                              | (f::r) -> trieF (Array.get a (ord2 f)) def r;;
 
-let trieFind (def,a) s = trieF a def (explode s);;
+let trieFind (def,a) s = trieF a def (explode s) ;;
 
 
 

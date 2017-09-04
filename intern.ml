@@ -217,8 +217,9 @@ let encode_trie = ref (update ((!next)-1) (Trie.trieNew 0)) ;;
 let decode i = (Array.get (!decode_array) i) ;;
 
 let intern s =
-    let r = Trie.trieFind (!encode_trie) s
-    in
+    (*let _ = print_string ("Interning " ^ s) in*)
+    let r = Trie.trieFind (!encode_trie) s in
+    (*let _ = print_string (" found " ^ (string_of_int r) ^ "\n") in*)
         if r=0 then
             (((decode_array := (Array.init ((!next)+1)
                  (fun (x) -> if x < (!next) then (Array.get (!decode_array) x) else s)))) ;

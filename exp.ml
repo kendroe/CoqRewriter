@@ -299,9 +299,9 @@ let rec factor l =
             ||| (((((getToken (ID "")) & (getToken (SPECIAL "("))) &
                 exp_list) & (getToken (SPECIAL ")"))) ==>
                     (fun ((((ID a),b),c),d) -> APPL (Intern.intern a,c)))
-            (*||| (((((getToken (SYMBOL "")) & (getToken (SPECIAL "(")))) &
-                exp_list) & (getToken (SPECIAL ")")) ==>
-                    (fun ((((SYMBOL a),b),c),d) -> APPL (Intern.intern a;c)))*)
+            ||| (((((getToken (SYMBOL "")) & (getToken (SPECIAL "("))) &
+                exp_list) & (getToken (SPECIAL ")"))) ==>
+                    (fun ((((SYMBOL a),b),c),d) -> APPL (Intern.intern a,c)))
             ||| (getToken (NUMBER 0)    ==>
                 (fun (NUMBER n) -> (NUM n)))
             ||| (getToken (RAT (0,0))    ==>
@@ -314,8 +314,8 @@ let rec factor l =
                 (fun (ID x) -> if   (isConstructor x)
                               then (APPL (Intern.intern x,[]))
                               else VAR (Intern.intern x)))
-            (*||| (((getToken (SPECIAL "(") & exp) & getToken (SPECIAL ")"))
-                    ==> (fun ((a,b),c) -> b))*)
+            ||| (((getToken (SPECIAL "(") & exp) & getToken (SPECIAL ")"))
+                    ==> (fun ((a,b),c) -> b))
              ) l
 and varList l = (((((getToken (ID "")) & (getToken (SPECIAL ","))) & varList)
                     ==> (fun ((ID i,x),l) -> ((Intern.intern i,Type.notype)::l)))

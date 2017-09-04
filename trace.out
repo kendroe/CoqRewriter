@@ -1,0 +1,57 @@
+rewriting subterm: apply((fn x => nplus(x, 3)), 4)
+  rewriting expression: apply((fn x => nplus(x, 3)), 4)
+    rewriting expression: (fn x => <<258>>)
+      rewriting expression: nplus(<<4>>, <<257>>)
+        rewriting expression: x
+          builtin x
+          end builtin x
+          Rules:
+          rewriting expression: 3
+            builtin 3
+            end builtin 3
+            Rules:
+            builtin nplus(x, 3)
+            end builtin nplus(x, 3)
+            Rules:
+            rewriting expression: 4
+              builtin 4
+              end builtin 4
+              Rules:
+              builtin apply((fn x => <<258>>), 4)
+              end builtin nplus(4, 3)
+              rewriting expression: nplus(4, 3)
+                rewriting expression: 3
+                  builtin 3
+                  end builtin 3
+                  Rules:
+                  rewriting expression: 4
+                    builtin 4
+                    end builtin 4
+                    Rules:
+                    builtin nplus(3, 4)
+                    end builtin nplus(7)
+                    rewriting expression: nplus(7)
+                      rewriting expression: 7
+                        builtin 7
+                        end builtin 7
+                        Rules:
+                        builtin nplus(7)
+                        end builtin 7
+                        rewriting expression: 7
+                          builtin 7
+                          end builtin 7
+                          Rules:
+                          Result:
+                            <<263>>
+                            7
+                        end rewrite for: nplus(7)
+                        Result:
+                          <<263>>
+                          7
+                      end rewrite for: nplus(4, 3)
+                      Result:
+                        <<263>>
+                        7
+                    end rewrite for: apply((fn x => nplus(x, 3)), 4)
+                    Result:
+                  end rewrite subterm: apply((fn x => nplus(x, 3)), 4)

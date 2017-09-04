@@ -160,9 +160,11 @@ let rec rewriteTop (exp,env) kb =
     let _ = Trace.indent () in
     let exp = ExpIntern.decode_two_exp (ExpIntern.intern_exp (Env.isACorC env) exp) in
     let rew = Builtin.builtin rewrite2_front env exp in
+    let _ = print_string ("exp = " ^ (prExp exp) ^ "\n") in
+    let _ = print_string ("builtin results " ^ (string_of_int (List.length rew)) ^ "\n") in
     let _ = Trace.trace_list "rewrite" (fun (x) -> List.map prExp rew) in
     let _ = Trace.undent () in
-    let _ = Trace.trace "rewrite" (fun (x) -> "end builtin " ^ (prExp exp)) in
+    let _ = Trace.trace "rewrite" (fun (x) -> "end builtin " ^ (prExp (List.hd (rew@[exp])))) in
     let (res,env,kb) =
             (if rew = [] then
                 let x = (Rule_app.rewriteRule rewrite2_front env exp [])
@@ -177,7 +179,7 @@ let rec rewriteTop (exp,env) kb =
                             raise NoRewrite)
                     else (List.hd x,env,kb)
             else 
-                (List.hd rew,env,kb))
+                (print_string ("result: " ^ (prExp (List.hd rew)) ^ "\n");(List.hd rew,env,kb)))
     in
         (Env.flatten env res,env,kb))
 and rewriteTopCont (f,env) kb =
@@ -188,8 +190,8 @@ and rewriteTopCont (f,env) kb =
             rewrite_front (x,env)
         else
             rewrite_nokb_front (x,env)
-        with NoRewrite -> (f,env))
-and int_rewrite e kb = match e with
+        with NoRewrite -> (x,env))
+and int_rewrite e kb = (match e with | (ex,_) -> print_string ("Rewriting: " ^ (prExp ex) ^ "\n"));(match e with
   | ((APPL (18,[c;e1;e2])),env) ->
     (let (x,env) = rewrite_front (ExpIntern.decode_two_exp c,env) in
     let res = if x=intern_exp_true then
@@ -268,8 +270,8 @@ and int_rewrite e kb = match e with
     let (r_e,env) = rewrite_front (e,env) in
     let r_c = List.map (fun (p,e) -> (p,let (e,_) = rewrite_front (e,env) in e)) c in
         rewriteTopCont (CASE (r_e,t,r_c),env) kb
-  | x -> rewriteTopCont x kb
-and rewrite_sub env x n = rewrite_front (x,env)
+  | x -> rewriteTopCont x kb)
+and rewrite_sub env x n = try rewrite_front (x,env) with NoRewrite -> (x,env)
 and rewrite_nokb_sub env x n = rewrite_nokb_front (x,env)
 and rewrite2_front env x =
     (let _ = Trace.trace "rewrite" (fun (xx) -> "rewriting subterm: " ^ (prExp x)) in
