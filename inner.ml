@@ -160,8 +160,8 @@ let rec rewriteTop (exp,env) kb =
     let _ = Trace.indent () in
     let exp = ExpIntern.decode_two_exp (ExpIntern.intern_exp (Env.isACorC env) exp) in
     let rew = Builtin.builtin rewrite2_front env exp in
-    let _ = print_string ("exp = " ^ (prExp exp) ^ "\n") in
-    let _ = print_string ("builtin results " ^ (string_of_int (List.length rew)) ^ "\n") in
+    (*let _ = print_string ("exp = " ^ (prExp exp) ^ "\n") in
+    let _ = print_string ("builtin results " ^ (string_of_int (List.length rew)) ^ "\n") in*)
     let _ = Trace.trace_list "rewrite" (fun (x) -> List.map prExp rew) in
     let _ = Trace.undent () in
     let _ = Trace.trace "rewrite" (fun (x) -> "end builtin " ^ (prExp (List.hd (rew@[exp])))) in
@@ -179,19 +179,20 @@ let rec rewriteTop (exp,env) kb =
                             raise NoRewrite)
                     else (List.hd x,env,kb)
             else 
-                (print_string ("result: " ^ (prExp (List.hd rew)) ^ "\n");(List.hd rew,env,kb)))
+                (List.hd rew,env,kb))
     in
         (Env.flatten env res,env,kb))
 and rewriteTopCont (f,env) kb =
-   (let (x,env,kb) = rewriteTop (f,env) kb
+   (try let (x,env,kb) = rewriteTop (f,env) kb
         (*val _ = print ("[Pre: " ^ (prExp f) ^ "]\n[Post: " ^ (prExp x) ^ "]\n")*)
     in
         try if kb then
             rewrite_front (x,env)
         else
             rewrite_nokb_front (x,env)
-        with NoRewrite -> (x,env))
-and int_rewrite e kb = (match e with | (ex,_) -> print_string ("Rewriting: " ^ (prExp ex) ^ "\n"));(match e with
+        with NoRewrite -> (x,env)
+    with NoRewrite -> (f,env))
+and int_rewrite e kb = (match e with
   | ((APPL (18,[c;e1;e2])),env) ->
     (let (x,env) = rewrite_front (ExpIntern.decode_two_exp c,env) in
     let res = if x=intern_exp_true then
@@ -259,8 +260,8 @@ and int_rewrite e kb = (match e with | (ex,_) -> print_string ("Rewriting: " ^ (
     let (res,env) = rewriteTopCont ((APPL (s,l)),envs) kb in
         if l=l2 then (Env.flatten_top env res,env) else (res,env)
   | ((QUANT (v,t,e,p)),env) ->
-    let (r_e,env) = rewrite_front (e,env) in
-    let (r_p,env) = rewrite_front (p,env) in
+    let (r_e,env) = try rewrite_front (e,env) with NoRewrite -> (e,env) in
+    let (r_p,env) = try rewrite_front (p,env) with NoRewrite -> (p,env) in
         rewriteTopCont ((QUANT (v,t,r_e,r_p)),env) kb
   | (LET (v,t,e,p),env) ->
     let (r_e,env) = rewrite_front (e,env) in
