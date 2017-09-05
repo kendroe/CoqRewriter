@@ -2254,44 +2254,32 @@ rewriting subterm: nless(ntimes(x, 9), 6)
         6
     end rewrite for: 6
     builtin nless(<<314>>, <<275>>)
-    end builtin nless(ntimes(<<4>>), 1)
-    rewriting expression: nless(ntimes(<<4>>), 1)
-      rewriting expression: ntimes(<<4>>)
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
-        builtin ntimes(<<4>>)
-        end builtin x
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
+    end builtin nless(ntimes(3, <<4>>), 2)
+    rewriting expression: nless(ntimes(3, <<4>>), 2)
+      rewriting expression: ntimes(<<4>>, <<257>>)
         Result:
-          <<4>>
-          x
-      end rewrite for: ntimes(<<4>>)
-      rewriting expression: 1
+          <<302>>
+          ntimes(x, 3)
+      end rewrite for: ntimes(<<4>>, <<257>>)
+      rewriting expression: 2
         Result:
-          <<34>>
-          1
-      end rewrite for: 1
-      builtin nless(<<4>>, <<34>>)
-      end builtin nless(x, 1)
+          <<269>>
+          2
+      end rewrite for: 2
+      builtin nless(<<302>>, <<269>>)
+      end builtin nless(ntimes(<<4>>, <<257>>), 2)
       Rules:
-      match nless(x, x) nless(x, 1)
-        equal x 1
+      match nless(x, x) nless(ntimes(x, 3), 2)
+        equal ntimes(x, 3) 2
         equal: No
-      end match nless(x, x) nless(x, 1)
+      end match nless(x, x) nless(ntimes(x, 3), 2)
       Result:
-        <<376>>
-        nless(x, 1)
-    end rewrite for: nless(ntimes(<<4>>), 1)
+        <<375>>
+        nless(ntimes(x, 3), 2)
+    end rewrite for: nless(ntimes(3, <<4>>), 2)
     Result:
-      <<376>>
-      nless(x, 1)
+      <<375>>
+      nless(ntimes(x, 3), 2)
   end rewrite for: nless(ntimes(x, 9), 6)
   Result:
 end rewrite subterm: nless(ntimes(x, 9), 6)
@@ -2308,44 +2296,32 @@ rewriting subterm: nless(ntimes(x, 6), 9)
         9
     end rewrite for: 9
     builtin nless(<<318>>, <<272>>)
-    end builtin nless(ntimes(<<4>>), 2)
-    rewriting expression: nless(ntimes(<<4>>), 2)
-      rewriting expression: ntimes(<<4>>)
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
-        builtin ntimes(<<4>>)
-        end builtin x
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
+    end builtin nless(ntimes(2, <<4>>), 3)
+    rewriting expression: nless(ntimes(2, <<4>>), 3)
+      rewriting expression: ntimes(<<4>>, <<269>>)
         Result:
-          <<4>>
-          x
-      end rewrite for: ntimes(<<4>>)
-      rewriting expression: 2
+          <<270>>
+          ntimes(x, 2)
+      end rewrite for: ntimes(<<4>>, <<269>>)
+      rewriting expression: 3
         Result:
-          <<269>>
-          2
-      end rewrite for: 2
-      builtin nless(<<4>>, <<269>>)
-      end builtin nless(x, 2)
+          <<257>>
+          3
+      end rewrite for: 3
+      builtin nless(<<270>>, <<257>>)
+      end builtin nless(ntimes(<<4>>, <<269>>), 3)
       Rules:
-      match nless(x, x) nless(x, 2)
-        equal x 2
+      match nless(x, x) nless(ntimes(x, 2), 3)
+        equal ntimes(x, 2) 3
         equal: No
-      end match nless(x, x) nless(x, 2)
+      end match nless(x, x) nless(ntimes(x, 2), 3)
       Result:
-        <<379>>
-        nless(x, 2)
-    end rewrite for: nless(ntimes(<<4>>), 2)
+        <<377>>
+        nless(ntimes(x, 2), 3)
+    end rewrite for: nless(ntimes(2, <<4>>), 3)
     Result:
-      <<379>>
-      nless(x, 2)
+      <<377>>
+      nless(ntimes(x, 2), 3)
   end rewrite for: nless(ntimes(x, 6), 9)
   Result:
 end rewrite subterm: nless(ntimes(x, 6), 9)
@@ -2362,44 +2338,15 @@ rewriting subterm: nless(ntimes(x, 5), 9)
         9
     end rewrite for: 9
     builtin nless(<<333>>, <<272>>)
-    end builtin nless(ntimes(<<4>>), 2)
-    rewriting expression: nless(ntimes(<<4>>), 2)
-      rewriting expression: ntimes(<<4>>)
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
-        builtin ntimes(<<4>>)
-        end builtin x
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
-        Result:
-          <<4>>
-          x
-      end rewrite for: ntimes(<<4>>)
-      rewriting expression: 2
-        Result:
-          <<269>>
-          2
-      end rewrite for: 2
-      builtin nless(<<4>>, <<269>>)
-      end builtin nless(x, 2)
-      Rules:
-      match nless(x, x) nless(x, 2)
-        equal x 2
-        equal: No
-      end match nless(x, x) nless(x, 2)
-      Result:
-        <<379>>
-        nless(x, 2)
-    end rewrite for: nless(ntimes(<<4>>), 2)
+    end builtin nless(ntimes(<<4>>, <<296>>), 9)
+    Rules:
+    match nless(x, x) nless(ntimes(x, 5), 9)
+      equal ntimes(x, 5) 9
+      equal: No
+    end match nless(x, x) nless(ntimes(x, 5), 9)
     Result:
-      <<379>>
-      nless(x, 2)
+      <<378>>
+      nless(ntimes(x, 5), 9)
   end rewrite for: nless(ntimes(x, 5), 9)
   Result:
 end rewrite subterm: nless(ntimes(x, 5), 9)
@@ -2428,16 +2375,16 @@ rewriting subterm: nless(ntimes(x, 3), nminus(0, 9))
         end builtin -9
         Rules:
         Result:
-          <<383>>
+          <<381>>
           -9
       end rewrite for: -9
       Result:
-        <<383>>
+        <<381>>
         -9
     end rewrite for: nminus(<<103>>, <<272>>)
-    builtin nless(<<302>>, <<383>>)
-    end builtin nless(ntimes(<<4>>), -2)
-    rewriting expression: nless(ntimes(<<4>>), -2)
+    builtin nless(<<302>>, <<381>>)
+    end builtin nless(ntimes(<<4>>), -3)
+    rewriting expression: nless(ntimes(<<4>>), -3)
       rewriting expression: ntimes(<<4>>)
         rewriting expression: x
           Result:
@@ -2455,28 +2402,28 @@ rewriting subterm: nless(ntimes(x, 3), nminus(0, 9))
           <<4>>
           x
       end rewrite for: ntimes(<<4>>)
-      rewriting expression: -2
-        builtin -2
-        end builtin -2
+      rewriting expression: -3
+        builtin -3
+        end builtin -3
         Rules:
         Result:
-          <<385>>
-          -2
-      end rewrite for: -2
-      builtin nless(<<4>>, <<385>>)
-      end builtin nless(x, -2)
+          <<383>>
+          -3
+      end rewrite for: -3
+      builtin nless(<<4>>, <<383>>)
+      end builtin nless(x, -3)
       Rules:
-      match nless(x, x) nless(x, -2)
-        equal x -2
+      match nless(x, x) nless(x, -3)
+        equal x -3
         equal: No
-      end match nless(x, x) nless(x, -2)
+      end match nless(x, x) nless(x, -3)
       Result:
-        <<387>>
-        nless(x, -2)
-    end rewrite for: nless(ntimes(<<4>>), -2)
+        <<385>>
+        nless(x, -3)
+    end rewrite for: nless(ntimes(<<4>>), -3)
     Result:
-      <<387>>
-      nless(x, -2)
+      <<385>>
+      nless(x, -3)
   end rewrite for: nless(ntimes(x, 3), nminus(0, 9))
   Result:
 end rewrite subterm: nless(ntimes(x, 3), nminus(0, 9))
@@ -2523,11 +2470,11 @@ rewriting subterm: nless(6, nplus(x, 9))
       match nless(0, nplus(x, 1)) nless(0, nplus(x, 3))
       end match nless(0, nplus(x, 1)) nless(0, nplus(x, 3))
       Result:
-        <<389>>
+        <<387>>
         nless(0, nplus(x, 3))
     end rewrite for: nless(0, nplus(3, <<4>>))
     Result:
-      <<389>>
+      <<387>>
       nless(0, nplus(x, 3))
   end rewrite for: nless(6, nplus(x, 9))
   Result:
@@ -2577,11 +2524,11 @@ rewriting subterm: nless(9, nplus(x, 5))
         equal: No
       end match nless(x, x) nless(4, x)
       Result:
-        <<392>>
+        <<390>>
         nless(4, x)
     end rewrite for: nless(4, nplus(<<4>>))
     Result:
-      <<392>>
+      <<390>>
       nless(4, x)
   end rewrite for: nless(9, nplus(x, 5))
   Result:
@@ -2599,44 +2546,38 @@ rewriting subterm: nless(6, ntimes(x, 9))
         ntimes(x, 9)
     end rewrite for: ntimes(<<4>>, <<272>>)
     builtin nless(<<275>>, <<314>>)
-    end builtin nless(1, ntimes(<<4>>))
-    rewriting expression: nless(1, ntimes(<<4>>))
-      rewriting expression: 1
+    end builtin nless(2, ntimes(3, <<4>>))
+    rewriting expression: nless(2, ntimes(3, <<4>>))
+      rewriting expression: 2
         Result:
-          <<34>>
-          1
-      end rewrite for: 1
-      rewriting expression: ntimes(<<4>>)
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
-        builtin ntimes(<<4>>)
-        end builtin x
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
+          <<269>>
+          2
+      end rewrite for: 2
+      rewriting expression: ntimes(<<4>>, <<257>>)
         Result:
-          <<4>>
-          x
-      end rewrite for: ntimes(<<4>>)
-      builtin nless(<<34>>, <<4>>)
-      end builtin nless(1, x)
+          <<302>>
+          ntimes(x, 3)
+      end rewrite for: ntimes(<<4>>, <<257>>)
+      builtin nless(<<269>>, <<302>>)
+      end builtin nless(2, ntimes(<<4>>, <<257>>))
       Rules:
-      match nless(x, x) nless(1, x)
-        equal 1 x
+      match nless(x, x) nless(2, ntimes(x, 3))
+        equal 2 ntimes(x, 3)
         equal: No
-      end match nless(x, x) nless(1, x)
+        equal 2 3
+        equal: No
+        equal 2 x
+        equal: No
+        equal 2 ntimes()
+        equal: No
+      end match nless(x, x) nless(2, ntimes(x, 3))
       Result:
-        <<395>>
-        nless(1, x)
-    end rewrite for: nless(1, ntimes(<<4>>))
+        <<392>>
+        nless(2, ntimes(x, 3))
+    end rewrite for: nless(2, ntimes(3, <<4>>))
     Result:
-      <<395>>
-      nless(1, x)
+      <<392>>
+      nless(2, ntimes(x, 3))
   end rewrite for: nless(6, ntimes(x, 9))
   Result:
 end rewrite subterm: nless(6, ntimes(x, 9))
@@ -2653,44 +2594,38 @@ rewriting subterm: nless(9, ntimes(x, 6))
         ntimes(x, 6)
     end rewrite for: ntimes(<<4>>, <<275>>)
     builtin nless(<<272>>, <<318>>)
-    end builtin nless(2, ntimes(<<4>>))
-    rewriting expression: nless(2, ntimes(<<4>>))
-      rewriting expression: 2
+    end builtin nless(3, ntimes(2, <<4>>))
+    rewriting expression: nless(3, ntimes(2, <<4>>))
+      rewriting expression: 3
         Result:
-          <<269>>
-          2
-      end rewrite for: 2
-      rewriting expression: ntimes(<<4>>)
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
-        builtin ntimes(<<4>>)
-        end builtin x
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
+          <<257>>
+          3
+      end rewrite for: 3
+      rewriting expression: ntimes(<<4>>, <<269>>)
         Result:
-          <<4>>
-          x
-      end rewrite for: ntimes(<<4>>)
-      builtin nless(<<269>>, <<4>>)
-      end builtin nless(2, x)
+          <<270>>
+          ntimes(x, 2)
+      end rewrite for: ntimes(<<4>>, <<269>>)
+      builtin nless(<<257>>, <<270>>)
+      end builtin nless(3, ntimes(<<4>>, <<269>>))
       Rules:
-      match nless(x, x) nless(2, x)
-        equal 2 x
+      match nless(x, x) nless(3, ntimes(x, 2))
+        equal 3 ntimes(x, 2)
         equal: No
-      end match nless(x, x) nless(2, x)
+        equal 3 2
+        equal: No
+        equal 3 x
+        equal: No
+        equal 3 ntimes()
+        equal: No
+      end match nless(x, x) nless(3, ntimes(x, 2))
       Result:
-        <<398>>
-        nless(2, x)
-    end rewrite for: nless(2, ntimes(<<4>>))
+        <<394>>
+        nless(3, ntimes(x, 2))
+    end rewrite for: nless(3, ntimes(2, <<4>>))
     Result:
-      <<398>>
-      nless(2, x)
+      <<394>>
+      nless(3, ntimes(x, 2))
   end rewrite for: nless(9, ntimes(x, 6))
   Result:
 end rewrite subterm: nless(9, ntimes(x, 6))
@@ -2707,44 +2642,21 @@ rewriting subterm: nless(9, ntimes(x, 5))
         ntimes(x, 5)
     end rewrite for: ntimes(<<4>>, <<296>>)
     builtin nless(<<272>>, <<333>>)
-    end builtin nless(2, ntimes(<<4>>))
-    rewriting expression: nless(2, ntimes(<<4>>))
-      rewriting expression: 2
-        Result:
-          <<269>>
-          2
-      end rewrite for: 2
-      rewriting expression: ntimes(<<4>>)
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
-        builtin ntimes(<<4>>)
-        end builtin x
-        rewriting expression: x
-          Result:
-            <<4>>
-            x
-        end rewrite for: x
-        Result:
-          <<4>>
-          x
-      end rewrite for: ntimes(<<4>>)
-      builtin nless(<<269>>, <<4>>)
-      end builtin nless(2, x)
-      Rules:
-      match nless(x, x) nless(2, x)
-        equal 2 x
-        equal: No
-      end match nless(x, x) nless(2, x)
-      Result:
-        <<398>>
-        nless(2, x)
-    end rewrite for: nless(2, ntimes(<<4>>))
+    end builtin nless(9, ntimes(<<4>>, <<296>>))
+    Rules:
+    match nless(x, x) nless(9, ntimes(x, 5))
+      equal 9 ntimes(x, 5)
+      equal: No
+      equal 9 5
+      equal: No
+      equal 9 x
+      equal: No
+      equal 9 ntimes()
+      equal: No
+    end match nless(x, x) nless(9, ntimes(x, 5))
     Result:
-      <<398>>
-      nless(2, x)
+      <<395>>
+      nless(9, ntimes(x, 5))
   end rewrite for: nless(9, ntimes(x, 5))
   Result:
 end rewrite subterm: nless(9, ntimes(x, 5))
@@ -2765,11 +2677,11 @@ rewriting subterm: nless(nminus(0, 9), ntimes(x, 3))
       end builtin -9
       rewriting expression: -9
         Result:
-          <<383>>
+          <<381>>
           -9
       end rewrite for: -9
       Result:
-        <<383>>
+        <<381>>
         -9
     end rewrite for: nminus(<<103>>, <<272>>)
     rewriting expression: ntimes(<<4>>, <<257>>)
@@ -2777,14 +2689,14 @@ rewriting subterm: nless(nminus(0, 9), ntimes(x, 3))
         <<302>>
         ntimes(x, 3)
     end rewrite for: ntimes(<<4>>, <<257>>)
-    builtin nless(<<383>>, <<302>>)
-    end builtin nless(-2, ntimes(<<4>>))
-    rewriting expression: nless(-2, ntimes(<<4>>))
-      rewriting expression: -2
+    builtin nless(<<381>>, <<302>>)
+    end builtin nless(-3, ntimes(<<4>>))
+    rewriting expression: nless(-3, ntimes(<<4>>))
+      rewriting expression: -3
         Result:
-          <<385>>
-          -2
-      end rewrite for: -2
+          <<383>>
+          -3
+      end rewrite for: -3
       rewriting expression: ntimes(<<4>>)
         rewriting expression: x
           Result:
@@ -2802,26 +2714,26 @@ rewriting subterm: nless(nminus(0, 9), ntimes(x, 3))
           <<4>>
           x
       end rewrite for: ntimes(<<4>>)
-      builtin nless(<<385>>, <<4>>)
-      end builtin nless(-2, x)
+      builtin nless(<<383>>, <<4>>)
+      end builtin nless(-3, x)
       Rules:
-      match nless(x, x) nless(-2, x)
-        equal -2 x
+      match nless(x, x) nless(-3, x)
+        equal -3 x
         equal: No
-      end match nless(x, x) nless(-2, x)
+      end match nless(x, x) nless(-3, x)
       Result:
-        <<403>>
-        nless(-2, x)
-    end rewrite for: nless(-2, ntimes(<<4>>))
+        <<399>>
+        nless(-3, x)
+    end rewrite for: nless(-3, ntimes(<<4>>))
     Result:
-      <<403>>
-      nless(-2, x)
+      <<399>>
+      nless(-3, x)
   end rewrite for: nless(nminus(0, 9), ntimes(x, 3))
   Result:
 end rewrite subterm: nless(nminus(0, 9), ntimes(x, 3))
 rewriting subterm: rless(rminus(0#1, 9#1), rtimes(x, 3#1))
   rewriting expression: rless(rminus(0#1, 9#1), rtimes(x, 3#1))
-    rewriting expression: rminus(<<8>>, <<404>>)
+    rewriting expression: rminus(<<8>>, <<400>>)
       rewriting expression: 0#1
         builtin 0#1
         end builtin 0#1
@@ -2835,24 +2747,24 @@ rewriting subterm: rless(rminus(0#1, 9#1), rtimes(x, 3#1))
         end builtin 9#1
         Rules:
         Result:
-          <<404>>
+          <<400>>
           9#1
       end rewrite for: 9#1
-      builtin rminus(<<8>>, <<404>>)
+      builtin rminus(<<8>>, <<400>>)
       end builtin -9#1
       rewriting expression: -9#1
         builtin -9#1
         end builtin -9#1
         Rules:
         Result:
-          <<409>>
+          <<405>>
           -9#1
       end rewrite for: -9#1
       Result:
-        <<409>>
+        <<405>>
         -9#1
-    end rewrite for: rminus(<<8>>, <<404>>)
-    rewriting expression: rtimes(<<4>>, <<406>>)
+    end rewrite for: rminus(<<8>>, <<400>>)
+    rewriting expression: rtimes(<<4>>, <<402>>)
       rewriting expression: x
         Result:
           <<4>>
@@ -2863,20 +2775,20 @@ rewriting subterm: rless(rminus(0#1, 9#1), rtimes(x, 3#1))
         end builtin 3#1
         Rules:
         Result:
-          <<406>>
+          <<402>>
           3#1
       end rewrite for: 3#1
-      builtin rtimes(<<4>>, <<406>>)
+      builtin rtimes(<<4>>, <<402>>)
       end builtin rtimes(x, 3#1)
       Rules:
       Result:
-        <<407>>
+        <<403>>
         rtimes(x, 3#1)
-    end rewrite for: rtimes(<<4>>, <<406>>)
-    builtin rless(<<409>>, <<407>>)
+    end rewrite for: rtimes(<<4>>, <<402>>)
+    builtin rless(<<405>>, <<403>>)
     end builtin rless(rtimes(-1#3, <<4>>), 1#1)
     rewriting expression: rless(rtimes(-1#3, <<4>>), 1#1)
-      rewriting expression: rtimes(<<4>>, <<411>>)
+      rewriting expression: rtimes(<<4>>, <<407>>)
         rewriting expression: x
           Result:
             <<4>>
@@ -2887,16 +2799,16 @@ rewriting subterm: rless(rminus(0#1, 9#1), rtimes(x, 3#1))
           end builtin -1#3
           Rules:
           Result:
-            <<411>>
+            <<407>>
             -1#3
         end rewrite for: -1#3
-        builtin rtimes(<<4>>, <<411>>)
+        builtin rtimes(<<4>>, <<407>>)
         end builtin rtimes(x, -1#3)
         Rules:
         Result:
-          <<412>>
+          <<408>>
           rtimes(x, -1#3)
-      end rewrite for: rtimes(<<4>>, <<411>>)
+      end rewrite for: rtimes(<<4>>, <<407>>)
       rewriting expression: 1#1
         builtin 1#1
         end builtin 1#1
@@ -2905,19 +2817,19 @@ rewriting subterm: rless(rminus(0#1, 9#1), rtimes(x, 3#1))
           <<31>>
           1#1
       end rewrite for: 1#1
-      builtin rless(<<412>>, <<31>>)
-      end builtin rless(rtimes(<<4>>, <<411>>), 1#1)
+      builtin rless(<<408>>, <<31>>)
+      end builtin rless(rtimes(<<4>>, <<407>>), 1#1)
       Rules:
       match rless(x, x) rless(rtimes(x, -1#3), 1#1)
         equal rtimes(x, -1#3) 1#1
         equal: No
       end match rless(x, x) rless(rtimes(x, -1#3), 1#1)
       Result:
-        <<413>>
+        <<409>>
         rless(rtimes(x, -1#3), 1#1)
     end rewrite for: rless(rtimes(-1#3, <<4>>), 1#1)
     Result:
-      <<413>>
+      <<409>>
       rless(rtimes(x, -1#3), 1#1)
   end rewrite for: rless(rminus(0#1, 9#1), rtimes(x, 3#1))
   Result:
@@ -2929,12 +2841,12 @@ rewriting subterm: 0#1 == rtimes(x, 3#1)
         <<8>>
         0#1
     end rewrite for: 0#1
-    rewriting expression: rtimes(<<4>>, <<406>>)
+    rewriting expression: rtimes(<<4>>, <<402>>)
       Result:
-        <<407>>
+        <<403>>
         rtimes(x, 3#1)
-    end rewrite for: rtimes(<<4>>, <<406>>)
-    builtin <<8>> == <<407>>
+    end rewrite for: rtimes(<<4>>, <<402>>)
+    builtin <<8>> == <<403>>
     end builtin 0#1 == ntimes(<<4>>)
     rewriting expression: 0#1 == ntimes(<<4>>)
       rewriting expression: 0#1
@@ -2981,7 +2893,7 @@ rewriting subterm: 0#1 == rplus(x, 3#1)
         <<8>>
         0#1
     end rewrite for: 0#1
-    rewriting expression: rplus(<<4>>, <<406>>)
+    rewriting expression: rplus(<<4>>, <<402>>)
       rewriting expression: x
         Result:
           <<4>>
@@ -2989,25 +2901,25 @@ rewriting subterm: 0#1 == rplus(x, 3#1)
       end rewrite for: x
       rewriting expression: 3#1
         Result:
-          <<406>>
+          <<402>>
           3#1
       end rewrite for: 3#1
-      builtin rplus(<<4>>, <<406>>)
+      builtin rplus(<<4>>, <<402>>)
       end builtin rplus(x, 3#1)
       Rules:
       Result:
-        <<416>>
+        <<412>>
         rplus(x, 3#1)
-    end rewrite for: rplus(<<4>>, <<406>>)
-    builtin <<8>> == <<416>>
-    end builtin 0#1 == rplus(<<4>>, <<406>>)
+    end rewrite for: rplus(<<4>>, <<402>>)
+    builtin <<8>> == <<412>>
+    end builtin 0#1 == rplus(<<4>>, <<402>>)
     Rules:
     match x == rplus(x, 1#1) 0#1 == rplus(x, 3#1)
     end match x == rplus(x, 1#1) 0#1 == rplus(x, 3#1)
     match rplus(y, x) == rplus(z, x) 0#1 == rplus(x, 3#1)
     end match rplus(y, x) == rplus(z, x) 0#1 == rplus(x, 3#1)
     Result:
-      <<417>>
+      <<413>>
       0#1 == rplus(x, 3#1)
   end rewrite for: 0#1 == rplus(x, 3#1)
   Result:
@@ -3032,7 +2944,7 @@ rewriting subterm: rplus(1#1, x) == rplus(y, 3#1)
         <<64>>
         rplus(x, 1#1)
     end rewrite for: rplus(<<4>>, <<31>>)
-    rewriting expression: rplus(<<1>>, <<406>>)
+    rewriting expression: rplus(<<1>>, <<402>>)
       rewriting expression: y
         Result:
           <<1>>
@@ -3040,17 +2952,17 @@ rewriting subterm: rplus(1#1, x) == rplus(y, 3#1)
       end rewrite for: y
       rewriting expression: 3#1
         Result:
-          <<406>>
+          <<402>>
           3#1
       end rewrite for: 3#1
-      builtin rplus(<<1>>, <<406>>)
+      builtin rplus(<<1>>, <<402>>)
       end builtin rplus(y, 3#1)
       Rules:
       Result:
-        <<418>>
+        <<414>>
         rplus(y, 3#1)
-    end rewrite for: rplus(<<1>>, <<406>>)
-    builtin <<64>> == <<418>>
+    end rewrite for: rplus(<<1>>, <<402>>)
+    builtin <<64>> == <<414>>
     end builtin nplus(<<4>>) == nplus(2#1, <<1>>)
     rewriting expression: nplus(<<4>>) == nplus(2#1, <<1>>)
       rewriting expression: nplus(<<4>>)
@@ -3070,7 +2982,7 @@ rewriting subterm: rplus(1#1, x) == rplus(y, 3#1)
           <<4>>
           x
       end rewrite for: nplus(<<4>>)
-      rewriting expression: nplus(<<1>>, <<420>>)
+      rewriting expression: nplus(<<1>>, <<416>>)
         rewriting expression: y
           Result:
             <<1>>
@@ -3081,47 +2993,47 @@ rewriting subterm: rplus(1#1, x) == rplus(y, 3#1)
           end builtin 2#1
           Rules:
           Result:
-            <<420>>
+            <<416>>
             2#1
         end rewrite for: 2#1
-        builtin nplus(<<1>>, <<420>>)
+        builtin nplus(<<1>>, <<416>>)
         end builtin nplus(y, 2#1)
         Rules:
         Result:
-          <<421>>
+          <<417>>
           nplus(y, 2#1)
-      end rewrite for: nplus(<<1>>, <<420>>)
-      builtin <<4>> == <<421>>
+      end rewrite for: nplus(<<1>>, <<416>>)
+      builtin <<4>> == <<417>>
         equal x <<1>>
         equal: No
-        equal x <<420>>
+        equal x <<416>>
         equal: No
-        equal x nplus(<<1>>, <<420>>)
+        equal x nplus(<<1>>, <<416>>)
         equal: No
-      end builtin x == nplus(<<1>>, <<420>>)
+      end builtin x == nplus(<<1>>, <<416>>)
       Rules:
       match x == nplus(x, 1) x == nplus(y, 2#1)
       end match x == nplus(x, 1) x == nplus(y, 2#1)
       match nplus(y, x) == nplus(z, x) x == nplus(y, 2#1)
       end match nplus(y, x) == nplus(z, x) x == nplus(y, 2#1)
       Result:
-        <<423>>
+        <<419>>
         x == nplus(y, 2#1)
     end rewrite for: nplus(<<4>>) == nplus(2#1, <<1>>)
     Result:
-      <<423>>
+      <<419>>
       x == nplus(y, 2#1)
   end rewrite for: rplus(1#1, x) == rplus(y, 3#1)
   Result:
 end rewrite subterm: rplus(1#1, x) == rplus(y, 3#1)
 rewriting subterm: rplus(1#3, x) == rplus(y, 3#1)
   rewriting expression: rplus(1#3, x) == rplus(y, 3#1)
-    rewriting expression: rplus(<<1>>, <<406>>)
+    rewriting expression: rplus(<<1>>, <<402>>)
       Result:
-        <<418>>
+        <<414>>
         rplus(y, 3#1)
-    end rewrite for: rplus(<<1>>, <<406>>)
-    rewriting expression: rplus(<<4>>, <<424>>)
+    end rewrite for: rplus(<<1>>, <<402>>)
+    rewriting expression: rplus(<<4>>, <<420>>)
       rewriting expression: x
         Result:
           <<4>>
@@ -3132,17 +3044,17 @@ rewriting subterm: rplus(1#3, x) == rplus(y, 3#1)
         end builtin 1#3
         Rules:
         Result:
-          <<424>>
+          <<420>>
           1#3
       end rewrite for: 1#3
-      builtin rplus(<<4>>, <<424>>)
+      builtin rplus(<<4>>, <<420>>)
       end builtin rplus(x, 1#3)
       Rules:
       Result:
-        <<425>>
+        <<421>>
         rplus(x, 1#3)
-    end rewrite for: rplus(<<4>>, <<424>>)
-    builtin <<418>> == <<425>>
+    end rewrite for: rplus(<<4>>, <<420>>)
+    builtin <<414>> == <<421>>
     end builtin nplus(8#3, <<1>>) == nplus(<<4>>)
     rewriting expression: nplus(8#3, <<1>>) == nplus(<<4>>)
       rewriting expression: nplus(<<4>>)
@@ -3162,7 +3074,7 @@ rewriting subterm: rplus(1#3, x) == rplus(y, 3#1)
           <<4>>
           x
       end rewrite for: nplus(<<4>>)
-      rewriting expression: nplus(<<1>>, <<427>>)
+      rewriting expression: nplus(<<1>>, <<423>>)
         rewriting expression: y
           Result:
             <<1>>
@@ -3173,47 +3085,47 @@ rewriting subterm: rplus(1#3, x) == rplus(y, 3#1)
           end builtin 8#3
           Rules:
           Result:
-            <<427>>
+            <<423>>
             8#3
         end rewrite for: 8#3
-        builtin nplus(<<1>>, <<427>>)
+        builtin nplus(<<1>>, <<423>>)
         end builtin nplus(y, 8#3)
         Rules:
         Result:
-          <<428>>
+          <<424>>
           nplus(y, 8#3)
-      end rewrite for: nplus(<<1>>, <<427>>)
-      builtin <<4>> == <<428>>
+      end rewrite for: nplus(<<1>>, <<423>>)
+      builtin <<4>> == <<424>>
         equal x <<1>>
         equal: No
-        equal x <<427>>
+        equal x <<423>>
         equal: No
-        equal x nplus(<<1>>, <<427>>)
+        equal x nplus(<<1>>, <<423>>)
         equal: No
-      end builtin x == nplus(<<1>>, <<427>>)
+      end builtin x == nplus(<<1>>, <<423>>)
       Rules:
       match x == nplus(x, 1) x == nplus(y, 8#3)
       end match x == nplus(x, 1) x == nplus(y, 8#3)
       match nplus(y, x) == nplus(z, x) x == nplus(y, 8#3)
       end match nplus(y, x) == nplus(z, x) x == nplus(y, 8#3)
       Result:
-        <<430>>
+        <<426>>
         x == nplus(y, 8#3)
     end rewrite for: nplus(8#3, <<1>>) == nplus(<<4>>)
     Result:
-      <<430>>
+      <<426>>
       x == nplus(y, 8#3)
   end rewrite for: rplus(1#3, x) == rplus(y, 3#1)
   Result:
 end rewrite subterm: rplus(1#3, x) == rplus(y, 3#1)
 rewriting subterm: rplus(3#1, x) == rplus(y, 1#3)
   rewriting expression: rplus(3#1, x) == rplus(y, 1#3)
-    rewriting expression: rplus(<<4>>, <<406>>)
+    rewriting expression: rplus(<<4>>, <<402>>)
       Result:
-        <<416>>
+        <<412>>
         rplus(x, 3#1)
-    end rewrite for: rplus(<<4>>, <<406>>)
-    rewriting expression: rplus(<<1>>, <<424>>)
+    end rewrite for: rplus(<<4>>, <<402>>)
+    rewriting expression: rplus(<<1>>, <<420>>)
       rewriting expression: y
         Result:
           <<1>>
@@ -3221,17 +3133,17 @@ rewriting subterm: rplus(3#1, x) == rplus(y, 1#3)
       end rewrite for: y
       rewriting expression: 1#3
         Result:
-          <<424>>
+          <<420>>
           1#3
       end rewrite for: 1#3
-      builtin rplus(<<1>>, <<424>>)
+      builtin rplus(<<1>>, <<420>>)
       end builtin rplus(y, 1#3)
       Rules:
       Result:
-        <<431>>
+        <<427>>
         rplus(y, 1#3)
-    end rewrite for: rplus(<<1>>, <<424>>)
-    builtin <<416>> == <<431>>
+    end rewrite for: rplus(<<1>>, <<420>>)
+    builtin <<412>> == <<427>>
     end builtin nplus(8#3, <<4>>) == nplus(<<1>>)
     rewriting expression: nplus(8#3, <<4>>) == nplus(<<1>>)
       rewriting expression: nplus(<<1>>)
@@ -3251,7 +3163,7 @@ rewriting subterm: rplus(3#1, x) == rplus(y, 1#3)
           <<1>>
           y
       end rewrite for: nplus(<<1>>)
-      rewriting expression: nplus(<<4>>, <<427>>)
+      rewriting expression: nplus(<<4>>, <<423>>)
         rewriting expression: x
           Result:
             <<4>>
@@ -3259,39 +3171,158 @@ rewriting subterm: rplus(3#1, x) == rplus(y, 1#3)
         end rewrite for: x
         rewriting expression: 8#3
           Result:
-            <<427>>
+            <<423>>
             8#3
         end rewrite for: 8#3
-        builtin nplus(<<4>>, <<427>>)
+        builtin nplus(<<4>>, <<423>>)
         end builtin nplus(x, 8#3)
         Rules:
         Result:
-          <<433>>
+          <<429>>
           nplus(x, 8#3)
-      end rewrite for: nplus(<<4>>, <<427>>)
-      builtin <<1>> == <<433>>
+      end rewrite for: nplus(<<4>>, <<423>>)
+      builtin <<1>> == <<429>>
         equal y <<4>>
         equal: No
-        equal y <<427>>
+        equal y <<423>>
         equal: No
-        equal y nplus(<<4>>, <<427>>)
+        equal y nplus(<<4>>, <<423>>)
         equal: No
-      end builtin y == nplus(<<4>>, <<427>>)
+      end builtin y == nplus(<<4>>, <<423>>)
       Rules:
       match x == nplus(x, 1) y == nplus(x, 8#3)
       end match x == nplus(x, 1) y == nplus(x, 8#3)
       match nplus(y, x) == nplus(z, x) y == nplus(x, 8#3)
       end match nplus(y, x) == nplus(z, x) y == nplus(x, 8#3)
       Result:
-        <<435>>
+        <<431>>
         y == nplus(x, 8#3)
     end rewrite for: nplus(8#3, <<4>>) == nplus(<<1>>)
     Result:
-      <<435>>
+      <<431>>
       y == nplus(x, 8#3)
   end rewrite for: rplus(3#1, x) == rplus(y, 1#3)
   Result:
 end rewrite subterm: rplus(3#1, x) == rplus(y, 1#3)
+rewriting subterm: rless(rtimes(rminus(0#1, 3#1), x), rtimes(y, 1#9))
+  rewriting expression: rless(rtimes(rminus(0#1, 3#1), x), rtimes(y, 1#9))
+    rewriting expression: rtimes(<<4>>, <<432>>)
+      rewriting expression: x
+        Result:
+          <<4>>
+          x
+      end rewrite for: x
+      rewriting expression: rminus(<<8>>, <<402>>)
+        rewriting expression: 0#1
+          Result:
+            <<8>>
+            0#1
+        end rewrite for: 0#1
+        rewriting expression: 3#1
+          Result:
+            <<402>>
+            3#1
+        end rewrite for: 3#1
+        builtin rminus(<<8>>, <<402>>)
+        end builtin -3#1
+        rewriting expression: -3#1
+          builtin -3#1
+          end builtin -3#1
+          Rules:
+          Result:
+            <<437>>
+            -3#1
+        end rewrite for: -3#1
+        Result:
+          <<437>>
+          -3#1
+      end rewrite for: rminus(<<8>>, <<402>>)
+      builtin rtimes(<<4>>, <<437>>)
+      end builtin rtimes(x, -3#1)
+      Rules:
+      Result:
+        <<438>>
+        rtimes(x, -3#1)
+    end rewrite for: rtimes(<<4>>, <<432>>)
+    rewriting expression: rtimes(<<1>>, <<434>>)
+      rewriting expression: y
+        Result:
+          <<1>>
+          y
+      end rewrite for: y
+      rewriting expression: 1#9
+        builtin 1#9
+        end builtin 1#9
+        Rules:
+        Result:
+          <<434>>
+          1#9
+      end rewrite for: 1#9
+      builtin rtimes(<<1>>, <<434>>)
+      end builtin rtimes(y, 1#9)
+      Rules:
+      Result:
+        <<435>>
+        rtimes(y, 1#9)
+    end rewrite for: rtimes(<<1>>, <<434>>)
+    builtin rless(<<438>>, <<435>>)
+    end builtin rless(rtimes(-1#27, <<1>>), rtimes(<<4>>))
+    rewriting expression: rless(rtimes(-1#27, <<1>>), rtimes(<<4>>))
+      rewriting expression: rtimes(<<1>>, <<440>>)
+        rewriting expression: y
+          Result:
+            <<1>>
+            y
+        end rewrite for: y
+        rewriting expression: -1#27
+          builtin -1#27
+          end builtin -1#27
+          Rules:
+          Result:
+            <<440>>
+            -1#27
+        end rewrite for: -1#27
+        builtin rtimes(<<1>>, <<440>>)
+        end builtin rtimes(y, -1#27)
+        Rules:
+        Result:
+          <<441>>
+          rtimes(y, -1#27)
+      end rewrite for: rtimes(<<1>>, <<440>>)
+      rewriting expression: rtimes(<<4>>)
+        rewriting expression: x
+          Result:
+            <<4>>
+            x
+        end rewrite for: x
+        builtin rtimes(<<4>>)
+        end builtin x
+        rewriting expression: x
+          Result:
+            <<4>>
+            x
+        end rewrite for: x
+        Result:
+          <<4>>
+          x
+      end rewrite for: rtimes(<<4>>)
+      builtin rless(<<441>>, <<4>>)
+      end builtin rless(rtimes(<<1>>, <<440>>), x)
+      Rules:
+      match rless(x, x) rless(rtimes(y, -1#27), x)
+        equal rtimes(y, -1#27) x
+        equal: No
+      end match rless(x, x) rless(rtimes(y, -1#27), x)
+      Result:
+        <<444>>
+        rless(rtimes(y, -1#27), x)
+    end rewrite for: rless(rtimes(-1#27, <<1>>), rtimes(<<4>>))
+    Result:
+      <<444>>
+      rless(rtimes(y, -1#27), x)
+  end rewrite for: rless(rtimes(rminus(0#1, 3#1), x), rtimes(y, 1#9))
+  Result:
+end rewrite subterm: rless(rtimes(rminus(0#1, 3#1), x), rtimes(y, 1#9))
 rewriting subterm: x  == 3 & y  == nplus(x, 1)
   rewriting expression: x  == 3 & y  == nplus(x, 1)
     Deriving y' == nplus(1, x') { True } -> True
@@ -3421,9 +3452,9 @@ rewriting subterm: x  == 3 & y  == nplus(x, 1)
       match 3 == x' y == 4
       end match 3 == x' y == 4
       Result:
-        <<444>>
+        <<453>>
     end rewrite for: <<1>> == <<186>>
-    equal <<444>> <<1>> == <<186>>
+    equal <<453>> <<1>> == <<186>>
     equal: No
     Deriving 4 == y' { True } -> True
       d 4 == y' { N[True] } -> N[True]
@@ -3459,7 +3490,7 @@ rewriting subterm: x  == 3 & y  == nplus(x, 1)
     end rewrite for: <<280>>
     equal <<280>> <<280>>
     equal: Yes
-    rewriting expression: <<444>>
+    rewriting expression: <<453>>
       rewriting expression: y
         Result:
           <<1>>
@@ -3478,16 +3509,673 @@ rewriting subterm: x  == 3 & y  == nplus(x, 1)
       match 3 == x' y == 4
       end match 3 == x' y == 4
       Result:
-        <<444>>
-    end rewrite for: <<444>>
-    equal <<444>> <<444>>
+        <<453>>
+    end rewrite for: <<453>>
+    equal <<453>> <<453>>
     equal: Yes
     builtin x  == 3 & y  == 4
     end builtin <<4>>  == <<257>> & <<1>>  == <<260>>
     Rules:
     Result:
-      <<448>>
+      <<457>>
       x  == 3 & y  == 4
   end rewrite for: x  == 3 & y  == nplus(x, 1)
   Result:
 end rewrite subterm: x  == 3 & y  == nplus(x, 1)
+rewriting subterm: EXISTS(x) y == nplus(z, 1)
+  rewriting expression: EXISTS(x) y == nplus(z, 1)
+    rewriting expression: <<1>> == <<458>>
+      rewriting expression: y
+        Result:
+          <<1>>
+          y
+      end rewrite for: y
+      rewriting expression: nplus(<<2>>, <<34>>)
+        rewriting expression: z
+          builtin z
+          end builtin z
+          Rules:
+          Result:
+            <<2>>
+            z
+        end rewrite for: z
+        rewriting expression: 1
+          Result:
+            <<34>>
+            1
+        end rewrite for: 1
+        builtin nplus(<<2>>, <<34>>)
+        end builtin nplus(z, 1)
+        Rules:
+        Result:
+          <<458>>
+          nplus(z, 1)
+      end rewrite for: nplus(<<2>>, <<34>>)
+      builtin <<1>> == <<458>>
+        equal y <<2>>
+        equal: No
+        equal y <<34>>
+        equal: No
+        equal y nplus(<<2>>, <<34>>)
+        equal: No
+      end builtin y == nplus(<<2>>, <<34>>)
+      Rules:
+      match x == nplus(x, 1) y == nplus(z, 1)
+        equal y z
+        equal: No
+      end match x == nplus(x, 1) y == nplus(z, 1)
+      match nplus(y, x) == nplus(z, x) y == nplus(z, 1)
+      end match nplus(y, x) == nplus(z, x) y == nplus(z, 1)
+      Result:
+        <<459>>
+        y == nplus(z, 1)
+    end rewrite for: <<1>> == <<458>>
+    rewriting expression: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: True
+    builtin EXISTS(x) <<459>>
+    end builtin <<1>> == <<458>>
+    rewriting expression: <<1>> == <<458>>
+      Result:
+        <<459>>
+        y == nplus(z, 1)
+    end rewrite for: <<1>> == <<458>>
+    Result:
+      <<459>>
+      y == nplus(z, 1)
+  end rewrite for: EXISTS(x) y == nplus(z, 1)
+  Result:
+end rewrite subterm: EXISTS(x) y == nplus(z, 1)
+rewriting subterm: EXISTS(y) not(y == nplus(z, 1))
+  rewriting expression: EXISTS(y) not(y == nplus(z, 1))
+    rewriting expression: not(<<459>>)
+      rewriting expression: <<1>> == <<458>>
+        Result:
+          <<459>>
+          y == nplus(z, 1)
+      end rewrite for: <<1>> == <<458>>
+      builtin not(<<459>>)
+      end builtin not(<<1>> == <<458>>)
+      Rules:
+      Result:
+        <<461>>
+        not(y == nplus(z, 1))
+    end rewrite for: not(<<459>>)
+    rewriting expression: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: True
+    builtin EXISTS(y) <<461>>
+    end builtin not(ALL(y: True) <<459>>)
+    rewriting expression: not(ALL(y: True) <<459>>)
+      rewriting expression: ALL(y: <<19>>) <<459>>
+        rewriting expression: <<1>> == <<458>>
+          Result:
+            <<459>>
+            y == nplus(z, 1)
+        end rewrite for: <<1>> == <<458>>
+        rewriting expression: True
+          Result:
+            <<19>>
+            True
+        end rewrite for: True
+        builtin ALL(y: <<19>>) <<459>>
+        end builtin ALL(y: True) <<1>> == <<458>>
+        Rules:
+        Result:
+          <<463>>
+          ALL(y: True) y == nplus(z, 1)
+      end rewrite for: ALL(y: <<19>>) <<459>>
+      builtin not(<<463>>)
+      end builtin not(ALL(y: <<19>>) <<459>>)
+      Rules:
+      Result:
+        <<464>>
+        not(ALL(y: True) y == nplus(z, 1))
+    end rewrite for: not(ALL(y: True) <<459>>)
+    Result:
+      <<464>>
+      not(ALL(y: True) y == nplus(z, 1))
+  end rewrite for: EXISTS(y) not(y == nplus(z, 1))
+  Result:
+end rewrite subterm: EXISTS(y) not(y == nplus(z, 1))
+rewriting subterm: ALL(x: True) y == nplus(z, 1)
+  rewriting expression: ALL(x: True) y == nplus(z, 1)
+    rewriting expression: <<1>> == <<458>>
+      Result:
+        <<459>>
+        y == nplus(z, 1)
+    end rewrite for: <<1>> == <<458>>
+    rewriting expression: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: True
+    builtin ALL(x: <<19>>) <<459>>
+    end builtin ALL(: True) <<1>> == <<458>>
+    rewriting expression: ALL(: True) <<1>> == <<458>>
+      rewriting expression: <<1>> == <<458>>
+        Result:
+          <<459>>
+          y == nplus(z, 1)
+      end rewrite for: <<1>> == <<458>>
+      rewriting expression: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: True
+      builtin ALL(: <<19>>) <<459>>
+      end builtin not(True) | <<1>>  == <<458>>
+      rewriting expression: not(True) | <<1>>  == <<458>>
+        Deriving y' == nplus(1, z') { True } -> False
+          d y' == nplus(1, z') { N[True] } -> N[False]
+          Result:
+        end derive for: y' == nplus(1, z') { True } -> False
+        Deriving not(True) { True } -> False
+          d not(True) { N[True] } -> N[False]
+          d True { N[True] } -> not(N[False])
+          Result:
+        end derive for: not(True) { True } -> False
+        rewriting expression: not(<<19>>)
+          rewriting expression: True
+            builtin True
+            end builtin True
+            Rules:
+            Result:
+              <<19>>
+              True
+          end rewrite for: True
+          builtin not(<<19>>)
+          end builtin False
+          rewriting expression: False
+            builtin False
+            end builtin False
+            Rules:
+            Result:
+              <<51>>
+              False
+          end rewrite for: False
+          Result:
+            <<51>>
+            False
+        end rewrite for: not(<<19>>)
+        equal <<51>> not(<<19>>)
+        equal: No
+        Deriving False { True } -> False
+          d False { N[True] } -> N[False]
+          Result:
+        end derive for: False { True } -> False
+        rewriting expression: <<1>> == <<458>>
+          Result:
+            <<459>>
+            y == nplus(z, 1)
+        end rewrite for: <<1>> == <<458>>
+        equal <<459>> <<1>> == <<458>>
+        equal: Yes
+        rewriting expression: <<51>>
+          Result:
+            <<51>>
+            False
+        end rewrite for: <<51>>
+        equal <<51>> <<51>>
+        equal: Yes
+        rewriting expression: <<459>>
+          Result:
+            <<459>>
+            y == nplus(z, 1)
+        end rewrite for: <<459>>
+        equal <<459>> <<459>>
+        equal: Yes
+        builtin False | y  == nplus(z, 1)
+        end builtin |(N[<<1>> == <<458>>])
+        rewriting expression: |(N[<<1>> == <<458>>])
+          rewriting expression: <<459>>
+            Result:
+              <<459>>
+              y == nplus(z, 1)
+          end rewrite for: <<459>>
+          Result:
+            <<459>>
+            y == nplus(z, 1)
+        end rewrite for: |(N[<<1>> == <<458>>])
+        Result:
+          <<459>>
+          y == nplus(z, 1)
+      end rewrite for: not(True) | <<1>>  == <<458>>
+      Result:
+        <<459>>
+        y == nplus(z, 1)
+    end rewrite for: ALL(: True) <<1>> == <<458>>
+    Result:
+      <<459>>
+      y == nplus(z, 1)
+  end rewrite for: ALL(x: True) y == nplus(z, 1)
+  Result:
+end rewrite subterm: ALL(x: True) y == nplus(z, 1)
+rewriting subterm: ALL(y: True) not(y == nplus(z, 1))
+  rewriting expression: ALL(y: True) not(y == nplus(z, 1))
+    rewriting expression: not(<<459>>)
+      Result:
+        <<461>>
+        not(y == nplus(z, 1))
+    end rewrite for: not(<<459>>)
+    rewriting expression: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: True
+    builtin ALL(y: <<19>>) <<461>>
+    end builtin not(EXISTS(y) <<459>> | not(True))
+    rewriting expression: not(EXISTS(y) <<459>> | not(True))
+      rewriting expression: EXISTS(y) <<467>>
+        rewriting expression: <<356>> | <<459>>
+          rewriting expression: not(<<19>>)
+            rewriting expression: True
+              Result:
+                <<19>>
+                True
+            end rewrite for: True
+            builtin not(<<19>>)
+            end builtin False
+            rewriting expression: False
+              Result:
+                <<51>>
+                False
+            end rewrite for: False
+            Result:
+              <<51>>
+              False
+          end rewrite for: not(<<19>>)
+          equal <<51>> not(<<19>>)
+          equal: No
+          rewriting expression: <<1>> == <<458>>
+            Result:
+              <<459>>
+              y == nplus(z, 1)
+          end rewrite for: <<1>> == <<458>>
+          equal <<459>> <<1>> == <<458>>
+          equal: Yes
+          rewriting expression: <<51>>
+            Result:
+              <<51>>
+              False
+          end rewrite for: <<51>>
+          equal <<51>> <<51>>
+          equal: Yes
+          rewriting expression: <<459>>
+            Result:
+              <<459>>
+              y == nplus(z, 1)
+          end rewrite for: <<459>>
+          equal <<459>> <<459>>
+          equal: Yes
+          builtin False | y  == nplus(z, 1)
+          end builtin |(N[<<1>> == <<458>>])
+          rewriting expression: |(N[<<1>> == <<458>>])
+            rewriting expression: <<459>>
+              Result:
+                <<459>>
+                y == nplus(z, 1)
+            end rewrite for: <<459>>
+            Result:
+              <<459>>
+              y == nplus(z, 1)
+          end rewrite for: |(N[<<1>> == <<458>>])
+          Result:
+            <<459>>
+            y == nplus(z, 1)
+        end rewrite for: <<356>> | <<459>>
+        rewriting expression: True
+          Result:
+            <<19>>
+            True
+        end rewrite for: True
+        builtin EXISTS(y) <<459>>
+        end builtin EXISTS(y) <<1>> == <<458>>
+        Rules:
+        Result:
+          <<481>>
+          EXISTS(y) y == nplus(z, 1)
+      end rewrite for: EXISTS(y) <<467>>
+      builtin not(<<481>>)
+      end builtin not(EXISTS(y) <<459>>)
+      Rules:
+      Result:
+        <<482>>
+        not(EXISTS(y) y == nplus(z, 1))
+    end rewrite for: not(EXISTS(y) <<459>> | not(True))
+    Result:
+      <<482>>
+      not(EXISTS(y) y == nplus(z, 1))
+  end rewrite for: ALL(y: True) not(y == nplus(z, 1))
+  Result:
+end rewrite subterm: ALL(y: True) not(y == nplus(z, 1))
+rewriting subterm: EXISTS(x) x  == ntimes(q, r) & y  == nplus(x, 1)
+  rewriting expression: EXISTS(x) x  == ntimes(q, r) & y  == nplus(x, 1)
+    rewriting expression: <<301>> & <<486>>
+      Deriving x' == ntimes(q', r') { True } -> True
+        d x' == ntimes(q', r') { N[True] } -> N[True]
+        d x' { N[True] } = N[ntimes(q', r')]
+        Result:
+      end derive for: x' == ntimes(q', r') { True } -> True
+      rewriting expression: <<1>> == <<186>>
+        rewriting expression: y
+          builtin y
+          end builtin y
+          Rules:
+          Result:
+            <<1>>
+            y
+        end rewrite for: y
+        rewriting expression: nplus(<<4>>, <<34>>)
+          rewriting expression: x
+            builtin x
+            end builtin x
+            Rules:
+            Result:
+              <<4>>
+              x
+          end rewrite for: x
+          rewriting expression: 1
+            builtin 1
+            end builtin 1
+            Rules:
+            Result:
+              <<34>>
+              1
+          end rewrite for: 1
+          builtin nplus(<<4>>, <<34>>)
+          end builtin nplus(x, 1)
+          Rules:
+          Result:
+            <<186>>
+            nplus(x, 1)
+        end rewrite for: nplus(<<4>>, <<34>>)
+        builtin <<1>> == <<186>>
+          equal y <<4>>
+          equal: No
+          equal y <<34>>
+          equal: No
+          equal y nplus(<<4>>, <<34>>)
+          equal: No
+        end builtin y == nplus(<<4>>, <<34>>)
+        Rules:
+        match x' == ntimes(q', r') y == nplus(x, 1)
+        end match x' == ntimes(q', r') y == nplus(x, 1)
+        match x == nplus(x, 1) y == nplus(x, 1)
+          equal y x
+          equal: No
+        end match x == nplus(x, 1) y == nplus(x, 1)
+        match nplus(y, x) == nplus(z, x) y == nplus(x, 1)
+        end match nplus(y, x) == nplus(z, x) y == nplus(x, 1)
+        Result:
+          <<301>>
+      end rewrite for: <<1>> == <<186>>
+      equal <<301>> <<1>> == <<186>>
+      equal: Yes
+      rewriting expression: <<4>> == <<485>>
+        rewriting expression: x
+          Result:
+            <<4>>
+            x
+        end rewrite for: x
+        rewriting expression: ntimes(<<483>>, <<484>>)
+          rewriting expression: q
+            builtin q
+            end builtin q
+            Rules:
+            Result:
+              <<483>>
+              q
+          end rewrite for: q
+          rewriting expression: r
+            builtin r
+            end builtin r
+            Rules:
+            Result:
+              <<484>>
+              r
+          end rewrite for: r
+          builtin ntimes(<<483>>, <<484>>)
+          end builtin ntimes(q, r)
+          Rules:
+          Result:
+            <<485>>
+            ntimes(q, r)
+        end rewrite for: ntimes(<<483>>, <<484>>)
+        builtin <<4>> == <<485>>
+          equal x <<483>>
+          equal: No
+          equal x <<484>>
+          equal: No
+          equal x ntimes(<<483>>, <<484>>)
+          equal: No
+        end builtin x == ntimes(<<483>>, <<484>>)
+        Rules:
+        match y' == nplus(1, x') x == ntimes(q, r)
+        end match y' == nplus(1, x') x == ntimes(q, r)
+        match ntimes(y, x) == ntimes(z, x) x == ntimes(q, r)
+        end match ntimes(y, x) == ntimes(z, x) x == ntimes(q, r)
+        Result:
+          <<486>>
+      end rewrite for: <<4>> == <<485>>
+      equal <<486>> <<4>> == <<485>>
+      equal: Yes
+      rewriting expression: <<301>>
+        Result:
+          <<301>>
+      end rewrite for: <<301>>
+      equal <<301>> <<301>>
+      equal: Yes
+      rewriting expression: <<486>>
+        Result:
+          <<486>>
+      end rewrite for: <<486>>
+      equal <<486>> <<486>>
+      equal: Yes
+      builtin y  == nplus(x, 1) & x  == ntimes(q, r)
+      end builtin <<1>>  == <<186>> & <<4>>  == <<485>>
+      Rules:
+      Result:
+        <<487>>
+        y  == nplus(x, 1) & x  == ntimes(q, r)
+    end rewrite for: <<301>> & <<486>>
+    rewriting expression: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: True
+    builtin EXISTS(x) <<487>>
+    end builtin EXISTS(x) y  == nplus(ntimes(<<483>>, <<484>>), 1) & ntimes(<<483>>, <<484>>)  == ntimes(q, r)
+    rewriting expression: EXISTS(x) y  == nplus(ntimes(<<483>>, <<484>>), 1) & ntimes(<<483>>, <<484>>)  == ntimes(q, r)
+      rewriting expression: <<496>> & <<497>>
+        Deriving ntimes(q', r') == ntimes(q', r') { True } -> True
+          d ntimes(q', r') == ntimes(q', r') { N[True] } -> N[True]
+          d ntimes(q', r') { N[True] } = N[ntimes(q', r')]
+          Result:
+        end derive for: ntimes(q', r') == ntimes(q', r') { True } -> True
+        Deriving y' == nplus(1, ntimes(q', r')) { True } -> True
+          d y' == nplus(1, ntimes(q', r')) { N[True] } -> N[True]
+          d y' { N[True] } = N[nplus(1, ntimes(q', r'))]
+          Result:
+        end derive for: y' == nplus(1, ntimes(q', r')) { True } -> True
+        rewriting expression: <<1>> == <<495>>
+          rewriting expression: y
+            builtin y
+            end builtin y
+            Rules:
+            Result:
+              <<1>>
+              y
+          end rewrite for: y
+          rewriting expression: nplus(<<34>>, <<485>>)
+            rewriting expression: 1
+              builtin 1
+              end builtin 1
+              Rules:
+              Result:
+                <<34>>
+                1
+            end rewrite for: 1
+            rewriting expression: ntimes(<<483>>, <<484>>)
+              rewriting expression: q
+                builtin q
+                end builtin q
+                Rules:
+                Result:
+                  <<483>>
+                  q
+              end rewrite for: q
+              rewriting expression: r
+                builtin r
+                end builtin r
+                Rules:
+                Result:
+                  <<484>>
+                  r
+              end rewrite for: r
+              builtin ntimes(<<483>>, <<484>>)
+              end builtin ntimes(q, r)
+              Rules:
+              Result:
+                <<485>>
+                ntimes(q, r)
+            end rewrite for: ntimes(<<483>>, <<484>>)
+            builtin nplus(<<34>>, <<485>>)
+            end builtin nplus(1, ntimes(<<483>>, <<484>>))
+            Rules:
+            Result:
+              <<495>>
+              nplus(1, ntimes(q, r))
+          end rewrite for: nplus(<<34>>, <<485>>)
+          builtin <<1>> == <<495>>
+            equal y <<34>>
+            equal: No
+            equal y <<485>>
+            equal: No
+            equal y nplus(<<34>>, <<485>>)
+            equal: No
+          end builtin y == nplus(<<34>>, <<485>>)
+          Rules:
+          match ntimes(q', r') == ntimes(q', r') y == nplus(1, ntimes(q, r))
+          end match ntimes(q', r') == ntimes(q', r') y == nplus(1, ntimes(q, r))
+          match x == nplus(x, 1) y == nplus(1, ntimes(q, r))
+            equal y ntimes(q, r)
+            equal: No
+            equal y r
+            equal: No
+            equal y q
+            equal: No
+            equal y ntimes()
+            equal: No
+          end match x == nplus(x, 1) y == nplus(1, ntimes(q, r))
+          match nplus(y, x) == nplus(z, x) y == nplus(1, ntimes(q, r))
+          end match nplus(y, x) == nplus(z, x) y == nplus(1, ntimes(q, r))
+          Result:
+            <<496>>
+        end rewrite for: <<1>> == <<495>>
+        equal <<496>> <<1>> == <<495>>
+        equal: Yes
+        rewriting expression: <<485>> == <<485>>
+          rewriting expression: ntimes(<<483>>, <<484>>)
+            rewriting expression: q
+              builtin q
+              end builtin q
+              Rules:
+              Result:
+                <<483>>
+                q
+            end rewrite for: q
+            rewriting expression: r
+              builtin r
+              end builtin r
+              Rules:
+              Result:
+                <<484>>
+                r
+            end rewrite for: r
+            builtin ntimes(<<483>>, <<484>>)
+            end builtin ntimes(q, r)
+            Rules:
+            Result:
+              <<485>>
+              ntimes(q, r)
+          end rewrite for: ntimes(<<483>>, <<484>>)
+          rewriting expression: ntimes(<<483>>, <<484>>)
+            Result:
+              <<485>>
+              ntimes(q, r)
+          end rewrite for: ntimes(<<483>>, <<484>>)
+          builtin <<485>> == <<485>>
+            equal ntimes(<<483>>, <<484>>) ntimes(<<483>>, <<484>>)
+            equal: Yes
+          end builtin True
+          rewriting expression: True
+            builtin True
+            end builtin True
+            Rules:
+            Result:
+              <<19>>
+          end rewrite for: True
+          Result:
+            <<19>>
+        end rewrite for: <<485>> == <<485>>
+        equal <<19>> <<485>> == <<485>>
+        equal: No
+        Deriving True { True } -> True
+          d True { N[True] } -> N[True]
+          Result:
+        end derive for: True { True } -> True
+        rewriting expression: <<496>>
+          Result:
+            <<496>>
+        end rewrite for: <<496>>
+        equal <<496>> <<496>>
+        equal: Yes
+        rewriting expression: <<19>>
+          Result:
+            <<19>>
+        end rewrite for: <<19>>
+        equal <<19>> <<19>>
+        equal: Yes
+        builtin y  == nplus(1, ntimes(q, r)) & True
+        end builtin &(N[<<1>> == <<495>>])
+        rewriting expression: &(N[<<1>> == <<495>>])
+          rewriting expression: <<1>> == <<495>>
+            Result:
+              <<496>>
+              y == nplus(1, ntimes(q, r))
+          end rewrite for: <<1>> == <<495>>
+          Result:
+            <<496>>
+            y == nplus(1, ntimes(q, r))
+        end rewrite for: &(N[<<1>> == <<495>>])
+        Result:
+          <<496>>
+          y == nplus(1, ntimes(q, r))
+      end rewrite for: <<496>> & <<497>>
+      rewriting expression: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: True
+      builtin EXISTS(x) <<496>>
+      end builtin <<1>> == <<495>>
+      rewriting expression: <<1>> == <<495>>
+        Result:
+          <<496>>
+          y == nplus(1, ntimes(q, r))
+      end rewrite for: <<1>> == <<495>>
+      Result:
+        <<496>>
+        y == nplus(1, ntimes(q, r))
+    end rewrite for: EXISTS(x) y  == nplus(ntimes(<<483>>, <<484>>), 1) & ntimes(<<483>>, <<484>>)  == ntimes(q, r)
+    Result:
+      <<496>>
+      y == nplus(1, ntimes(q, r))
+  end rewrite for: EXISTS(x) x  == ntimes(q, r) & y  == nplus(x, 1)
+  Result:
+end rewrite subterm: EXISTS(x) x  == ntimes(q, r) & y  == nplus(x, 1)

@@ -298,7 +298,37 @@ print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
+let exp_test = Exp.parseExp "rless(rtimes(rminus(0#1,3#1),x),rtimes(y,1#9)))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
 let exp_test = Exp.parseExp "x==3 & y==nplus(x,1)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "EXISTS(x) y==nplus(z,1)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "EXISTS(y) not(y==nplus(z,1))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "ALL(x) y==nplus(z,1)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "ALL(y) not(y==nplus(z,1))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "EXISTS(x) x==ntimes(q,r) & y==nplus(x,1)" ;;
 print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;

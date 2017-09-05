@@ -156,6 +156,13 @@ let rec unstrip l = match l with
 
 let rec find_equal vars l l2 = match l2 with
   | [] -> NOEXP
+  | ((REF x)::r) -> find_equal vars l ((ExpIntern.decode_two_exp (REF x))::r)
+  | ((APPL (11,[REF v1;VAR v2]))::r) ->
+    find_equal vars l ((APPL (11,[ExpIntern.decode_one_exp (REF v1);VAR v2]))::r)
+  | ((APPL (11,[REF v1;REF v2]))::r) ->
+    find_equal vars l ((APPL (11,[ExpIntern.decode_one_exp (REF v1);ExpIntern.decode_one_exp (REF v2)]))::r)
+  | ((APPL (11,[VAR v1;REF v2]))::r) ->
+    find_equal vars l ((APPL (11,[VAR v1;ExpIntern.decode_one_exp (REF v2)]))::r)
   | ((APPL (11,[VAR v1;VAR v2]))::r) ->
     if List.mem v1 vars && not(v1=v2) then
         (APPL (intern_equal,[VAR v1;VAR v2]))
@@ -922,34 +929,51 @@ let rec builtin rewrite env e = match e with
     let (RATIONAL (n1,d1),l1) = find_delete_encode_rat l1 in
     let (RATIONAL (n2,d2),l2) = find_delete_encode_rat l2 in
         if n1*d2>n2*d1 then
-            [(APPL (80,[APPL (76,(rat_minus (RATIONAL (n1,d1)) (RATIONAL (n2,d2)))::l1);APPL (76,l2)]))]
+            [(APPL (86,[APPL (82,(rat_minus (RATIONAL (n1,d1)) (RATIONAL (n2,d2)))::l1);APPL (82,l2)]))]
         else
-            [(APPL (80,[APPL (76,l1);APPL (76,(rat_minus (RATIONAL (n2,d2)) (RATIONAL (n1,d1)))::l2)]))]
+            [(APPL (86,[APPL (82,l1);APPL (82,(rat_minus (RATIONAL (n2,d2)) (RATIONAL (n1,d1)))::l2)]))]
     else []
   | (APPL (80,[APPL (78,l1);APPL (78,l2)])) ->
     if num_count l1 = 1 && num_count l2 = 1 then
     let (n1,l1) = find_delete_encode_num l1 in
     let (n2,l2) = find_delete_encode_num l2 in
     let g = gcd n1 n2 in
-        if g=0 || g=1 then
+        if g=1 || g=0 then
             []
         else if g=n2 then
-            [(APPL (80,[APPL (78,(NUM (n1 / n2))::l1);APPL (78,l2)]))]
-        else if g=n1 then
-            [(APPL (80,[APPL (78,l1);APPL (78,(NUM (n2 / n1))::l2)]))]
+            (if g < 0 then
+                 [(APPL (80,[APPL (78,l2);APPL (78,(NUM (n1 / n2))::l1)]))]
+             else
+                 [(APPL (80,[APPL (78,(NUM (n1 / n2))::l1);APPL (78,l2)]))])
+        else if not(n1=0) && n2 mod n1=0 then
+            (if n1 < 0 then
+                 [(APPL (80,[APPL (78,(NUM (n2 / n1))::l2);APPL (78,l1)]))]
+             else
+                 [(APPL (80,[APPL (78,l1);APPL (78,(NUM (n2 / n1))::l2)]))])
         else
-            [(APPL (80,[APPL (78,((NUM (n1 / g))::l1));APPL (78,(NUM (n2 / g))::l2)]))]
+            (if g < 0 then
+                 [(APPL (80,[APPL (78,(NUM (n2 / g))::l2);APPL (78,(NUM (n1 / g)::l1));]))]
+             else
+                 [(APPL (80,[APPL (78,(NUM (n1 / g)::l1));APPL (78,(NUM (n2 / g))::l2)]))])
+    else if Match.equal env (APPL (78,l1)) (APPL (78,l2)) then
+        [(APPL (intern_false,[]))]
     else []
   | (APPL (86,[APPL (84,l1);APPL (84,l2)])) ->
     if rat_count l1 = 1 && rat_count l2 = 1 then
     let (RATIONAL (n1,d1),l1) = find_delete_encode_rat l1 in
     let (RATIONAL (n2,d2),l2) = find_delete_encode_rat l2 in
         if n1*d2=n2*d1 then
-            [(APPL (86,[APPL (84,l1);APPL (84,l2)]))]
+            (if (n1 < 0 && d1 > 0) || (n1 > 0 && d1 < 0) then
+                 [(APPL (86,[APPL (84,l2);APPL (84,l1)]))]
+             else
+                 [(APPL (86,[APPL (84,l1);APPL (84,l2)]))])
         else if n1=0 then
             []
         else
-            [(APPL (86,[APPL (84,l1);APPL (84,(rat_divide (RATIONAL (n2,d2)) (RATIONAL (n1,d1)))::l2)]))]
+            (if (n1 < 0 && d1 > 0) || (n1 > 0 && d1 < 0) then
+                 [(APPL (86,[APPL (84,(rat_divide (RATIONAL (n2,d2)) (RATIONAL (n1,d1)))::l2);APPL (84,l1)]))]
+             else
+                 [(APPL (86,[APPL (84,l1);APPL (84,(rat_divide (RATIONAL (n2,d2)) (RATIONAL (n1,d1)))::l2)]))])
     else []
   | (APPL (80,[NUM n1;APPL (76,l2)])) ->
     if num_count l2 = 1 then
@@ -971,12 +995,26 @@ let rec builtin rewrite env e = match e with
   | (APPL (80,[NUM n1;APPL (78,l2)])) ->
     if num_count l2 = 1 then
     let (n2,l2) = find_delete_encode_num l2 in
-        if not(n2=0) then
-            (if n2>0 then
-                 [(APPL (80,[NUM ((n1+n2-1) / n2);APPL (78,l2)]))]
+    let g = gcd n1 n2 in
+        if n1=0 then
+            [(APPL (80,[NUM 0;APPL (78,l2)]))]
+        else if g=1 || g=0 then
+            []
+        else if g=n2 then
+            (if n2 < 0 then
+                [(APPL (80,[APPL (78,l2);NUM (n1 / n2)]))]
+            else
+                [(APPL (80,[NUM (n1 / n2);APPL (78,l2)]))])
+        else if g=n1 then
+            (if n1 < 0 then
+                 [(APPL (80,[APPL (78,NUM (n2 / n1)::l2);NUM 1]))]
              else
-                 [(APPL (80,[APPL (78,l2);NUM ((n1+n2-1) / n2)]))])
-        else []
+                 [(APPL (80,[NUM 1;APPL (78,NUM (n2 / n1)::l2)]))])
+        else
+            (if g < 0 then
+                 [(APPL (80,[APPL (78,NUM (n2 / g)::l2);NUM (n1 / g)]))]
+             else
+                 [(APPL (80,[NUM (n1 / g);APPL (78,NUM (n2 / g)::l2)]))])
     else []
   | (APPL (86,[RATIONAL (n1,d1);APPL (84,l2)])) ->
     if rat_count l2 = 1 then
@@ -1017,14 +1055,27 @@ let rec builtin rewrite env e = match e with
     else []
   | (APPL (80,[APPL (78,l2);NUM n1])) ->
     if num_count l2 = 1 then
-    let (n2,l2) = find_delete_encode_num l2
-    in
-        if not(n2=0) then
-            (if n2<0 then
-                 [(APPL (80,[NUM ((n1+n2-1) / n2);APPL (78,l2)]))]
+    let (n2,l2) = find_delete_encode_num l2 in
+    let g = gcd n1 n2 in
+        if n1=0 then
+            [(APPL (80,[APPL (78,l2);NUM 0]))]
+        else if g=1 || g=0 then
+            []
+        else if g=n2 then
+            (if n2 < 0 then
+                 [(APPL (80,[NUM (n1 / n2);APPL (78,l2)]))]
              else
-                 [(APPL (80,[APPL (78,l2);NUM ((n1+n2-1) / n2)]))])
-        else []
+                 [(APPL (80,[APPL (78,l2);NUM (n1 / n2)]))])
+        else if g=n1 then
+            (if n1 < 0 then
+                 [(APPL (80,[NUM 1;APPL (78,NUM (n2 / n1)::l2)]))]
+             else
+                 [(APPL (80,[APPL (78,NUM (n2 / n1)::l2);NUM 1]))])
+        else
+            (if g < 0 then
+                 [(APPL (80,[NUM (n1 / g);APPL (78,NUM (n2 / g)::l2)]))]
+             else
+                 [(APPL (80,[APPL (78,NUM (n2 / g)::l2);NUM (n1 / g)]))])
     else []
   | (APPL (86,[APPL (84,l2);RATIONAL (n1,d1)])) ->
     if rat_count l2 = 1 then
