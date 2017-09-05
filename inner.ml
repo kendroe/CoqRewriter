@@ -112,8 +112,9 @@ let rec add_c_rules env l = match l with
   ;;
 
 let rec add_context_rules env l n term =
-    let l = Mylist.delete_nth l n
-    in
+    (*let _ = print_string ("Adding " ^ (string_of_int n) ^ "\n") in*)
+    let l = Mylist.delete_nth l n in
+    (*let _ = List.map (fun x -> (List.map (fun y -> print_string ("Rule " ^ (prExp (ExpIntern.decode_exp y)) ^ "\n")) x)) l in*)
         (*addContextRules env (List.map (fun (x) -> (REF x)) (junction_filter_rule_list env term (List.map (fun (x) -> let val REF x = ExpIntern.intern_exp (Env.isACorC env) x in x end ) (foldr append [] l))))*)
         Env.addContextRules env (List.fold_right List.append l [])
   ;;

@@ -456,7 +456,9 @@ let rewriteRule rewrite env e vars =
                 fr2
             ) in
         let rules1 = (try Cache.get_context_rules num (getContextList env) with Cache.NoEntry ->
+            (*let _ = print_string ("Small for " ^ (prExp (ExpIntern.decode_exp e)) ^ "\n") in*)
             let rl = Disc.findSmall (Env.getContextDisc env) (ExpIntern.decode_exp e) in
+            (*let _ = List.map (fun (x) -> print_string ("Rule: " ^ (prExp x) ^ "n")) rl in*)
             let rl1 = List.map (fun (x) -> let (REF e)=ExpIntern.intern_exp (isACorC env) x in e) rl in
                 Cache.add_context_rules num (getContextList env) rl1 ;
                 rl1

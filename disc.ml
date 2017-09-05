@@ -67,8 +67,8 @@ let hashLeft e = match e with
 let newSmall = Array.init small_size (fun (x) -> ([])) ;;
 
 let addSmall d el =
-    let add = Array.init small_size (fun (x) -> (Array.get d x)) in
-    (*let x = app (fun (x) -> Array.update (add,(hashLeft (decode_exp (REF x))),((REF x)::(Array.sub (add,(hashLeft (decode_exp (REF x)))))))) el in*)
+    let add = Array.init small_size (fun (x) ->(Array.get d x)) in
+    let x = List.map (fun (x) -> Array.set add (hashLeft (ExpIntern.decode_exp (REF x))) ((REF x)::(Array.get add (hashLeft (ExpIntern.decode_exp (REF x)))))) el in
         add ;;
 
 let findSmall d e = Array.get d (smallHash e) ;;

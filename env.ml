@@ -569,7 +569,7 @@ let addp gac d e = match e with
   ;;
 
 let addProperty env e = match e with
-  | (APPL (f,[])) -> (print_string "Here0" ; env)
+  | (APPL (f,[])) -> (env)
   | (APPL (1,ll)) ->
     if List.mem (Property (APPL (Intern.intern_oriented_rule,ll)))
               (envItemGet (getEnvItemList env) (rule_exp_sym (APPL (intern_oriented_rule,ll)))) then
@@ -634,6 +634,7 @@ let addContextRules env rl =
                      (fun x -> match x with | (APPL (f,l)) -> f=intern_oriented_rule | _ -> false)
                      (List.map ExpIntern.decode_one_exp rl))))
     in
+    (*let _ = (List.map (fun x -> print_string ("Adding rule " ^ (prExp (ExpIntern.decode_exp (REF x))) ^ "\n")) rl3) in*)
         setContextStuff env ((Disc.addSmall (getContextDisc env) rl3),
                              List.sort compare (rl3@(getContextList env)))
     ;;
@@ -745,7 +746,7 @@ let rec listGetTypePre fl s2 = match fl with
   | ((Function (APPL(s,fp),t,p))::r) ->
     if s = s2 then (t,(APPL(s,fp)),p) else listGetTypePre r s2
   | (_::r) -> listGetTypePre r s2
-  | [] -> raise (UndefinedSymbol(s2)) ;;
+  | [] -> (print_string ("listGetTypePre  " ^ (Intern.decode s2) ^ "\n"));(raise (UndefinedSymbol(s2))) ;;
 
 let getTypePre el s = listGetTypePre (envItemGet el s) s ;;
 
@@ -769,7 +770,7 @@ let rec listGetTDef l s = match l with
   | ((TypeDefinition (t,tdef))::r) ->
     if s = Type.getetypeName t then (t,tdef) else listGetTDef r s
   | (_::r) -> listGetTDef r s
-  | [] -> raise (UndefinedSymbol s) ;;
+  | [] -> print_string "listGetTDef";raise (UndefinedSymbol s) ;;
 
 let getTDef el s = listGetTDef (envItemGet el s) s ;;
 
@@ -780,7 +781,7 @@ let rec listGetVType l s2 = match l with
   | ((VarType (s,t))::r) ->
     if s = s2 then t else listGetVType r s
   | (_::r) -> listGetVType r s2
-  | [] -> raise (UndefinedSymbol(s2)) ;;
+  | [] -> print_string "listGetVType\n";raise (UndefinedSymbol(s2)) ;;
 
 let getVType el s = listGetVType (envItemGet el s) s ;;
 
@@ -1010,7 +1011,7 @@ let isConstructor x =
     ;;
 
 let rec getCType l x = match l with
-  | [] -> raise (UndefinedSymbol(x))
+  | [] -> print_string "getCType" ; raise (UndefinedSymbol(x))
   | ((TypeDefinition (t,td))::r) ->
     (try (Type.getConstructoretype (t,td) x)
     with Type.UndefinedConstructor -> getCType r x)
@@ -1054,7 +1055,7 @@ let getAllConstructors env =
                     (List.map (fun (x) -> envItemGet (getEnvItemList env) x) (upto (Array.length (getEnvItemList env)))) []) []))) ;;
 
 let rec getCType2 l x = match l with
-  | [] -> raise (UndefinedSymbol(x))
+  | [] -> print_string "getCType2\n";raise (UndefinedSymbol(x))
   | ((TypeDefinition (t,td))::r) ->
     if List.mem x (Type.getConstructorList (t,td)) then
         (t,td)

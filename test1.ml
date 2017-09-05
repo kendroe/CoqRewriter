@@ -268,28 +268,38 @@ print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
-(*let exp_test = Exp.parseExp "rless(rminus(0#1,9#1),rtimes(x,3#1))"
-let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;
-print (prExp exp_res) ;
+let exp_test = Exp.parseExp "rless(rminus(0#1,9#1),rtimes(x,3#1))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
-let exp_test = Exp.parseExp "0#1==rtimes(x,3#1))"
-let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;
-print (prExp exp_res) ;
+let exp_test = Exp.parseExp "0#1==rtimes(x,3#1))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
-let exp_test = Exp.parseExp "0#1==rplus(x,3#1))"
-let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;
-print (prExp exp_res) ;
+let exp_test = Exp.parseExp "0#1==rplus(x,3#1))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
-let exp_test = Exp.parseExp "rplus(1#1,x)==rplus(y,3#1))"
-let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;
-print (prExp exp_res) ;
+let exp_test = Exp.parseExp "rplus(1#1,x)==rplus(y,3#1))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
-let exp_test = Exp.parseExp "rplus(1#3,x)==rplus(y,3#1))"
-let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;
-print (prExp exp_res) ;
+let exp_test = Exp.parseExp "rplus(1#3,x)==rplus(y,3#1))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
-let exp_test = Exp.parseExp "rplus(3#1,x)==rplus(y,1#3))"
-let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;
-print (prExp exp_res) ;
-*)
+let exp_test = Exp.parseExp "rplus(3#1,x)==rplus(y,1#3))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "x==3 & y==nplus(x,1)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
