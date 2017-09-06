@@ -429,6 +429,8 @@ let rec first_if x l = match l with
   | (f::r) -> first_if (x@[f]) r ;;
 
 let rec is_finite_clause_list env l = match l with
+  | ((REF r,b)::rr) ->
+    is_finite_clause_list env ((ExpIntern.decode_one_exp (REF r),b)::rr)
   | ((APPL (f,[]),_)::_) ->
     Env.isFiniteConstructor env f
   | _ -> false ;;
@@ -1432,6 +1434,22 @@ let rec builtin rewrite env e = match e with
     [(APPL (intern_and,List.map (fun (x) -> (QUANT (intern_all,v,x,p))) el))]
   | (QUANT (15,v,(APPL (10,el)),p)) ->
     [(APPL (intern_or,List.map (fun (x) -> (QUANT (intern_exists,v,x,p))) el))]
+  | (QUANT (15,[(vv,t)],APPL (11,[REF v;e]),p)) ->
+    (match (ExpIntern.decode_one_exp (REF v)) with
+    | (VAR v) ->
+        if v=vv && not(List.mem v (Context.getFreeVars e)) then
+            [APPL (intern_true,[])]
+        else
+            []
+    | _ -> [])
+  | (QUANT (15,[(vv,t)],APPL (11,[e;(REF v)]),p)) ->
+    (match (ExpIntern.decode_one_exp (REF v)) with
+    | (VAR v) ->
+        if v=vv && not(List.mem v (Context.getFreeVars e)) then
+            [APPL (intern_true,[])]
+        else
+            []
+    | _ -> [])
   | (QUANT (15,[(vv,t)],APPL (11,[VAR v;e]),p)) ->
     if v=vv && not(List.mem v (Context.getFreeVars e)) then
         [APPL (intern_true,[])]
@@ -1491,7 +1509,7 @@ let rec builtin rewrite env e = match e with
     if cl=[] then
         [(APPL (intern_undef,[]))]
     else if is_finite_clause_list env cl then
-       let x = reduce_finite_case v t cl in
+       (let x = reduce_finite_case v t cl in
            if not(x=[]) then x
            else
               (let tl = List.map (fun (_,x) -> ExpIntern.intern_exp (Env.isACorC env) x) cl in
@@ -1510,7 +1528,7 @@ let rec builtin rewrite env e = match e with
                        let f = find_inversion env (CASE (v,t,cl))
                        in
                            if f=0 then [] else [invert_clauses f (CASE (v,t,cl))]
-               )
+               ))
      else []
   |  x -> []
   ;;

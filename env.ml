@@ -1246,14 +1246,16 @@ let addFunction env (APPL(n,fp),t,c,rules) rules2 =
                                 (getEnvItemList env)
                                 (Function (APPL(n,fp),t,c)))
                             (FunctionDefinition (n,List.map (flatten env) rules))))) in
-        (*val _ = print_string "[Function rules]\n"*)
-        (*val _ = map (fn (x) => (print_string ("[    " ^ (prExp x) ^ "]\n"))) rules2*)
+    (*let _ = print_string "[Function rules]\n" in
+    let _ = List.map (fun (x) -> (print_string ("[    " ^ (prExp x) ^ "]\n"))) rules in
+    let _ = print_string "[Function rules2]\n" in
+    let _ = List.map (fun (x) -> (print_string ("[    " ^ (prExp x) ^ "]\n"))) rules2 in*)
     let res =
             setFunDisc
                (setPropDisc
                    env2
                    (List.fold_right (fun r -> (fun d -> Disc.add gac d r)) (List.map (flatten env) rules2) (getPropDisc env2)))
-               (List.fold_right (fun r -> (fun d -> adde gac d r)) (List.map (flatten env) rules2) (getFunDisc env2)) in
+               (List.fold_right (fun r -> (fun d -> adde gac d r)) (List.map (flatten env) rules) (getFunDisc env2)) in
                 let newItems =
             List.fold_right (fun p -> (fun e -> addItem e (Property p))) rules2 (getEnvItemList res) in
         setEnvItemList res newItems
@@ -1435,8 +1437,14 @@ let l1 =
       Attrib(intern_po,[S(intern_rat_less);S(intern_equal)]);
       TypeDefinition (Type.parse "Bool",
                       Type.parseDef "True|False");
-              TypeDefinition (Type.parse "Unit",
-              Type.parseDef "Identity|Trivial");
+      FiniteType(Intern.intern_bool);
+      FiniteConstructor(Intern.intern_true);
+      FiniteConstructor(Intern.intern_false);
+      TypeDefinition (Type.parse "Unit",
+                      Type.parseDef "Identity|Trivial");
+      FiniteType(Intern.intern_unit);
+      FiniteConstructor(Intern.intern_identity);
+      FiniteConstructor(Intern.intern_trivial);
       TypeDefinition (Type.parse "Natural",Type.emptyDef);
       TypeDefinition (Type.parse "Rational",Type.emptyDef);
       TypeDefinition (Type.parse "String",Type.emptyDef);

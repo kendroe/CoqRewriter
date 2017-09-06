@@ -183,15 +183,18 @@ let rec rewriteTop (exp,env) kb =
                 (List.hd rew,env,kb))
     in
         (Env.flatten env res,env,kb))
-and rewriteTopCont (f,env) kb =
+and rewriteTopCont orig (f,env) kb =
    (try let (x,env,kb) = rewriteTop (f,env) kb
         (*val _ = print ("[Pre: " ^ (prExp f) ^ "]\n[Post: " ^ (prExp x) ^ "]\n")*)
     in
-        try if kb then
-            rewrite_front (x,env)
+        if (ExpIntern.intern_exp (Env.isACorC env) orig)=(ExpIntern.intern_exp (Env.isACorC env) x) then
+            (x,env)
         else
-            rewrite_nokb_front (x,env)
-        with NoRewrite -> (x,env)
+            try if kb then
+                rewrite_front (x,env)
+            else
+                rewrite_nokb_front (x,env)
+            with NoRewrite -> (x,env)
     with NoRewrite -> (f,env))
 and int_rewrite e kb = (match e with
   | ((APPL (18,[c;e1;e2])),env) ->
@@ -205,7 +208,7 @@ and int_rewrite e kb = (match e with
                       let (res1,env1b) = rewrite_front (e1,env1) in
                       let env2 = Crewrite.create_rules (fun (x) -> [remove_normals x]) env (APPL (intern_if,[x;e1;e2])) 2 in
                       let (res2,env2b) = rewrite_front (e2,env2) in
-                          rewriteTopCont ((APPL (intern_if,[x;res1;res2])),env) kb
+                          rewriteTopCont (APPL (18,[c;e1;e2])) ((APPL (intern_if,[x;res1;res2])),env) kb
     in
         res)
   | ((APPL (9,[])),env) -> (intern_exp_true,env)
@@ -213,24 +216,24 @@ and int_rewrite e kb = (match e with
     if (!kbmode) && kb && Kbrewrite.useful_subterm env x [] then
         let (x,_) = rewrite_front (x,env) in
         let x = List.hd ((Kbrewrite.kbrewrite2 rewrite2_front env x [])@[x]) in
-            rewriteTopCont (APPL (intern_not,[x]),env) kb
+            rewriteTopCont (APPL (9,[(APPL (17,[x]))])) (APPL (intern_not,[x]),env) kb
     else
         let (x,_) = rewrite_front (x,env)
         in
-            rewriteTopCont (APPL (intern_not,[x]),env) kb
+            rewriteTopCont (APPL (9,[(APPL (17,[x]))])) (APPL (intern_not,[x]),env) kb
   | ((APPL (9,[x])),env) ->
     if (!kbmode) && kb && Kbrewrite.useful_subterm env x [] then
         let (x,_) = rewrite_front (x,env) in
         let x = List.hd ((Kbrewrite.kbrewrite2 rewrite2_front env x [])@[x]) in
-            rewriteTopCont (x,env) kb
+            rewriteTopCont (APPL (9,[x])) (x,env) kb
     else
         rewrite_front (x,env)
   | (APPL (9,l),env) ->
-    rewriteTopCont (flt (repeat_rewrite rewrite_nokb_front ((APPL (intern_and,l)),env))) kb
+    rewriteTopCont (APPL (9,l)) (flt (repeat_rewrite rewrite_nokb_front ((APPL (intern_and,l)),env))) kb
   | ((APPL (10,[])),env) -> (intern_exp_false,env)
   | ((APPL (10,[x])),env) -> rewrite_front (ExpIntern.intern_exp (Env.isACorC env) x,env)
   | (APPL (10,l),env) ->
-    rewriteTopCont (flt (repeat_rewrite rewrite_front ((APPL (intern_or,l)),env))) kb
+    rewriteTopCont (APPL (10,l)) (flt (repeat_rewrite rewrite_front ((APPL (intern_or,l)),env))) kb
   | (APPL (1,[l;r;c]),env) ->
     let (c,env) = rewrite_front (c,env) in
     let e2 = Crewrite.create_rules (fun (x) -> [remove_normals x]) env
@@ -238,41 +241,41 @@ and int_rewrite e kb = (match e with
     let _ = Trace.trace_list "rewrite" (fun (x) -> List.map (fun (x) -> "contadd " ^ (prExp (ExpIntern.decode_exp (REF x)))) (Env.getContextList e2)) in
     let (l,_) = rewrite_front (l,e2) in
     let (r,_) = rewrite_front (r,e2) in
-        rewriteTopCont (APPL (intern_oriented_rule,[l;r;c]),env) kb
+        rewriteTopCont (APPL (1,[l;r;c])) (APPL (intern_oriented_rule,[l;r;c]),env) kb
   | (APPL (2,[l;r;c]),env) ->
     let (c,env) = rewrite_front (c,env) in
     let e2 = Crewrite.create_rules (fun (x) -> [remove_normals x]) env
                  (APPL (intern_unoriented_rule,[l;r;c])) 0 in
     let (l,_) = rewrite_front (l,e2) in
     let (r,_) = rewrite_front (r,e2) in
-        rewriteTopCont (APPL (intern_unoriented_rule,[l;r;c]),env) kb
+        rewriteTopCont (APPL (2,[l;r;c])) (APPL (intern_unoriented_rule,[l;r;c]),env) kb
   | (APPL (17,[e]),env) ->
     let (e2,envs) = if kb then rewrite_sub env e 0 else rewrite_nokb_sub env e 0 in
-    let (res,env) = rewriteTopCont ((APPL (intern_not,[e2])),envs) kb in
+    let (res,env) = rewriteTopCont (APPL (17,[e])) ((APPL (intern_not,[e2])),envs) kb in
         (res,env)
-  | (APPL (71,l),env) -> rewriteTopCont (APPL (71,l),env) kb
-  | (APPL (72,l),env) -> rewriteTopCont (APPL (72,l),env) kb
+  | (APPL (71,l),env) -> rewriteTopCont (APPL (71,l)) (APPL (71,l),env) kb
+  | (APPL (72,l),env) -> rewriteTopCont (APPL (72,l)) (APPL (72,l),env) kb
   | (APPL (s,l2),env) ->
     let (l,envs,_) = List.fold_left (fun (r,env,n) -> (fun e ->
                                 let (e,env) = (rewrite_sub env e n)
                                 in
                                    (r@[e],env,n+1)
                                 )) ([],env,0) l2 in
-    let (res,env) = rewriteTopCont ((APPL (s,l)),envs) kb in
+    let (res,env) = rewriteTopCont (APPL (s,l2)) ((APPL (s,l)),envs) kb in
         if l=l2 then (Env.flatten_top env res,env) else (res,env)
   | ((QUANT (v,t,e,p)),env) ->
     let (r_e,env) = try rewrite_front (e,env) with NoRewrite -> (e,env) in
     let (r_p,env) = try rewrite_front (p,env) with NoRewrite -> (p,env) in
-        rewriteTopCont ((QUANT (v,t,r_e,r_p)),env) kb
+        rewriteTopCont (QUANT (v,t,e,p)) ((QUANT (v,t,r_e,r_p)),env) kb
   | (LET (v,t,e,p),env) ->
     let (r_e,env) = rewrite_front (e,env) in
     let (r_p,env) = rewrite_front (p,env) in
-        rewriteTopCont (LET (v,t,r_e,r_p),env) kb
+        rewriteTopCont (LET (v,t,e,p)) (LET (v,t,r_e,r_p),env) kb
   | (CASE (e,t,c),env) ->
     let (r_e,env) = rewrite_front (e,env) in
     let r_c = List.map (fun (p,e) -> (p,let (e,_) = rewrite_front (e,env) in e)) c in
-        rewriteTopCont (CASE (r_e,t,r_c),env) kb
-  | x -> rewriteTopCont x kb)
+        rewriteTopCont (CASE (e,t,c)) (CASE (r_e,t,r_c),env) kb
+  | (x,env) -> rewriteTopCont x (x,env) kb)
 and rewrite_sub env x n = try rewrite_front (x,env) with NoRewrite -> (x,env)
 and rewrite_nokb_sub env x n = rewrite_nokb_front (x,env)
 and rewrite2_front env x =

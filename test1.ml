@@ -5,7 +5,6 @@ print_string ("Test 2:" ^ (Exp.prExp exp2) ^ "\n") ;;
 let exp3 = Exp.parseExp "apply((fn x => nplus(x,3)),4)" ;;
 print_string ("Test 3:" ^ (Exp.prExp exp3) ^ "\n") ;;
 
-Trace.toggle_trace () ;;
 let exp4 = List.hd (Inner.rewrite2 Env.emptyEnv exp3) ;;
 print_string ("Test 4: " ^ Exp.prExp exp4 ^ "\n") ;;
 (*let (Exp.APPL (f,l)) = exp4 ;;
@@ -332,4 +331,91 @@ let exp_test = Exp.parseExp "EXISTS(x) x==ntimes(q,r) & y==nplus(x,1)" ;;
 print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "EXISTS(x) x==ntimes(q,r)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "CASE x OF 0 => 1 ||| 1 => 2" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "CASE True() OF True() => 1 ||| False() => 2" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let env_1 = Env.addTypeDefinition Env.emptyEnv (Type.parseWholeDef "List(t) = Nil | Cons(t,List(t))");;
+
+let env_2 = Env.addFunction env_1 ((Exp.parseExp "append(a,b)"),
+            (Type.parse "List(a) * List(a) -> List(a)"),
+            (Exp.parseExp "True"),
+    [
+        Exp.parseRule "append(Cons(f,r),b) -> Cons(f,append(r,b))";
+        Exp.parseRule "append(Nil,b) -> b)"
+    ]) [] ;;
+
+let exp_test = Exp.parseExp "CASE Nil() OF Nil() => nplus(1,10) ||| Cons(a,b) => 2" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 Env.emptyEnv exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "append(Cons(2,Nil),3)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_2 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let env_3 = Env.addProperty env_2 (Exp.parseRule "append(append(a,b),c) -> append(a,append(b,c))") ;;
+
+let exp_test = Exp.parseExp "append(append(a,Cons(1,Nil)),c)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_3 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let env_4 = Env.addFunction env_3 ((Exp.parseExp "yin(x)"),
+            (Type.parse "Natural -> Natural"),
+            (Exp.parseExp "True"),
+    [
+        Exp.parseRule "yin(0) -> 3";
+        Exp.parseRule "yin(x) { nless(0,x) } -> nplus(yin(nminus(x,1)),1)"
+    ]) [] ;;
+
+let env_5 = Env.addFunction env_4 ((Exp.parseExp "yan(x)"),
+            (Type.parse "Natural -> Natural"),
+            (Exp.parseExp "True"),
+    [
+        Exp.parseRule "yan(0) -> 4";
+        Exp.parseRule "yan(x) { nless(0,x) } -> nminus(yan(nminus(x,1)),1)"
+    ]) [] ;;
+
+let env_6 = Env.addProperty env_5 (Exp.parseRule "nplus(yin(x),yan(x)) -> 4") ;;
+
+let exp_test = Exp.parseExp "nplus(yin(x),yan(x))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+Trace.toggle_trace () ;;
+let exp_test = Exp.parseExp "nplus(yin(x),yan(nplus(x,1)))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "nplus(yin(3),yan(4))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "nplus(yin(x),5,yan(x),3)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "nplus(yan(x),5,yin(x),3)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
 

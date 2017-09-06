@@ -191,7 +191,7 @@ and prRestExp t = match t with
   | (APPL (21,[a;b])) -> "," ^ (prExp a) ^ (prRestExp b)
 and prCases t = match t with
   | [] -> ""
-  | ((p,e)::n::r) -> (prExp p) ^ " => " ^ (prExp e) ^ " | " ^
+  | ((p,e)::n::r) -> (prExp p) ^ " => " ^ (prExp e) ^ " ||| " ^
             (prCases (n::r))
   | [(p,e)] -> (prExp p) ^ " => " ^ (prExp e)
 and prLet t = match t with
@@ -244,6 +244,8 @@ let isConstructor s =
 let rec factor l =
             (((((getToken (ID "LET")) & bindings) & (getToken (ID "IN"))) &
                 exp) ==> (fun (((a,b),c),d) -> buildLet b d)
+            ||| (((((getToken (ID "CASE")) & exp) & (getToken (ID "OF"))) &
+                cases) ==> (fun (((a,b),c),d) -> (CASE (b,Type.notype,d))))
             ||| (getToken (ID "NOEXP") ==> (fun (x) -> NOEXP))
             ||| (((((((getToken (ID "ALL")) & (getToken (SPECIAL "("))) &
                 (getToken (SPECIAL ":"))) & exp) &
@@ -320,6 +322,11 @@ let rec factor l =
 and varList l = (((((getToken (ID "")) & (getToken (SPECIAL ","))) & varList)
                     ==> (fun ((ID i,x),l) -> ((Intern.intern i,Type.notype)::l)))
              ||| ((getToken (ID "") ==> (fun (ID x) -> [(Intern.intern x,Type.notype)])))) l
+and acase l = (((exp & getToken (SYMBOL "=>")) & exp) ==>
+                    (fun ((a,b),c) -> (a,c))) l
+and cases l = ((((acase & getToken (SYMBOL "|||")) & cases)
+                  ==> (fun ((a,b),c) -> (a::c)))
+              ||| (acase ==> (fun (c) -> [c]))) l
 and binding l = (((exp & getToken (SYMBOL "=")) & exp) ==>
                     (fun ((a,b),c) -> (a,c))) l
 and bindings l = ((((binding & getToken (SPECIAL ",")) & bindings)
