@@ -154,7 +154,7 @@ let intern_exp_false = ExpIntern.intern_exp (fun (x) -> false) (parseExp "False"
 
 let flt (e,env) = (Env.flatten_top env e,env) ;;
 
-let kbmode = ref false ;;
+let kbmode = ref true ;;
 
 let rec rewriteTop (exp,env) kb =
     (let _ = Trace.trace "rewrite" (fun (x) -> "builtin " ^ (prExp exp)) in
@@ -167,10 +167,9 @@ let rec rewriteTop (exp,env) kb =
     let _ = Trace.undent () in
     let _ = Trace.trace "rewrite" (fun (x) -> "end builtin " ^ (prExp (List.hd (rew@[exp])))) in
     let (res,env,kb) =
-            (if rew = [] then
-                let x = (Rule_app.rewriteRule rewrite2_front env exp [])
-                in
-                    if x=[] then
+            (if rew = [] || rew=[exp] then
+                let x = (Rule_app.rewriteRule rewrite2_front env exp []) in
+                    if x=[] || x==[exp] then
                        (if (!kbmode) && kb && (Kbrewrite.useful_subterm env exp []) then
                             let n = Kbrewrite.kbrewrite2 rewrite2_front env (ExpIntern.decode_two_exp exp) []
                             in

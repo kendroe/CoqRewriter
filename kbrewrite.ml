@@ -73,7 +73,8 @@ let rec parent l = match l with
   | (a::b) -> a::(parent b)
   ;;
 
-let is_relevant_operator env e = match e with
+let rec is_relevant_operator env e = match e with
+  | (REF x) -> is_relevant_operator env (ExpIntern.decode_two_exp (REF x))
   | (APPL (f,[a;b])) ->
     (Env.isEQ env f) || (Env.isOrder env f)
   | _ -> false
@@ -90,6 +91,7 @@ let is_conjunction e = match e with
   ;;
 
 let rec is_useful_conjunction env e = match e with
+  | (REF x) -> is_useful_conjunction env (ExpIntern.decode_two_exp (REF x))
   | (APPL (9,l)) ->
     List.mem true (List.map (is_relevant_term env) l)
   | _ -> false
@@ -288,12 +290,12 @@ and break_list rewrite env e l1 l2 = match (l1,l2) with
 let break_down_op rewrite env e = match e with
   | (APPL (f,[a;b])) ->
     if is_relevant_operator env (APPL (f,[a;b])) then
-        ((break_term rewrite env a)@(break_term rewrite env b))
+        (APPL (f,[a;b]))::(((break_term rewrite env a)@(break_term rewrite env b)))
     else
         []
   | (APPL (17,[APPL (f,[a;b])])) ->
     if is_relevant_operator env (APPL (f,[a;b])) then
-        ((break_term rewrite env a)@(break_term rewrite env b))
+        ((APPL (17,[APPL (f,[a;b])]))::((break_term rewrite env a)@(break_term rewrite env b)))
     else
         []
   | x -> []
@@ -516,10 +518,11 @@ let can_combine oper op1 op2 =
   ;;
 
 let elaborate_phase env oper terms =
-    let (*val _ = map (fn (x) => print ("t = " ^ (prExp (intern_term env x)) ^ "\n")) terms*)
-        terms = List.map (intern_term env) terms in
-        (*val _ = print "Combine\n"
+    let _ = Trace.trace_list "kbrewrite" (fun x -> (List.map (fun (x) -> ("elaborate term = " ^ (prExp (intern_term env x)))) terms)) in
+    let terms = List.map (intern_term env) terms in
+        (*val _ = print "Combine"
         _ = flush_out std_out*)
+    let _ = Trace.trace_list "kbrewrite" (fun x -> (List.map (fun (x) -> ("elaborate term2 = " ^ (prExp (intern_term env x)))) terms)) in
     let rec add_terms oo t l = match l with
           | [] -> (oo,t)
           | (f::rest) ->
@@ -576,15 +579,32 @@ let elaborate_phase env oper terms =
                      in
                          (st,dt)
                      ))) two_ref (one_ref,two_ref) in
+    let rec combine_rev_terms one_ref two_ref =
+            PairsMap.fold (fun (f,s) -> (fun nl -> (fun (st,dt) ->
+                if List.length nl==0 then (st,dt) else
+                (*let _ = Trace.trace_list "kbrewrite" (fun x -> (List.map (fun y -> "tt " ^ (prExp (decode_term (REF y)))) nl)) in*)
+                (*let _ = Trace.trace "kbrewrite" (fun x -> "length " ^ (string_of_int (List.length nl))) in*)
+                let [term] = (List.map (fun (x) -> decode_term (REF x)) nl) in
+                let (REF l) = get_left_operand oper term in
+                let (REF r) = get_right_operand oper term in
+                let rps = try PairsMap.find (r,l) dt with Not_found -> [] in
+                    if rps=[] then (st,dt)
+                    else let [rt] = rps in
+                         let REF (nnew) = ExpIntern.intern_exp (Env.isACorC env) (and_combine_operands oper (decode_term (REF rt)) term) in
+                         (*let _ = Trace.trace "kbrewrite" (fun x -> "found pair " ^ (prExp term) ^ " " ^ (prExp (decode_term (REF rt)))) in*)
+                         let (st,dt) = delete_terms st dt (List.map (fun (x) -> REF x) nl) in
+                         let (st,dt) = add_terms st dt [(REF nnew)] in
+                             (st,dt)))) two_ref (one_ref,two_ref) in
     let (one_ref,two_ref) = combine_terms one_ref two_ref in
+    let (one_ref,two_ref) = combine_rev_terms one_ref two_ref in
         (*val _ = print "Loop\n"
         val _ = flush_out std_out*)
         (*val _ = trace_list "kbrewrite" (fn (e) => map (fn (x,_) => ("start " ^ (prExp x))) terms)
         val _ = trace_list "kbrewrite" (fn (e) => map (fn (x,_) => ("combined " ^ (prExp x))) combined)*)
 
     let make_tran_op1 make op1 op2 =
-            (*let val _ = print ("t3 = " ^ (prExp op1) ^ "\n")
-            let _ = print ("t4 = " ^ (prExp op2) ^ "\n")*)
+            (*let _ = Trace.trace "kbrewrite" (fun x -> ("t3 = " ^ (prExp op1))) in*)
+            (*let _ = Trace.trace "kbrewrite" (fun x -> ("t4 = " ^ (prExp op2))) in*)
             let l1 = get_left_operand oper op1 in
             let l2 = get_left_operand oper op2 in
             let r1 = get_right_operand oper op1 in
@@ -595,6 +615,8 @@ let elaborate_phase env oper terms =
                 (if r1=r2 then [make oper l1 l2] else []) in
 
     let make_tran_op2 make op1 op2 =
+            (*let _ = Trace.trace "kbrewrite" (fun x -> ("t5 = " ^ (prExp op1))) in*)
+            (*let _ = Trace.trace "kbrewrite" (fun x -> ("t6 = " ^ (prExp op2))) in*)
             let l1 = get_left_operand oper op1 in
             let l2 = get_left_operand oper op2 in
             let r1 = get_right_operand oper op1 in
@@ -606,6 +628,8 @@ let elaborate_phase env oper terms =
             in
 
     let make_dir_tran_op make op1 op2 =
+            (*let _ = Trace.trace "kbrewrite" (fun x -> ("t7 = " ^ (prExp op1))) in*)
+            (*let _ = Trace.trace "kbrewrite" (fun x -> ("t8 = " ^ (prExp op2))) in*)
             let l1 = get_left_operand oper op1 in
             let l2 = get_left_operand oper op2 in
             let r1 = get_right_operand oper op1 in
@@ -615,6 +639,8 @@ let elaborate_phase env oper terms =
             in
 
     let closure_terms op1 op2 =
+           Trace.trace "kbrewrite" (fun x -> "closure_terms " ^ (prExp op1) ^ " " ^ (prExp op2)) ;
+           let (a,b,c) = oper in Trace.trace "kbrewrite" (fun x -> "oper " ^ (Intern.decode a) ^ " " ^ (Intern.decode b) ^ " " ^ (Intern.decode c));
            if is_eq oper op1 then
                (if is_eq oper op2 then
                     make_tran_op2 mk_eq op1 op2
@@ -683,12 +709,13 @@ let elaborate_phase env oper terms =
                 let (REF right) = get_right_operand oper x in
                 let nl1 = try PairsMap.find (left,right) dd with Not_found -> [] in
                 let nl2 = try PairsMap.find (right,left) dd with Not_found -> [] in
+                let nl2 = List.filter (fun x -> is_eq oper (decode_term (REF x))) nl2 in
                 let nl = nl1@nl2 in
                 let terms = List.map (fun (x) -> decode_term (REF x)) nl in
                     not((List.filter (fun (t) -> represented_by x t) terms)=[]) in
             let nt = new_transitive_terms sd dd terms in
-                (*val _ = print "    Cycle\n"
-            let _ = List.map (fun (x) -> print ("    b " ^ (prExp x) ^ "\n")) nt*)
+            let _ = Trace.trace "kbrewrite" (fun x -> "    Cycle") in
+            let _ = Trace.trace_list "kbrewrite" (fun xx -> (List.map (fun (x) -> ("    b " ^ (prExp x))) nt)) in
             let nt1 = List.map (fun (REF x) -> x)
                           (List.map (ExpIntern.intern_exp (Env.isACorC env)) nt)
  in
@@ -696,24 +723,28 @@ let elaborate_phase env oper terms =
             let nt = List.map
                          (fun (a,b) -> intern_term env (REF a))
                          (SingleMap.bindings ntdict) in
-            let new_trans = List.filter (fun (x) -> not(member x dd)) nt
-                (*val _ = map (fn (x) => print ("    a " ^ (prExp x) ^ "\n")) new_trans*)
-            in
+            let new_trans = List.filter (fun (x) -> not(member x dd)) nt in
+            let _ = Trace.trace_list "kbrewrite" (fun x -> List.map (fun (x) -> ("    a " ^ (prExp x))) new_trans) in
                 if new_trans=[] then
                     (sd,dd)
                 else
                     (let (sd,dd) = add_terms sd dd new_trans in
-                        (*val res = fold append (map (fn (_,t) => t) (DoubleIntDict.listItems dd)) []*)
-                        (*val _ = map (fn (x) => print ("    t1 = " ^ (prExp (decode_term (REF x))) ^ "\n")) res*)
-                    let (sd,dd) = combine_terms sd dd
-                        (*val res = fold append (map (fn (_,t) => t) (DoubleIntDict.listItems dd)) []*)
-                        (*val _ = map (fn (x) => print ("    t2 = " ^ (prExp (decode_term (REF x))) ^ "\n")) res*)
-                    in
-                        transitive_closure sd dd new_trans) in
+                     let res = List.fold_left List.append [] (List.map (fun (_,t) -> t) (PairsMap.bindings dd)) in
+                     let _ = Trace.trace "kbrewrite" (fun x -> "ta1 count = " ^ (string_of_int (List.length res))) in
+                     let _ = Trace.trace_list "kbrewrite" (fun x -> List.map (fun (x) -> ("    ta1 = " ^ (prExp (decode_term (REF x))))) res) in
+                     let (sd,dd) = combine_terms sd dd in
+                     let (sd,dd) = combine_rev_terms sd dd in
+                     let res = List.fold_left List.append [] (List.map (fun (_,t) -> t) (PairsMap.bindings dd)) in
+                     let _ = Trace.trace_list "kbrewrite" (fun (x) -> List.map (fun (x) -> ("    t2 = " ^ (prExp (decode_term (REF x))))) res) in
+                     let rr = List.map (fun x -> decode_term (REF x)) res in
+                        if List.mem (APPL (intern_false,[])) rr then
+                            (sd,dd)
+                        else
+                            transitive_closure sd dd new_trans) in
         let (sd,dd) = transitive_closure one_ref two_ref terms in
-        let res = List.fold_right List.append (List.map (fun (_,t) -> t) (PairsMap.bindings dd)) []
-        (*val _ = map (fn (x) => print ("    t = " ^ (prExp (decode_term (REF x))) ^ "\n")) res*)
-    in
+        let res = List.fold_right List.append (List.map (fun (_,t) -> t) (PairsMap.bindings dd)) [] in
+        let _ = Trace.trace "kbrewrite" (fun (x) -> "Elaboration") in
+        let _ = Trace.trace_list "kbrewrite" (fun q -> List.map (fun (x) -> ("    t = " ^ (prExp (decode_term (REF x))) ^ "\n")) res) in
         (List.map (fun (x) -> decode_term (REF x)) res)
     ;;
 
@@ -721,6 +752,8 @@ let has_change = ref false ;;
 
 let rec rewrite_op (t,c,e) env cond_terms terms =
     let _ = Trace.trace "kbrewrite" (fun (x) -> ("Operator " ^ (decode t) ^ " " ^ (decode c) ^ " " ^ (decode e))) in
+    let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("cond_term " ^ (prExp x))) cond_terms) in
+    let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("terms " ^ (prExp x))) terms) in
     let terms = List.map (intern_term env) terms in
         (*val _ = print "elaborate1\n"
         val _ = flush_out std_out*)
@@ -741,15 +774,22 @@ let rec rewrite_op (t,c,e) env cond_terms terms =
                 strengthen_term b term
     in
         if List.mem (APPL (intern_false,[])) results1 then
-            (has_change := true ; [[APPL (intern_true,[])]])
+            (Trace.trace "kbrewrite" (fun x -> "True case");
+            (has_change := true ; [[APPL (intern_true,[])]]))
         else if List.mem (APPL (intern_false,[])) results2 then
-            (has_change := true ; [[APPL (intern_false,[])]])
+            (Trace.trace "kbrewrite" (fun x -> "False case");
+            (has_change := true ; [[APPL (intern_false,[])]]))
         else
+            let _ = Trace.trace "kbrewrite" (fun x -> "Default case") in
+            let r =
             [(List.filter
                  (fun (x) -> if List.mem x results1 then (if List.mem x terms then ((has_change := true) ; false) else false) else true)
                  (List.map
                      (strengthen_term results2)
-                     terms))]
+                     terms))] in
+            let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("return " ^ (prExp x))) (List.hd r)) in
+                r
+ 
     ;;
 
 let rec make_builtins l = match l with
@@ -801,9 +841,9 @@ let rec get_constants e = match e with
   | _ -> [] ;;
 
 let main_rewrite_loop rewrite env exp =
-    let _ = Trace.trace "kbrewrite" (fun (xx) -> "KB Rewriting " ^ (prExp exp)) in
-    let _ = Trace.indent () in
     let terms = List.filter binary_term (break_down_ops rewrite env exp) in
+    let _ = Trace.trace "kbrewrite" (fun (xx) -> "KB Rewriting " ^ (prExp exp) ^ " " ^ (string_of_int (List.length terms)) ^ " " ^ (string_of_int (List.length (break_down_ops rewrite env exp)))) in
+    let _ = Trace.indent () in
     let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("term " ^ (prExp x))) terms) in
     let env_terms = get_env_terms env (Context.getFreeVars (ExpIntern.decode_exp exp)) in
         (*val _ = map (fn (x) => print ("env " ^ (prExp x) ^ "\n")) env_terms*)
@@ -811,7 +851,7 @@ let main_rewrite_loop rewrite env exp =
     let env_op_terms =
             (List.filter binary_term (List.fold_right List.append (List.map (break_down_ops rewrite env) env_terms) [])) in
     let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("env_op_term " ^ (prExp x))) env_op_terms) in
-    let cond_terms = terms@env_terms@env_op_terms in
+    let cond_terms = env_terms@env_op_terms in
     let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("cond_term " ^ (prExp x))) cond_terms) in
     let exp_terms1 = (match exp with
                            | (APPL (9,l)) -> l
@@ -819,10 +859,11 @@ let main_rewrite_loop rewrite env exp =
     let exp_terms = List.filter binary_term exp_terms1 in
     let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("exp_term " ^ (prExp x))) exp_terms) in
     let all_terms = (exp_terms@cond_terms) in
+    let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("all_term " ^ (prExp x))) all_terms) in
     let operands = List.fold_right List.append (List.map get_constants all_terms) [] in
     let builtin_terms = make_builtins operands in
     let cond_terms = cond_terms@builtin_terms in
-    let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("cond_term " ^ (prExp x))) cond_terms) in
+    let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("cond_term2 " ^ (prExp x))) cond_terms) in
     let residue = Mylist.difference exp_terms1 exp_terms in
     let _ = Trace.trace_list "kbrewrite" (fun (e) -> List.map (fun (x) -> ("residue " ^ (prExp x))) residue) in
     let ops = (List.filter
@@ -844,9 +885,8 @@ let main_rewrite_loop rewrite env exp =
     let _ = Trace.indent () in
     let _ = Trace.trace_list "kbrewrite" (fun (xx) -> List.map prExp res) in
     let _ = Trace.undent () in
-    let _ = Trace.undent ()
-    in
-        if (!has_change) then res else []
+    let _ = Trace.undent () in
+        if res=[exp] then [] else if (!has_change) then res else []
     ;;
 
 let rewritexx rewrite env e =
@@ -897,8 +937,8 @@ let kbrewrite2 rewrite e x t =
         []
     else
         let _ = (in_kb := true) in
-            (*val _ = print ("start kbrewrite " ^ (prExp (ExpIntern.decode_exp x)) ^ "\n")
-            val _ = TextIO.flushOut TextIO.stdOut*)
+        (*let _ = print_string ("start kbrewrite " ^ (prExp (ExpIntern.decode_exp x)) ^ "\n") in*)
+            (*val _ = TextIO.flushOut TextIO.stdOut*)
         let r = (List.filter
                     (fun (xx) -> Match.equal_smaller e xx x)
                     (List.map (replaceSubterm x t) (main_rewrite_loop rewrite (make_cond_env rewrite e x t) (getSubterm x t)))) in

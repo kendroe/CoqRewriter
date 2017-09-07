@@ -439,7 +439,9 @@ let isAorC env s =
         x>=1 && x<=4
     ;;
 
-let isEQ env s = (modeGet (getModeList env) s)=4 ;;
+let isEQ env s =
+    (*(print_string ("Mode of " ^ (Intern.decode s) ^ " is " ^ (string_of_int (modeGet (getModeList env) s)) ^ "\n"));*)
+    (modeGet (getModeList env) s)=4 ;;
 
 let isOrder env s = (modeGet (getModeList env) s)=5 ;;
 
@@ -645,23 +647,23 @@ let clearContextRules env =
 let addFailedList env exp =
     setFailedList env (exp::(getFailedList env)) ;;
 
-let checkAC intern_ac e d = match e with
-  | [S(s)] -> Disc.makeAC s d
-  | [S(s)] -> Disc.makeAC s d
-  | [S(s)] -> Disc.makeAC s d
+let checkAC t e d = match (t,e) with
+  | (24,[S(s)]) -> Disc.makeAC s d
+  | (25,[S(s)]) -> Disc.makeAC s d
+  | (26,[S(s)]) -> Disc.makeAC s d
   | _ -> d
   ;;
 
-let markAC intern_ac e d = match e with
-  | [S(s)] -> modeSet d s 3
-  | [S(s)] -> modeSet d s 1
-  | [S(s)] -> modeSet d s 2
-  | [S(s);S(e)] -> modeSet (modeSet d s 5) e 4
-  | [S(s);S(e)] -> modeSet (modeSet d s 5) e 4
-  | [S(s);S(e)] -> modeSet (modeSet d s 5) e 4
-  | [S(s);S(e)] -> modeSet (modeSet d s 5) e 4
-  | [S(s)] -> modeSet d s 4
-  | _ -> d
+let markAC t e d = match (t,e) with
+  | (24,[S(s)]) -> modeSet d s 3
+  | (25,[S(s)]) -> modeSet d s 1
+  | (26,[S(s)]) -> modeSet d s 2
+  | (32,[S(s);S(e)]) -> modeSet (modeSet d s 5) e 4
+  | (30,[S(s);S(e)]) -> modeSet (modeSet d s 5) e 4
+  | (31,[S(s);S(e)]) -> modeSet (modeSet d s 5) e 4
+  | (27,[S(s);S(e)]) -> modeSet (modeSet d s 5) e 4
+  | (28,[S(s)]) -> modeSet d s 4
+  | (_,_) -> d
   ;;
 
 let addAttrib env s pl =
@@ -1424,18 +1426,7 @@ let addConversion env c =
     ;;
 
 let l1 =
-     [Attrib(intern_ac,[S(intern_and)]);
-      Attrib(intern_ac,[S(intern_or)]);
-      Attrib(intern_ac,[S(intern_nat_plus)]);
-      Attrib(intern_ac,[S(intern_nat_times)]);
-      Attrib(intern_ac,[S(intern_rat_plus)]);
-      Attrib(intern_ac,[S(intern_rat_times)]);
-      Attrib(intern_c,[S(intern_equal)]);
-      Attrib(intern_eq,[S(intern_equal)]);
-      Attrib(intern_epo,[S(intern_preceq);S(intern_equal)]);
-      Attrib(intern_po,[S(intern_nat_less);S(intern_equal)]);
-      Attrib(intern_po,[S(intern_rat_less);S(intern_equal)]);
-      TypeDefinition (Type.parse "Bool",
+     [TypeDefinition (Type.parse "Bool",
                       Type.parseDef "True|False");
       FiniteType(Intern.intern_bool);
       FiniteConstructor(Intern.intern_true);
@@ -1610,7 +1601,23 @@ let emptyEn1 = (x
                  [],
                  Pp.emptyPpenv,(Disc.newSmall,[]),[],[])) ;;
 
-let emptyEnv = emptyEn1 ;;
+let emptyEn2 = (addAttrib (addAttrib (addAttrib (addAttrib (addAttrib
+               (addAttrib (addAttrib (addAttrib (addAttrib (addAttrib
+               (addAttrib (addAttrib emptyEn1
+                   intern_ac [S(intern_and)])
+                   intern_ac [S(intern_and)])
+                   intern_ac [S(intern_or)])
+                   intern_ac [S(intern_nat_plus)])
+                   intern_ac [S(intern_nat_times)])
+                   intern_ac [S(intern_rat_plus)])
+                   intern_ac [S(intern_rat_times)])
+                   intern_c [S(intern_equal)])
+                   intern_eq [S(intern_equal)])
+                   intern_epo [S(intern_preceq);S(intern_equal)])
+                   intern_po [S(intern_nat_less);S(intern_equal)])
+                   intern_po [S(intern_rat_less);S(intern_equal)]) ;;
+
+let emptyEnv = emptyEn2 ;;
 
 (*let emptyEnv = addConversion
                    (addOverload

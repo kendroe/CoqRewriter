@@ -58,23 +58,24 @@ let rec indent_line n = match n with
    | 0 -> ()
    | n ->
      if n > 0 then
-         (output_string (!f) " " ;
+         (output_string (!f) " " ; flush (!f) ;
           indent_line (n-1))
      else () ;;
 
 let trace x s =
      if !trace_on && List.mem x (!blocks) then
          (indent_line (!ind) ;
-          output_string (!f) ((s ()) ^ "\n")) else () ;;
+          (*print_string ((s ()) ^ "\n") ; flush stdout ;*)
+          output_string (!f) ((s ()) ^ "\n") ; flush (!f)) else () ;;
 
 let trace_list x s =
      if List.mem x (!blocks) && (!trace_on) then
-         ((List.map
+         (List.map
              (fun (x) ->
                  (indent_line (!ind) ;
-                  output_string (!f) (x ^ "\n")))
-     ) ;
-             (s ()) ; ())
+                  (*print_string (x ^ "\n") ; flush stdout ;*)
+                  output_string (!f) (x ^ "\n"))) (s ()) ; ()
+     )
      else () ;;
 
 

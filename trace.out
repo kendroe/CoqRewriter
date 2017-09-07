@@ -1,1193 +1,504 @@
-rewriting subterm: nplus(yin(x), yan(nplus(x, 1)))
-  rewriting expression: nplus(yin(x), yan(nplus(x, 1)))
-    rewriting expression: yin(<<4>>)
+rewriting subterm: nless(x, y)  & nless(y, z) & nless(z, x)
+  rewriting expression: nless(x, y)  & nless(y, z) & nless(z, x)
+    Deriving nless(z', x') { True } -> True
+      d nless(z', x') { N[True] } -> N[True]
       Result:
-        <<547>>
-        yin(x)
-    end rewrite for: yin(<<4>>)
-    rewriting expression: yan(<<186>>)
-      rewriting expression: nplus(<<4>>, <<34>>)
+        N[nless(z', x')] { N[True] } -> N[True]
+    end derive for: nless(z', x') { True } -> True
+    Deriving nless(x', y') & nless(y', z') { True } -> True
+      d nless(x', y') & nless(y', z') { N[True] } -> N[True]
+      d nless(x', y') { N[True] } -> N[True]
+      d nless(y', z') { N[True] } -> N[True]
+      Result:
+        N[nless(x', y')] { N[True] } -> N[True]
+        N[nless(y', z')] { N[True] } -> N[True]
+    end derive for: nless(x', y') & nless(y', z') { True } -> True
+    rewriting expression: <<177>> & <<199>>
+      Deriving nless(y', z') { True } -> True
+        d nless(y', z') { N[True] } -> N[True]
         Result:
-          <<186>>
-          nplus(x, 1)
-      end rewrite for: nplus(<<4>>, <<34>>)
-      builtin yan(<<186>>)
-      end builtin yan(nplus(<<4>>, <<34>>))
-      Rules:
-      match yan(x) yan(nplus(x, 1))
-      end match yan(x) yan(nplus(x, 1))
-      Applying yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(nplus(x, 1))
-        Match count: 1
-        Match2 count: 1
-        Match3 count: 1
-        rewriting subterm: nless(0, N[nplus(x, 1)])
-          rewriting expression: nless(0, N[nplus(x, 1)])
-            rewriting expression: 0
-              Result:
-                <<103>>
-                0
-            end rewrite for: 0
-            rewriting expression: nplus(<<4>>, <<34>>)
-              Result:
-                <<186>>
-                nplus(x, 1)
-            end rewrite for: nplus(<<4>>, <<34>>)
-            builtin nless(<<103>>, <<186>>)
-            end builtin nless(0, nplus(<<4>>, <<34>>))
-            Rules:
-            match nless(x, x) nless(0, nplus(x, 1))
-              equal 0 nplus(x, 1)
-              equal: No
-              equal 0 1
-              equal: No
-              equal 0 x
-              equal: No
-              equal 0 nplus()
-              equal: No
-            end match nless(x, x) nless(0, nplus(x, 1))
-            match nless(x, nplus(x, 1)) nless(0, nplus(x, 1))
-              equal 0 x
-              equal: No
-            end match nless(x, nplus(x, 1)) nless(0, nplus(x, 1))
-            match nless(0, nplus(x, 1)) nless(0, nplus(x, 1))
-            end match nless(0, nplus(x, 1)) nless(0, nplus(x, 1))
-            Applying nless(0, nplus(x, 1)) { True } -> True to nless(0, nplus(x, 1))
-              Match count: 1
-              Match2 count: 1
-              Match3 count: 1
-              rewriting subterm: True
-                rewriting expression: True
-                  Result:
-                    <<19>>
-                    True
-                end rewrite for: True
-                Result:
-              end rewrite subterm: True
-              r: True
-              Result count: 1
-            End apply nless(0, nplus(x, 1)) { True } -> True to nless(0, nplus(x, 1))
-            rewriting expression: True
-              Result:
-                <<19>>
-                True
-            end rewrite for: True
-            Result:
-              <<19>>
-              True
-          end rewrite for: nless(0, N[nplus(x, 1)])
-          Result:
-        end rewrite subterm: nless(0, N[nplus(x, 1)])
-        r: nminus(yan(nminus(N[nplus(x, 1)], 1)), 1)
-        Result count: 1
-      End apply yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(nplus(x, 1))
-      rewriting expression: nminus(yan(nminus(N[nplus(x, 1)], 1)), 1)
-        rewriting expression: yan(<<564>>)
-          rewriting expression: nminus(<<186>>, <<34>>)
-            rewriting expression: nplus(<<4>>, <<34>>)
-              Result:
-                <<186>>
-                nplus(x, 1)
-            end rewrite for: nplus(<<4>>, <<34>>)
-            rewriting expression: 1
-              Result:
-                <<34>>
-                1
-            end rewrite for: 1
-            builtin nminus(<<186>>, <<34>>)
-            end builtin nminus(nplus(<<4>>, <<34>>), 1)
-            Result:
-              <<564>>
-              nminus(nplus(x, 1), 1)
-          end rewrite for: nminus(<<186>>, <<34>>)
-          builtin yan(<<564>>)
-          end builtin yan(nminus(<<186>>, <<34>>))
+          N[nless(y', z')] { N[True] } -> N[True]
+      end derive for: nless(y', z') { True } -> True
+      rewriting expression: nless(<<1>>, <<2>>)
+        rewriting expression: y
+          builtin y
+          end builtin y
           Rules:
-          match yan(x) yan(nminus(nplus(x, 1), 1))
-          end match yan(x) yan(nminus(nplus(x, 1), 1))
-          Applying yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(nminus(nplus(x, 1), 1))
-            Match count: 1
-            Match2 count: 1
-            Match3 count: 1
-            rewriting subterm: nless(0, N[nminus(nplus(x, 1), 1)])
-              rewriting expression: nless(0, N[nminus(nplus(x, 1), 1)])
-                rewriting expression: 0
-                  Result:
-                    <<103>>
-                    0
-                end rewrite for: 0
-                rewriting expression: nminus(<<186>>, <<34>>)
-                  Result:
-                    <<564>>
-                    nminus(nplus(x, 1), 1)
-                end rewrite for: nminus(<<186>>, <<34>>)
-                builtin nless(<<103>>, <<564>>)
-                end builtin nless(0, nminus(<<186>>, <<34>>))
-                Rules:
-                match nless(a, nminus(b, x)) nless(0, nminus(nplus(x, 1), 1))
-                end match nless(a, nminus(b, x)) nless(0, nminus(nplus(x, 1), 1))
-                Applying nless(a, nminus(b, x)) { True } -> nless(nplus(x, a), b) to nless(0, nminus(nplus(x, 1), 1))
-                  Match count: 1
-                  Match2 count: 1
-                  Match3 count: 1
-                  rewriting subterm: True
-                    rewriting expression: True
-                      Result:
-                        <<19>>
-                        True
-                    end rewrite for: True
-                    Result:
-                  end rewrite subterm: True
-                  r: nless(nplus(N[1], N[0]), N[nplus(x, 1)])
-                  Result count: 1
-                End apply nless(a, nminus(b, x)) { True } -> nless(nplus(x, a), b) to nless(0, nminus(nplus(x, 1), 1))
-                rewriting expression: nless(nplus(N[1], N[0]), N[nplus(x, 1)])
-                  rewriting expression: nplus(<<34>>, <<103>>)
-                    rewriting expression: 1
-                      Result:
-                        <<34>>
-                        1
-                    end rewrite for: 1
-                    rewriting expression: 0
-                      Result:
-                        <<103>>
-                        0
-                    end rewrite for: 0
-                    builtin nplus(<<34>>, <<103>>)
-                    end builtin nplus(1)
-                    rewriting expression: nplus(1)
-                      rewriting expression: 1
-                        Result:
-                          <<34>>
-                          1
-                      end rewrite for: 1
-                      builtin nplus(<<34>>)
-                      end builtin 1
-                      rewriting expression: 1
-                        Result:
-                          <<34>>
-                          1
-                      end rewrite for: 1
-                      Result:
-                        <<34>>
-                        1
-                    end rewrite for: nplus(1)
-                    Result:
-                      <<34>>
-                      1
-                  end rewrite for: nplus(<<34>>, <<103>>)
-                  rewriting expression: nplus(<<4>>, <<34>>)
-                    Result:
-                      <<186>>
-                      nplus(x, 1)
-                  end rewrite for: nplus(<<4>>, <<34>>)
-                  builtin nless(<<34>>, <<186>>)
-                  end builtin nless(0, nplus(0, <<4>>))
-                  rewriting expression: nless(0, nplus(0, <<4>>))
-                    rewriting expression: 0
-                      Result:
-                        <<103>>
-                        0
-                    end rewrite for: 0
-                    rewriting expression: nplus(<<4>>, <<103>>)
-                      rewriting expression: x
-                        Result:
-                          <<4>>
-                          x
-                      end rewrite for: x
-                      rewriting expression: 0
-                        Result:
-                          <<103>>
-                          0
-                      end rewrite for: 0
-                      builtin nplus(<<4>>, <<103>>)
-                      end builtin nplus(x)
-                      rewriting expression: nplus(x)
-                        rewriting expression: x
-                          Result:
-                            <<4>>
-                            x
-                        end rewrite for: x
-                        builtin nplus(<<4>>)
-                        end builtin x
-                        rewriting expression: x
-                          Result:
-                            <<4>>
-                            x
-                        end rewrite for: x
-                        Result:
-                          <<4>>
-                          x
-                      end rewrite for: nplus(x)
-                      Result:
-                        <<4>>
-                        x
-                    end rewrite for: nplus(<<4>>, <<103>>)
-                    builtin nless(<<103>>, <<4>>)
-                    end builtin nless(0, x)
-                    Rules:
-                    match nless(x, x) nless(0, x)
-                      equal 0 x
-                      equal: No
-                    end match nless(x, x) nless(0, x)
-                    Result:
-                      <<550>>
-                      nless(0, x)
-                  end rewrite for: nless(0, nplus(0, <<4>>))
-                  Result:
-                    <<550>>
-                    nless(0, x)
-                end rewrite for: nless(nplus(N[1], N[0]), N[nplus(x, 1)])
-                Result:
-                  <<550>>
-                  nless(0, x)
-              end rewrite for: nless(0, N[nminus(nplus(x, 1), 1)])
-              Result:
-            end rewrite subterm: nless(0, N[nminus(nplus(x, 1), 1)])
-            Result count: 0
-          End apply yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(nminus(nplus(x, 1), 1))
           Result:
-            <<565>>
-            yan(nminus(nplus(x, 1), 1))
-        end rewrite for: yan(<<564>>)
-        rewriting expression: 1
+            <<1>>
+            y
+        end rewrite for: y
+        rewriting expression: z
+          builtin z
+          end builtin z
+          Rules:
           Result:
-            <<34>>
-            1
-        end rewrite for: 1
-        builtin nminus(<<565>>, <<34>>)
-        end builtin nminus(yan(<<564>>), 1)
+            <<2>>
+            z
+        end rewrite for: z
+        builtin nless(<<1>>, <<2>>)
+        end builtin nless(y, z)
         Rules:
-        match nminus(x, 0) nminus(yan(nminus(nplus(x, 1), 1)), 1)
-        end match nminus(x, 0) nminus(yan(nminus(nplus(x, 1), 1)), 1)
-        match nminus(x, x) nminus(yan(nminus(nplus(x, 1), 1)), 1)
-          equal yan(nminus(nplus(x, 1), 1)) 1
+          nless(x', y') { True } -> True
+          nless(z', x') { True } -> True
+          nless(x, x) { True } -> False
+        match nless(x', y') nless(y, z)
+        end match nless(x', y') nless(y, z)
+        match nless(z', x') nless(y, z)
+        end match nless(z', x') nless(y, z)
+        match nless(x, x) nless(y, z)
+          equal y z
           equal: No
-        end match nminus(x, x) nminus(yan(nminus(nplus(x, 1), 1)), 1)
+        end match nless(x, x) nless(y, z)
         Result:
-          <<566>>
-          nminus(yan(nminus(nplus(x, 1), 1)), 1)
-      end rewrite for: nminus(yan(nminus(N[nplus(x, 1)], 1)), 1)
-      Result:
-        <<566>>
-        nminus(yan(nminus(nplus(x, 1), 1)), 1)
-    end rewrite for: yan(<<186>>)
-    builtin nplus(<<547>>, <<566>>)
-    end builtin nplus(yin(<<4>>), nminus(<<565>>, <<34>>))
-    Rules:
-    match nplus(b, nminus(x, a)) nplus(yin(x), nminus(yan(nminus(nplus(x, 1), 1)), 1))
-    end match nplus(b, nminus(x, a)) nplus(yin(x), nminus(yan(nminus(nplus(x, 1), 1)), 1))
-    Applying nplus(b, nminus(x, a)) { True } -> nminus(x, nminus(a, b)) to nplus(yin(x), nminus(yan(nminus(nplus(x, 1), 1)), 1))
-      Match count: 1
-      Match2 count: 1
-      Match3 count: 1
-      rewriting subterm: True
-        rewriting expression: True
+          <<177>>
+      end rewrite for: nless(<<1>>, <<2>>)
+      equal <<177>> nless(<<1>>, <<2>>)
+      equal: Yes
+      rewriting expression: nless(<<4>>, <<1>>)
+        rewriting expression: x
+          builtin x
+          end builtin x
+          Rules:
           Result:
-            <<19>>
-            True
-        end rewrite for: True
-        Result:
-      end rewrite subterm: True
-      r: nminus(N[yan(nminus(nplus(x, 1), 1))], nminus(N[1], N[yin(x)]))
-      Result count: 1
-    End apply nplus(b, nminus(x, a)) { True } -> nminus(x, nminus(a, b)) to nplus(yin(x), nminus(yan(nminus(nplus(x, 1), 1)), 1))
-    rewriting expression: nminus(N[yan(nminus(nplus(x, 1), 1))], nminus(N[1], N[yin(x)]))
-      rewriting expression: yan(<<564>>)
-        Result:
-          <<565>>
-          yan(nminus(nplus(x, 1), 1))
-      end rewrite for: yan(<<564>>)
-      rewriting expression: nminus(<<34>>, <<547>>)
-        rewriting expression: 1
+            <<4>>
+            x
+        end rewrite for: x
+        rewriting expression: y
+          builtin y
+          end builtin y
+          Rules:
           Result:
-            <<34>>
-            1
-        end rewrite for: 1
-        rewriting expression: yin(<<4>>)
-          Result:
-            <<547>>
-            yin(x)
-        end rewrite for: yin(<<4>>)
-        builtin nminus(<<34>>, <<547>>)
-        end builtin nminus(1, yin(<<4>>))
+            <<1>>
+            y
+        end rewrite for: y
+        builtin nless(<<4>>, <<1>>)
+        end builtin nless(x, y)
         Rules:
-        match nminus(x, x) nminus(1, yin(x))
-          equal 1 yin(x)
+          nless(y', z') { True } -> True
+          nless(z', x') { True } -> True
+          nless(x, x) { True } -> False
+        match nless(y', z') nless(x, y)
+        end match nless(y', z') nless(x, y)
+        match nless(z', x') nless(x, y)
+        end match nless(z', x') nless(x, y)
+        match nless(x, x) nless(x, y)
+          equal x y
           equal: No
-        end match nminus(x, x) nminus(1, yin(x))
+        end match nless(x, x) nless(x, y)
         Result:
-          <<574>>
-          nminus(1, yin(x))
-      end rewrite for: nminus(<<34>>, <<547>>)
-      builtin nminus(<<565>>, <<574>>)
-      end builtin nminus(yan(<<564>>), nminus(<<34>>, <<547>>))
+          <<199>>
+      end rewrite for: nless(<<4>>, <<1>>)
+      equal <<199>> nless(<<4>>, <<1>>)
+      equal: Yes
+      rewriting expression: <<177>>
+        Result:
+          <<177>>
+      end rewrite for: <<177>>
+      equal <<177>> <<177>>
+      equal: Yes
+      rewriting expression: <<199>>
+        Result:
+          <<199>>
+      end rewrite for: <<199>>
+      equal <<199>> <<199>>
+      equal: Yes
+      builtin nless(y, z) & nless(x, y)
+      end builtin nless(<<1>>, <<2>>) & nless(<<4>>, <<1>>)
       Rules:
-      match nminus(x, x) nminus(yan(nminus(nplus(x, 1), 1)), nminus(1, yin(x)))
-        equal yan(nminus(nplus(x, 1), 1)) nminus(1, yin(x))
+        nless(x, y) & nless(y, x) { True } -> False
+      match nless(x, y) & nless(y, x) nless(y, z) & nless(x, y)
+        equal z x
         equal: No
-      end match nminus(x, x) nminus(yan(nminus(nplus(x, 1), 1)), nminus(1, yin(x)))
-      match nminus(x, nminus(a - b)) nminus(yan(nminus(nplus(x, 1), 1)), nminus(1, yin(x)))
-      end match nminus(x, nminus(a - b)) nminus(yan(nminus(nplus(x, 1), 1)), nminus(1, yin(x)))
+        equal y y
+        equal: Yes
+        equal x z
+        equal: No
+      end match nless(x, y) & nless(y, x) nless(y, z) & nless(x, y)
       Result:
-        <<575>>
-        nminus(yan(nminus(nplus(x, 1), 1)), nminus(1, yin(x)))
-    end rewrite for: nminus(N[yan(nminus(nplus(x, 1), 1))], nminus(N[1], N[yin(x)]))
-    Result:
-      <<575>>
-      nminus(yan(nminus(nplus(x, 1), 1)), nminus(1, yin(x)))
-  end rewrite for: nplus(yin(x), yan(nplus(x, 1)))
-  Result:
-end rewrite subterm: nplus(yin(x), yan(nplus(x, 1)))
-rewriting subterm: nplus(yin(3), yan(4))
-  rewriting expression: nplus(yin(3), yan(4))
-    rewriting expression: yin(<<257>>)
-      rewriting expression: 3
-        Result:
-          <<257>>
-          3
-      end rewrite for: 3
-      builtin yin(<<257>>)
-      end builtin yin(3)
-      Rules:
-      match yin(x) yin(3)
-      end match yin(x) yin(3)
-      Applying yin(x) { nless(0, x) } -> nplus(1, yin(nminus(x, 1))) to yin(3)
-        Match count: 1
-        Match2 count: 1
-        Match3 count: 1
-        rewriting subterm: nless(0, N[3])
-          rewriting expression: nless(0, N[3])
-            rewriting expression: 0
-              Result:
-                <<103>>
-                0
-            end rewrite for: 0
-            rewriting expression: 3
-              Result:
-                <<257>>
-                3
-            end rewrite for: 3
-            builtin nless(<<103>>, <<257>>)
-            end builtin True
-            rewriting expression: True
-              Result:
-                <<19>>
-                True
-            end rewrite for: True
-            Result:
-              <<19>>
-              True
-          end rewrite for: nless(0, N[3])
-          Result:
-        end rewrite subterm: nless(0, N[3])
-        r: nplus(1, yin(nminus(N[3], 1)))
-        Result count: 1
-      End apply yin(x) { nless(0, x) } -> nplus(1, yin(nminus(x, 1))) to yin(3)
-      rewriting expression: nplus(1, yin(nminus(N[3], 1)))
-        rewriting expression: 1
-          Result:
-            <<34>>
-            1
-        end rewrite for: 1
-        rewriting expression: yin(<<580>>)
-          rewriting expression: nminus(<<257>>, <<34>>)
-            rewriting expression: 3
-              Result:
-                <<257>>
-                3
-            end rewrite for: 3
-            rewriting expression: 1
-              Result:
-                <<34>>
-                1
-            end rewrite for: 1
-            builtin nminus(<<257>>, <<34>>)
-            end builtin 2
-            rewriting expression: 2
-              Result:
-                <<269>>
-                2
-            end rewrite for: 2
-            Result:
-              <<269>>
-              2
-          end rewrite for: nminus(<<257>>, <<34>>)
-          builtin yin(<<269>>)
-          end builtin yin(2)
-          Rules:
-          match yin(x) yin(2)
-          end match yin(x) yin(2)
-          Applying yin(x) { nless(0, x) } -> nplus(1, yin(nminus(x, 1))) to yin(2)
-            Match count: 1
-            Match2 count: 1
-            Match3 count: 1
-            rewriting subterm: nless(0, N[2])
-              rewriting expression: nless(0, N[2])
-                rewriting expression: 0
-                  Result:
-                    <<103>>
-                    0
-                end rewrite for: 0
-                rewriting expression: 2
-                  Result:
-                    <<269>>
-                    2
-                end rewrite for: 2
-                builtin nless(<<103>>, <<269>>)
-                end builtin True
-                rewriting expression: True
-                  Result:
-                    <<19>>
-                    True
-                end rewrite for: True
-                Result:
-                  <<19>>
-                  True
-              end rewrite for: nless(0, N[2])
-              Result:
-            end rewrite subterm: nless(0, N[2])
-            r: nplus(1, yin(nminus(N[2], 1)))
-            Result count: 1
-          End apply yin(x) { nless(0, x) } -> nplus(1, yin(nminus(x, 1))) to yin(2)
-          rewriting expression: nplus(1, yin(nminus(N[2], 1)))
-            rewriting expression: 1
-              Result:
-                <<34>>
-                1
-            end rewrite for: 1
-            rewriting expression: yin(<<585>>)
-              rewriting expression: nminus(<<269>>, <<34>>)
-                rewriting expression: 2
-                  Result:
-                    <<269>>
-                    2
-                end rewrite for: 2
-                rewriting expression: 1
-                  Result:
-                    <<34>>
-                    1
-                end rewrite for: 1
-                builtin nminus(<<269>>, <<34>>)
-                end builtin 1
-                rewriting expression: 1
-                  Result:
-                    <<34>>
-                    1
-                end rewrite for: 1
-                Result:
-                  <<34>>
-                  1
-              end rewrite for: nminus(<<269>>, <<34>>)
-              builtin yin(<<34>>)
-              end builtin yin(1)
-              Rules:
-              match yin(x) yin(1)
-              end match yin(x) yin(1)
-              Applying yin(x) { nless(0, x) } -> nplus(1, yin(nminus(x, 1))) to yin(1)
-                Match count: 1
-                Match2 count: 1
-                Match3 count: 1
-                rewriting subterm: nless(0, N[1])
-                  rewriting expression: nless(0, N[1])
-                    rewriting expression: 0
-                      Result:
-                        <<103>>
-                        0
-                    end rewrite for: 0
-                    rewriting expression: 1
-                      Result:
-                        <<34>>
-                        1
-                    end rewrite for: 1
-                    builtin nless(<<103>>, <<34>>)
-                    end builtin True
-                    rewriting expression: True
-                      Result:
-                        <<19>>
-                        True
-                    end rewrite for: True
-                    Result:
-                      <<19>>
-                      True
-                  end rewrite for: nless(0, N[1])
-                  Result:
-                end rewrite subterm: nless(0, N[1])
-                r: nplus(1, yin(nminus(N[1], 1)))
-                Result count: 1
-              End apply yin(x) { nless(0, x) } -> nplus(1, yin(nminus(x, 1))) to yin(1)
-              rewriting expression: nplus(1, yin(nminus(N[1], 1)))
-                rewriting expression: 1
-                  Result:
-                    <<34>>
-                    1
-                end rewrite for: 1
-                rewriting expression: yin(<<590>>)
-                  rewriting expression: nminus(<<34>>, <<34>>)
-                    rewriting expression: 1
-                      Result:
-                        <<34>>
-                        1
-                    end rewrite for: 1
-                    rewriting expression: 1
-                      Result:
-                        <<34>>
-                        1
-                    end rewrite for: 1
-                    builtin nminus(<<34>>, <<34>>)
-                    end builtin 0
-                    rewriting expression: 0
-                      Result:
-                        <<103>>
-                        0
-                    end rewrite for: 0
-                    Result:
-                      <<103>>
-                      0
-                  end rewrite for: nminus(<<34>>, <<34>>)
-                  builtin yin(<<103>>)
-                  end builtin yin(0)
-                  Rules:
-                  match yin(x) yin(0)
-                  end match yin(x) yin(0)
-                  Applying yin(x) { nless(0, x) } -> nplus(1, yin(nminus(x, 1))) to yin(0)
-                    Match count: 1
-                    Match2 count: 1
-                    Match3 count: 1
-                    rewriting subterm: nless(0, N[0])
-                      rewriting expression: nless(0, N[0])
-                        rewriting expression: 0
-                          Result:
-                            <<103>>
-                            0
-                        end rewrite for: 0
-                        rewriting expression: 0
-                          Result:
-                            <<103>>
-                            0
-                        end rewrite for: 0
-                        builtin nless(<<103>>, <<103>>)
-                        end builtin False
-                        rewriting expression: False
-                          Result:
-                            <<51>>
-                            False
-                        end rewrite for: False
-                        Result:
-                          <<51>>
-                          False
-                      end rewrite for: nless(0, N[0])
-                      Result:
-                    end rewrite subterm: nless(0, N[0])
-                    Result count: 0
-                  End apply yin(x) { nless(0, x) } -> nplus(1, yin(nminus(x, 1))) to yin(0)
-                  match yin(0) yin(0)
-                  end match yin(0) yin(0)
-                  Applying yin(0) { True } -> 3 to yin(0)
-                    Match count: 1
-                    Match2 count: 1
-                    Match3 count: 1
-                    rewriting subterm: True
-                      rewriting expression: True
-                        Result:
-                          <<19>>
-                          True
-                      end rewrite for: True
-                      Result:
-                    end rewrite subterm: True
-                    r: 3
-                    Result count: 1
-                  End apply yin(0) { True } -> 3 to yin(0)
-                  rewriting expression: 3
-                    Result:
-                      <<257>>
-                      3
-                  end rewrite for: 3
-                  Result:
-                    <<257>>
-                    3
-                end rewrite for: yin(<<590>>)
-                builtin nplus(<<34>>, <<257>>)
-                end builtin nplus(4)
-                rewriting expression: nplus(4)
-                  rewriting expression: 4
-                    Result:
-                      <<260>>
-                      4
-                  end rewrite for: 4
-                  builtin nplus(<<260>>)
-                  end builtin 4
-                  rewriting expression: 4
-                    Result:
-                      <<260>>
-                      4
-                  end rewrite for: 4
-                  Result:
-                    <<260>>
-                    4
-                end rewrite for: nplus(4)
-                Result:
-                  <<260>>
-                  4
-              end rewrite for: nplus(1, yin(nminus(N[1], 1)))
-              Result:
-                <<260>>
-                4
-            end rewrite for: yin(<<585>>)
-            builtin nplus(<<34>>, <<260>>)
-            end builtin nplus(5)
-            rewriting expression: nplus(5)
-              rewriting expression: 5
-                Result:
-                  <<296>>
-                  5
-              end rewrite for: 5
-              builtin nplus(<<296>>)
-              end builtin 5
-              rewriting expression: 5
-                Result:
-                  <<296>>
-                  5
-              end rewrite for: 5
-              Result:
-                <<296>>
-                5
-            end rewrite for: nplus(5)
-            Result:
-              <<296>>
-              5
-          end rewrite for: nplus(1, yin(nminus(N[2], 1)))
-          Result:
-            <<296>>
-            5
-        end rewrite for: yin(<<580>>)
-        builtin nplus(<<34>>, <<296>>)
-        end builtin nplus(6)
-        rewriting expression: nplus(6)
-          rewriting expression: 6
-            Result:
-              <<275>>
-              6
-          end rewrite for: 6
-          builtin nplus(<<275>>)
-          end builtin 6
-          rewriting expression: 6
-            Result:
-              <<275>>
-              6
-          end rewrite for: 6
-          Result:
-            <<275>>
-            6
-        end rewrite for: nplus(6)
-        Result:
-          <<275>>
-          6
-      end rewrite for: nplus(1, yin(nminus(N[3], 1)))
-      Result:
-        <<275>>
-        6
-    end rewrite for: yin(<<257>>)
-    rewriting expression: yan(<<260>>)
-      rewriting expression: 4
-        Result:
-          <<260>>
-          4
-      end rewrite for: 4
-      builtin yan(<<260>>)
-      end builtin yan(4)
-      Rules:
-      match yan(x) yan(4)
-      end match yan(x) yan(4)
-      Applying yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(4)
-        Match count: 1
-        Match2 count: 1
-        Match3 count: 1
-        rewriting subterm: nless(0, N[4])
-          rewriting expression: nless(0, N[4])
-            rewriting expression: 0
-              Result:
-                <<103>>
-                0
-            end rewrite for: 0
-            rewriting expression: 4
-              Result:
-                <<260>>
-                4
-            end rewrite for: 4
-            builtin nless(<<103>>, <<260>>)
-            end builtin True
-            rewriting expression: True
-              Result:
-                <<19>>
-                True
-            end rewrite for: True
-            Result:
-              <<19>>
-              True
-          end rewrite for: nless(0, N[4])
-          Result:
-        end rewrite subterm: nless(0, N[4])
-        r: nminus(yan(nminus(N[4], 1)), 1)
-        Result count: 1
-      End apply yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(4)
-      rewriting expression: nminus(yan(nminus(N[4], 1)), 1)
-        rewriting expression: yan(<<599>>)
-          rewriting expression: nminus(<<260>>, <<34>>)
-            rewriting expression: 4
-              Result:
-                <<260>>
-                4
-            end rewrite for: 4
-            rewriting expression: 1
-              Result:
-                <<34>>
-                1
-            end rewrite for: 1
-            builtin nminus(<<260>>, <<34>>)
-            end builtin 3
-            rewriting expression: 3
-              Result:
-                <<257>>
-                3
-            end rewrite for: 3
-            Result:
-              <<257>>
-              3
-          end rewrite for: nminus(<<260>>, <<34>>)
-          builtin yan(<<257>>)
-          end builtin yan(3)
-          Rules:
-          match yan(x) yan(3)
-          end match yan(x) yan(3)
-          Applying yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(3)
-            Match count: 1
-            Match2 count: 1
-            Match3 count: 1
-            rewriting subterm: nless(0, N[3])
-              rewriting expression: nless(0, N[3])
-                Result:
-                  <<19>>
-                  True
-              end rewrite for: nless(0, N[3])
-              Result:
-            end rewrite subterm: nless(0, N[3])
-            r: nminus(yan(nminus(N[3], 1)), 1)
-            Result count: 1
-          End apply yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(3)
-          rewriting expression: nminus(yan(nminus(N[3], 1)), 1)
-            rewriting expression: yan(<<580>>)
-              rewriting expression: nminus(<<257>>, <<34>>)
-                Result:
-                  <<269>>
-                  2
-              end rewrite for: nminus(<<257>>, <<34>>)
-              builtin yan(<<269>>)
-              end builtin yan(2)
-              Rules:
-              match yan(x) yan(2)
-              end match yan(x) yan(2)
-              Applying yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(2)
-                Match count: 1
-                Match2 count: 1
-                Match3 count: 1
-                rewriting subterm: nless(0, N[2])
-                  rewriting expression: nless(0, N[2])
-                    Result:
-                      <<19>>
-                      True
-                  end rewrite for: nless(0, N[2])
-                  Result:
-                end rewrite subterm: nless(0, N[2])
-                r: nminus(yan(nminus(N[2], 1)), 1)
-                Result count: 1
-              End apply yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(2)
-              rewriting expression: nminus(yan(nminus(N[2], 1)), 1)
-                rewriting expression: yan(<<585>>)
-                  rewriting expression: nminus(<<269>>, <<34>>)
-                    Result:
-                      <<34>>
-                      1
-                  end rewrite for: nminus(<<269>>, <<34>>)
-                  builtin yan(<<34>>)
-                  end builtin yan(1)
-                  Rules:
-                  match yan(x) yan(1)
-                  end match yan(x) yan(1)
-                  Applying yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(1)
-                    Match count: 1
-                    Match2 count: 1
-                    Match3 count: 1
-                    rewriting subterm: nless(0, N[1])
-                      rewriting expression: nless(0, N[1])
-                        Result:
-                          <<19>>
-                          True
-                      end rewrite for: nless(0, N[1])
-                      Result:
-                    end rewrite subterm: nless(0, N[1])
-                    r: nminus(yan(nminus(N[1], 1)), 1)
-                    Result count: 1
-                  End apply yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(1)
-                  rewriting expression: nminus(yan(nminus(N[1], 1)), 1)
-                    rewriting expression: yan(<<590>>)
-                      rewriting expression: nminus(<<34>>, <<34>>)
-                        Result:
-                          <<103>>
-                          0
-                      end rewrite for: nminus(<<34>>, <<34>>)
-                      builtin yan(<<103>>)
-                      end builtin yan(0)
-                      Rules:
-                      match yan(x) yan(0)
-                      end match yan(x) yan(0)
-                      Applying yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(0)
-                        Match count: 1
-                        Match2 count: 1
-                        Match3 count: 1
-                        rewriting subterm: nless(0, N[0])
-                          rewriting expression: nless(0, N[0])
-                            Result:
-                              <<51>>
-                              False
-                          end rewrite for: nless(0, N[0])
-                          Result:
-                        end rewrite subterm: nless(0, N[0])
-                        Result count: 0
-                      End apply yan(x) { nless(0, x) } -> nminus(yan(nminus(x, 1)), 1) to yan(0)
-                      match yan(0) yan(0)
-                      end match yan(0) yan(0)
-                      Applying yan(0) { True } -> 4 to yan(0)
-                        Match count: 1
-                        Match2 count: 1
-                        Match3 count: 1
-                        rewriting subterm: True
-                          rewriting expression: True
-                            Result:
-                              <<19>>
-                              True
-                          end rewrite for: True
-                          Result:
-                        end rewrite subterm: True
-                        r: 4
-                        Result count: 1
-                      End apply yan(0) { True } -> 4 to yan(0)
-                      rewriting expression: 4
-                        Result:
-                          <<260>>
-                          4
-                      end rewrite for: 4
-                      Result:
-                        <<260>>
-                        4
-                    end rewrite for: yan(<<590>>)
-                    rewriting expression: 1
-                      Result:
-                        <<34>>
-                        1
-                    end rewrite for: 1
-                    builtin nminus(<<260>>, <<34>>)
-                    end builtin 3
-                    rewriting expression: 3
-                      Result:
-                        <<257>>
-                        3
-                    end rewrite for: 3
-                    Result:
-                      <<257>>
-                      3
-                  end rewrite for: nminus(yan(nminus(N[1], 1)), 1)
-                  Result:
-                    <<257>>
-                    3
-                end rewrite for: yan(<<585>>)
-                rewriting expression: 1
-                  Result:
-                    <<34>>
-                    1
-                end rewrite for: 1
-                builtin nminus(<<257>>, <<34>>)
-                end builtin 2
-                rewriting expression: 2
-                  Result:
-                    <<269>>
-                    2
-                end rewrite for: 2
-                Result:
-                  <<269>>
-                  2
-              end rewrite for: nminus(yan(nminus(N[2], 1)), 1)
-              Result:
-                <<269>>
-                2
-            end rewrite for: yan(<<580>>)
-            rewriting expression: 1
-              Result:
-                <<34>>
-                1
-            end rewrite for: 1
-            builtin nminus(<<269>>, <<34>>)
-            end builtin 1
-            rewriting expression: 1
-              Result:
-                <<34>>
-                1
-            end rewrite for: 1
-            Result:
-              <<34>>
-              1
-          end rewrite for: nminus(yan(nminus(N[3], 1)), 1)
-          Result:
-            <<34>>
-            1
-        end rewrite for: yan(<<599>>)
-        rewriting expression: 1
-          Result:
-            <<34>>
-            1
-        end rewrite for: 1
-        builtin nminus(<<34>>, <<34>>)
-        end builtin 0
-        rewriting expression: 0
-          Result:
-            <<103>>
-            0
-        end rewrite for: 0
-        Result:
-          <<103>>
-          0
-      end rewrite for: nminus(yan(nminus(N[4], 1)), 1)
-      Result:
-        <<103>>
-        0
-    end rewrite for: yan(<<260>>)
-    builtin nplus(<<275>>, <<103>>)
-    end builtin nplus(6)
-    rewriting expression: nplus(6)
-      Result:
-        <<275>>
-        6
-    end rewrite for: nplus(6)
-    Result:
-      <<275>>
-      6
-  end rewrite for: nplus(yin(3), yan(4))
-  Result:
-end rewrite subterm: nplus(yin(3), yan(4))
-rewriting subterm: nplus(yin(x), 5, yan(x), 3)
-  rewriting expression: nplus(yin(x), 5, yan(x), 3)
-    rewriting expression: 3
-      Result:
-        <<257>>
-        3
-    end rewrite for: 3
-    rewriting expression: 5
-      Result:
-        <<296>>
-        5
-    end rewrite for: 5
-    rewriting expression: yin(<<4>>)
-      Result:
-        <<547>>
-        yin(x)
-    end rewrite for: yin(<<4>>)
-    rewriting expression: yan(<<4>>)
-      Result:
-        <<554>>
-        yan(x)
-    end rewrite for: yan(<<4>>)
-    builtin nplus(<<257>>, <<296>>, <<547>>, <<554>>)
-    end builtin nplus(8, yin(<<4>>), yan(<<4>>))
-    rewriting expression: nplus(8, yin(<<4>>), yan(<<4>>))
-      rewriting expression: yin(<<4>>)
-        Result:
-          <<547>>
-          yin(x)
-      end rewrite for: yin(<<4>>)
-      rewriting expression: yan(<<4>>)
-        Result:
-          <<554>>
-          yan(x)
-      end rewrite for: yan(<<4>>)
-      rewriting expression: 8
-        builtin 8
-        end builtin 8
+        <<586>>
+    end rewrite for: <<177>> & <<199>>
+    equal <<586>> <<177>> & <<199>>
+    equal: Yes
+    rewriting expression: nless(<<2>>, <<4>>)
+      rewriting expression: z
+        builtin z
+        end builtin z
         Rules:
         Result:
-          <<613>>
-          8
-      end rewrite for: 8
-      builtin nplus(<<547>>, <<554>>, <<613>>)
-      end builtin nplus(yin(<<4>>), yan(<<4>>), 8)
+          <<2>>
+          z
+      end rewrite for: z
+      rewriting expression: x
+        Result:
+          <<4>>
+          x
+      end rewrite for: x
+      builtin nless(<<2>>, <<4>>)
+      end builtin nless(z, x)
       Rules:
-      match nplus(yin(x), yan(x)) nplus(yin(x), yan(x), 8)
-        equal x x
-        equal: Yes
-      end match nplus(yin(x), yan(x)) nplus(yin(x), yan(x), 8)
-      Applying nplus(yin(x), yan(x)) { True } -> 4 to nplus(yin(x), yan(x), 8)
-        Match count: 1
-        Match2 count: 1
-        Match3 count: 1
-        rewriting subterm: True
-          rewriting expression: True
-            Result:
-              <<19>>
-              True
-          end rewrite for: True
-          Result:
-        end rewrite subterm: True
-        r: 4
-        Result count: 1
-      End apply nplus(yin(x), yan(x)) { True } -> 4 to nplus(yin(x), yan(x), 8)
-      rewriting expression: nplus(4, 8)
-        rewriting expression: 4
-          Result:
-            <<260>>
-            4
-        end rewrite for: 4
-        rewriting expression: 8
-          Result:
-            <<613>>
-            8
-        end rewrite for: 8
-        builtin nplus(<<260>>, <<613>>)
-        end builtin nplus(12)
-        rewriting expression: nplus(12)
-          rewriting expression: 12
-            builtin 12
-            end builtin 12
-            Rules:
-            Result:
-              <<616>>
-              12
-          end rewrite for: 12
-          builtin nplus(<<616>>)
-          end builtin 12
-          rewriting expression: 12
-            Result:
-              <<616>>
-              12
-          end rewrite for: 12
-          Result:
-            <<616>>
-            12
-        end rewrite for: nplus(12)
-        Result:
-          <<616>>
-          12
-      end rewrite for: nplus(4, 8)
+        nless(y', z') { True } -> True
+        nless(x', y') { True } -> True
+        nless(x, x) { True } -> False
+      match nless(y', z') nless(z, x)
+      end match nless(y', z') nless(z, x)
+      match nless(x', y') nless(z, x)
+      end match nless(x', y') nless(z, x)
+      match nless(x, x) nless(z, x)
+        equal z x
+        equal: No
+      end match nless(x, x) nless(z, x)
       Result:
-        <<616>>
-        12
-    end rewrite for: nplus(8, yin(<<4>>), yan(<<4>>))
+        <<587>>
+    end rewrite for: nless(<<2>>, <<4>>)
+    equal <<587>> nless(<<2>>, <<4>>)
+    equal: Yes
+    rewriting expression: <<586>>
+      Result:
+        <<586>>
+    end rewrite for: <<586>>
+    equal <<586>> <<586>>
+    equal: Yes
+    rewriting expression: <<587>>
+      Result:
+        <<587>>
+    end rewrite for: <<587>>
+    equal <<587>> <<587>>
+    equal: Yes
+    builtin nless(y, z) & nless(x, y) & nless(z, x)
+    end builtin nless(<<1>>, <<2>>) & nless(<<4>>, <<1>>) & nless(<<2>>, <<4>>)
+    Rules:
+      nless(x, y) & nless(y, x) { True } -> False
+    match nless(x, y) & nless(y, x) nless(y, z) & nless(x, y) & nless(z, x)
+      equal z z
+      equal: Yes
+      equal y x
+      equal: No
+      equal z x
+      equal: No
+      equal y z
+      equal: No
+      equal y y
+      equal: Yes
+      equal x z
+      equal: No
+      equal x x
+      equal: Yes
+      equal z y
+      equal: No
+      equal x y
+      equal: No
+    end match nless(x, y) & nless(y, x) nless(y, z) & nless(x, y) & nless(z, x)
+    KB Rewriting nless(<<1>>, <<2>>) & nless(<<4>>, <<1>>) & nless(<<2>>, <<4>>) 3 3
+      term nless(<<1>>, <<2>>)
+      term nless(<<4>>, <<1>>)
+      term nless(<<2>>, <<4>>)
+      exp_term nless(<<1>>, <<2>>)
+      exp_term nless(<<4>>, <<1>>)
+      exp_term nless(<<2>>, <<4>>)
+      all_term nless(<<1>>, <<2>>)
+      all_term nless(<<4>>, <<1>>)
+      all_term nless(<<2>>, <<4>>)
+      Operator PO nless ==
+      terms nless(<<1>>, <<2>>)
+      terms nless(<<4>>, <<1>>)
+      terms nless(<<2>>, <<4>>)
+          Cycle
+      Elaboration
+      elaborate term = nless(<<1>>, <<2>>)
+      elaborate term = nless(<<4>>, <<1>>)
+      elaborate term = nless(<<2>>, <<4>>)
+      elaborate term2 = nless(<<1>>, <<2>>)
+      elaborate term2 = nless(<<4>>, <<1>>)
+      elaborate term2 = nless(<<2>>, <<4>>)
+      closure_terms nless(<<1>>, <<2>>) nless(<<1>>, <<2>>)
+      oper PO nless ==
+      closure_terms nless(<<1>>, <<2>>) nless(<<2>>, <<4>>)
+      oper PO nless ==
+      closure_terms nless(<<1>>, <<2>>) nless(<<1>>, <<2>>)
+      oper PO nless ==
+      closure_terms nless(<<1>>, <<2>>) nless(<<4>>, <<1>>)
+      oper PO nless ==
+      closure_terms nless(<<4>>, <<1>>) nless(<<1>>, <<2>>)
+      oper PO nless ==
+      closure_terms nless(<<4>>, <<1>>) nless(<<4>>, <<1>>)
+      oper PO nless ==
+      closure_terms nless(<<4>>, <<1>>) nless(<<4>>, <<1>>)
+      oper PO nless ==
+      closure_terms nless(<<4>>, <<1>>) nless(<<2>>, <<4>>)
+      oper PO nless ==
+      closure_terms nless(<<2>>, <<4>>) nless(<<4>>, <<1>>)
+      oper PO nless ==
+      closure_terms nless(<<2>>, <<4>>) nless(<<2>>, <<4>>)
+      oper PO nless ==
+      closure_terms nless(<<2>>, <<4>>) nless(<<1>>, <<2>>)
+      oper PO nless ==
+      closure_terms nless(<<2>>, <<4>>) nless(<<2>>, <<4>>)
+      oper PO nless ==
+          Cycle
+          b nless(<<4>>, <<2>>)
+          b nless(<<1>>, <<4>>)
+          b nless(<<2>>, <<1>>)
+          b nless(<<4>>, <<2>>)
+          b nless(<<1>>, <<4>>)
+          b nless(<<2>>, <<1>>)
+          a nless(<<1>>, <<4>>)
+          a nless(<<4>>, <<2>>)
+          a nless(<<2>>, <<1>>)
+      ta1 count = 6
+          ta1 = nless(<<1>>, <<2>>)
+          ta1 = nless(<<1>>, <<4>>)
+          ta1 = nless(<<2>>, <<1>>)
+          ta1 = nless(<<2>>, <<4>>)
+          ta1 = nless(<<4>>, <<1>>)
+          ta1 = nless(<<4>>, <<2>>)
+          t2 = False
+          t2 = nless(<<2>>, <<1>>)
+          t2 = nless(<<4>>, <<1>>)
+          t2 = nless(<<4>>, <<2>>)
+      Elaboration
+          t = False
+
+          t = nless(<<2>>, <<1>>)
+
+          t = nless(<<4>>, <<1>>)
+
+          t = nless(<<4>>, <<2>>)
+
+      results2 False
+      results2 nless(<<2>>, <<1>>)
+      results2 nless(<<4>>, <<1>>)
+      results2 nless(<<4>>, <<2>>)
+      False case
+      Results: nless(<<1>>, <<2>>) & nless(<<4>>, <<1>>) & nless(<<2>>, <<4>>)
+        False
+    comparing False nless(<<1>>, <<2>>) & nless(<<4>>, <<1>>) & nless(<<2>>, <<4>>)
+    rewriting expression: False
+      Result:
+        <<51>>
+    end rewrite for: False
     Result:
-      <<616>>
-      12
-  end rewrite for: nplus(yin(x), 5, yan(x), 3)
+      <<51>>
+      False
+  end rewrite for: nless(x, y)  & nless(y, z) & nless(z, x)
   Result:
-end rewrite subterm: nplus(yin(x), 5, yan(x), 3)
-rewriting subterm: nplus(yan(x), 5, yin(x), 3)
-  rewriting expression: nplus(yan(x), 5, yin(x), 3)
-    rewriting expression: 3
+    <<51>>
+    False
+end rewrite subterm: nless(x, y)  & nless(y, z) & nless(z, x)
+rewriting subterm: nless(2, y) & nless(y, 10)
+  rewriting expression: nless(2, y) & nless(y, 10)
+    Deriving nless(y', 10) { True } -> True
+      d nless(y', 10) { N[True] } -> N[True]
       Result:
-        <<257>>
-        3
-    end rewrite for: 3
-    rewriting expression: 5
+        N[nless(y', 10)] { N[True] } -> N[True]
+    end derive for: nless(y', 10) { True } -> True
+    Deriving nless(2, y') { True } -> True
+      d nless(2, y') { N[True] } -> N[True]
       Result:
-        <<296>>
-        5
-    end rewrite for: 5
-    rewriting expression: yin(<<4>>)
-      Result:
-        <<547>>
-        yin(x)
-    end rewrite for: yin(<<4>>)
-    rewriting expression: yan(<<4>>)
-      Result:
-        <<554>>
-        yan(x)
-    end rewrite for: yan(<<4>>)
-    builtin nplus(<<257>>, <<296>>, <<547>>, <<554>>)
-    end builtin nplus(8, yin(<<4>>), yan(<<4>>))
-    rewriting expression: nplus(8, yin(<<4>>), yan(<<4>>))
-      rewriting expression: yin(<<4>>)
+        N[nless(2, y')] { N[True] } -> N[True]
+    end derive for: nless(2, y') { True } -> True
+    rewriting expression: nless(<<269>>, <<1>>)
+      rewriting expression: 2
+        builtin 2
+        end builtin 2
+        Rules:
         Result:
-          <<547>>
-          yin(x)
-      end rewrite for: yin(<<4>>)
-      rewriting expression: yan(<<4>>)
+          <<269>>
+          2
+      end rewrite for: 2
+      rewriting expression: y
+        builtin y
+        end builtin y
+        Rules:
         Result:
-          <<554>>
-          yan(x)
-      end rewrite for: yan(<<4>>)
-      rewriting expression: 8
-        Result:
-          <<613>>
-          8
-      end rewrite for: 8
-      builtin nplus(<<547>>, <<554>>, <<613>>)
-      end builtin nplus(yin(<<4>>), yan(<<4>>), 8)
+          <<1>>
+          y
+      end rewrite for: y
+      builtin nless(<<269>>, <<1>>)
+      end builtin nless(2, y)
       Rules:
-      match nplus(yin(x), yan(x)) nplus(yin(x), yan(x), 8)
-        equal x x
-        equal: Yes
-      end match nplus(yin(x), yan(x)) nplus(yin(x), yan(x), 8)
-      Applying nplus(yin(x), yan(x)) { True } -> 4 to nplus(yin(x), yan(x), 8)
-        Match count: 1
-        Match2 count: 1
-        Match3 count: 1
-        rewriting subterm: True
-          rewriting expression: True
-            Result:
-              <<19>>
-              True
-          end rewrite for: True
-          Result:
-        end rewrite subterm: True
-        r: 4
-        Result count: 1
-      End apply nplus(yin(x), yan(x)) { True } -> 4 to nplus(yin(x), yan(x), 8)
-      rewriting expression: nplus(4, 8)
-        rewriting expression: 4
-          Result:
-            <<260>>
-            4
-        end rewrite for: 4
-        rewriting expression: 8
-          Result:
-            <<613>>
-            8
-        end rewrite for: 8
-        builtin nplus(<<260>>, <<613>>)
-        end builtin nplus(12)
-        rewriting expression: nplus(12)
-          rewriting expression: 12
-            Result:
-              <<616>>
-              12
-          end rewrite for: 12
-          builtin nplus(<<616>>)
-          end builtin 12
-          rewriting expression: 12
-            Result:
-              <<616>>
-              12
-          end rewrite for: 12
-          Result:
-            <<616>>
-            12
-        end rewrite for: nplus(12)
-        Result:
-          <<616>>
-          12
-      end rewrite for: nplus(4, 8)
+        nless(y', 10) { True } -> True
+        nless(x, x) { True } -> False
+      match nless(y', 10) nless(2, y)
+      end match nless(y', 10) nless(2, y)
+      match nless(x, x) nless(2, y)
+        equal 2 y
+        equal: No
+      end match nless(x, x) nless(2, y)
       Result:
-        <<616>>
-        12
-    end rewrite for: nplus(8, yin(<<4>>), yan(<<4>>))
+        <<598>>
+    end rewrite for: nless(<<269>>, <<1>>)
+    equal <<598>> nless(<<269>>, <<1>>)
+    equal: Yes
+    rewriting expression: nless(<<1>>, <<527>>)
+      rewriting expression: y
+        builtin y
+        end builtin y
+        Rules:
+        Result:
+          <<1>>
+          y
+      end rewrite for: y
+      rewriting expression: 10
+        builtin 10
+        end builtin 10
+        Rules:
+        Result:
+          <<527>>
+          10
+      end rewrite for: 10
+      builtin nless(<<1>>, <<527>>)
+      end builtin nless(y, 10)
+      Rules:
+        nless(2, y') { True } -> True
+        nless(x, x) { True } -> False
+      match nless(2, y') nless(y, 10)
+      end match nless(2, y') nless(y, 10)
+      match nless(x, x) nless(y, 10)
+        equal y 10
+        equal: No
+      end match nless(x, x) nless(y, 10)
+      Result:
+        <<599>>
+    end rewrite for: nless(<<1>>, <<527>>)
+    equal <<599>> nless(<<1>>, <<527>>)
+    equal: Yes
+    rewriting expression: <<598>>
+      Result:
+        <<598>>
+    end rewrite for: <<598>>
+    equal <<598>> <<598>>
+    equal: Yes
+    rewriting expression: <<599>>
+      Result:
+        <<599>>
+    end rewrite for: <<599>>
+    equal <<599>> <<599>>
+    equal: Yes
+    builtin nless(2, y) & nless(y, 10)
+    end builtin nless(<<269>>, <<1>>) & nless(<<1>>, <<527>>)
+    Rules:
+      nless(x, y) & nless(y, x) { True } -> False
+    match nless(x, y) & nless(y, x) nless(2, y) & nless(y, 10)
+      equal y y
+      equal: Yes
+      equal 2 10
+      equal: No
+      equal 10 2
+      equal: No
+    end match nless(x, y) & nless(y, x) nless(2, y) & nless(y, 10)
+    KB Rewriting nless(<<269>>, <<1>>) & nless(<<1>>, <<527>>) 2 2
+      term nless(<<269>>, <<1>>)
+      term nless(<<1>>, <<527>>)
+      exp_term nless(<<269>>, <<1>>)
+      exp_term nless(<<1>>, <<527>>)
+      all_term nless(<<269>>, <<1>>)
+      all_term nless(<<1>>, <<527>>)
+      cond_term2 2 < 10
+      cond_term2 preceq(2, 10)
+      Operator PO nless ==
+      cond_term 2 < 10
+      cond_term preceq(2, 10)
+      terms nless(<<269>>, <<1>>)
+      terms nless(<<1>>, <<527>>)
+      elaborate term = <<269>> < <<527>>
+      elaborate term = preceq(<<269>>, <<527>>)
+      elaborate term2 = <<269>> < <<527>>
+      elaborate term2 = preceq(<<269>>, <<527>>)
+      closure_terms <<269>> < <<527>> preceq(<<269>>, <<527>>)
+      oper PO nless ==
+      closure_terms <<269>> < <<527>> preceq(<<269>>, <<527>>)
+      oper PO nless ==
+      closure_terms preceq(<<269>>, <<527>>) preceq(<<269>>, <<527>>)
+      oper PO nless ==
+      closure_terms preceq(<<269>>, <<527>>) preceq(<<269>>, <<527>>)
+      oper PO nless ==
+          Cycle
+      Elaboration
+          t = preceq(<<269>>, <<527>>)
+
+      elaborate term = nless(<<269>>, <<1>>)
+      elaborate term = nless(<<1>>, <<527>>)
+      elaborate term = <<269>> < <<527>>
+      elaborate term = preceq(<<269>>, <<527>>)
+      elaborate term2 = nless(<<269>>, <<1>>)
+      elaborate term2 = nless(<<1>>, <<527>>)
+      elaborate term2 = <<269>> < <<527>>
+      elaborate term2 = preceq(<<269>>, <<527>>)
+      closure_terms nless(<<269>>, <<1>>) nless(<<269>>, <<1>>)
+      oper PO nless ==
+      closure_terms nless(<<269>>, <<1>>) nless(<<1>>, <<527>>)
+      oper PO nless ==
+      closure_terms nless(<<269>>, <<1>>) nless(<<269>>, <<1>>)
+      oper PO nless ==
+      closure_terms nless(<<269>>, <<1>>) preceq(<<269>>, <<527>>)
+      oper PO nless ==
+      closure_terms nless(<<1>>, <<527>>) nless(<<1>>, <<527>>)
+      oper PO nless ==
+      closure_terms nless(<<1>>, <<527>>) preceq(<<269>>, <<527>>)
+      oper PO nless ==
+      closure_terms nless(<<1>>, <<527>>) nless(<<269>>, <<1>>)
+      oper PO nless ==
+      closure_terms nless(<<1>>, <<527>>) nless(<<1>>, <<527>>)
+      oper PO nless ==
+      closure_terms <<269>> < <<527>> nless(<<1>>, <<527>>)
+      oper PO nless ==
+      closure_terms <<269>> < <<527>> preceq(<<269>>, <<527>>)
+      oper PO nless ==
+      closure_terms <<269>> < <<527>> nless(<<269>>, <<1>>)
+      oper PO nless ==
+      closure_terms <<269>> < <<527>> preceq(<<269>>, <<527>>)
+      oper PO nless ==
+      closure_terms preceq(<<269>>, <<527>>) nless(<<1>>, <<527>>)
+      oper PO nless ==
+      closure_terms preceq(<<269>>, <<527>>) preceq(<<269>>, <<527>>)
+      oper PO nless ==
+      closure_terms preceq(<<269>>, <<527>>) nless(<<269>>, <<1>>)
+      oper PO nless ==
+      closure_terms preceq(<<269>>, <<527>>) preceq(<<269>>, <<527>>)
+      oper PO nless ==
+          Cycle
+          b nless(<<269>>, <<527>>)
+          b nless(<<269>>, <<527>>)
+          a nless(<<269>>, <<527>>)
+      ta1 count = 4
+          ta1 = nless(<<1>>, <<527>>)
+          ta1 = nless(<<269>>, <<1>>)
+          ta1 = nless(<<269>>, <<527>>)
+          ta1 = preceq(<<269>>, <<527>>)
+          t2 = nless(<<1>>, <<527>>)
+          t2 = nless(<<269>>, <<1>>)
+          t2 = nless(<<269>>, <<527>>)
+      closure_terms nless(<<269>>, <<527>>) nless(<<1>>, <<527>>)
+      oper PO nless ==
+      closure_terms nless(<<269>>, <<527>>) nless(<<269>>, <<527>>)
+      oper PO nless ==
+      closure_terms nless(<<269>>, <<527>>) nless(<<269>>, <<1>>)
+      oper PO nless ==
+      closure_terms nless(<<269>>, <<527>>) nless(<<269>>, <<527>>)
+      oper PO nless ==
+          Cycle
+      Elaboration
+          t = nless(<<1>>, <<527>>)
+
+          t = nless(<<269>>, <<1>>)
+
+          t = nless(<<269>>, <<527>>)
+
+      results1 preceq(<<269>>, <<527>>)
+      results2 nless(<<1>>, <<527>>)
+      results2 nless(<<269>>, <<1>>)
+      results2 nless(<<269>>, <<527>>)
+      Default case
+      return nless(<<269>>, <<1>>)
+      return nless(<<1>>, <<527>>)
+      Results: nless(<<269>>, <<1>>) & nless(<<1>>, <<527>>)
+        nless(<<269>>, <<1>>) & nless(<<1>>, <<527>>)
     Result:
-      <<616>>
-      12
-  end rewrite for: nplus(yan(x), 5, yin(x), 3)
+      <<600>>
+      nless(2, y) & nless(y, 10)
+  end rewrite for: nless(2, y) & nless(y, 10)
   Result:
-end rewrite subterm: nplus(yan(x), 5, yin(x), 3)
+    <<600>>
+    nless(2, y) & nless(y, 10)
+end rewrite subterm: nless(2, y) & nless(y, 10)
