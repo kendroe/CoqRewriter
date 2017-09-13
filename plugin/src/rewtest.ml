@@ -40,12 +40,12 @@ let rec output_block l = match l with
 
 let processFunction l env = match l with
   | (name::(typ::(pre::r))) ->
-    Env.addFunction env ((Exp.parseExp name),(Type.parse typ),(Exp.parseExp pre),
+    Renv.addFunction env ((Exp.parseExp name),(Type.parse typ),(Exp.parseExp pre),
                 (List.map Exp.parseRule r)) []
   | b -> ((output_block b); print_string "\n"; env) ;;
 
 let processProperties r env =
-    List.fold_left (fun env -> (fun prop -> Env.addProperty env (Exp.parseRule prop))) env r ;;
+    List.fold_left (fun env -> (fun prop -> Renv.addProperty env (Exp.parseRule prop))) env r ;;
 
 let rec extractLines x n = match (x,n) with
   | (_,0) -> ([],x)
@@ -84,7 +84,7 @@ let rec processCases l env func = match l with
   | [x] -> env
   | rr ->
     let (e,r,rest) = extractCase rr in
-        (testCase env (Env.flatten env e) (List.map (Env.flatten env) r) func;
+        (testCase env (Renv.flatten env e) (List.map (Renv.flatten env) r) func;
          processCases rest env func)
     ;;
 
@@ -93,7 +93,7 @@ let rec mergeLines l = match l with
   | (a::b) -> a ^ " " ^ (mergeLines b) ;;
 
 let processTypedef r env =
-    Env.addTypeDefinition env (Type.parseWholeDef (mergeLines r)) ;;
+    Renv.addTypeDefinition env (Type.parseWholeDef (mergeLines r)) ;;
 
 let implode x = List.fold_left (fun x -> (fun y -> x ^ y)) "" x
 
@@ -113,16 +113,16 @@ let processBlock l env func = match l with
   | ("PROPERTIES"::r) -> processProperties r env
   | ("CASES"::r) -> processCases r env func
   | ("TYPEDEF"::r) -> processTypedef r env
-  | ("CLEAR"::r) -> Env.emptyEnv
+  | ("CLEAR"::r) -> Renv.emptyEnv
   | (f::r) ->
         if (Getfile.is_prefix "AC" f) then
-            Env.addAttrib env Intern.intern_ac [S(Intern.intern (Getfile.after_space f))]
+            Renv.addAttrib env Intern.intern_ac [S(Intern.intern (Getfile.after_space f))]
         else if (Getfile.is_prefix "ASSOC" f) then
-            Env.addAttrib env Intern.intern_a [S(Intern.intern (Getfile.after_space f))]
+            Renv.addAttrib env Intern.intern_a [S(Intern.intern (Getfile.after_space f))]
         else if (Getfile.is_prefix "COMM" f) then
-            Env.addAttrib env Intern.intern_c [S(Intern.intern (Getfile.after_space f))]
+            Renv.addAttrib env Intern.intern_c [S(Intern.intern (Getfile.after_space f))]
         else if (Getfile.is_prefix "LESSP" f) then
-            Env.addPrecedence env (split_symbol []
+            Renv.addPrecedence env (split_symbol []
                 (explode (Getfile.after_space f)))
         else ((output_block (f::r));
               (print_string "\n"; env))
@@ -140,7 +140,7 @@ let rec processBlocks env l func = match l with
         processBlocks env b func ;;
 
 let test func file =
-    processBlocks Env.emptyEnv (Getfile.getfile file) func ;;
+    processBlocks Renv.emptyEnv (Getfile.getfile file) func ;;
 
 
 

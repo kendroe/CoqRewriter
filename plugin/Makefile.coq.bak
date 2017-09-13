@@ -202,8 +202,8 @@ MLFILES:=src/builtin.ml\
   src/rule_app.ml\
   src/rsubst.ml\
   src/rtrace.ml\
-  src/rtrie.ml\
-  src/rtype.ml
+  src/rtype.ml\
+  src/rtrie.ml
 
 ifneq ($(filter-out archclean clean cleanall printenv,$(MAKECMDGOALS)),)
 -include $(addsuffix .d,$(MLFILES))
@@ -248,8 +248,8 @@ MLIFILES:=src/builtin.mli\
   src/rule_app.mli\
   src/rsubst.mli\
   src/rtrace.mli\
-  src/rtrie.mli\
-  src/rtype.mli
+  src/rtype.mli\
+  src/rtrie.mli
 
 ifneq ($(filter-out archclean clean cleanall printenv,$(MAKECMDGOALS)),)
 -include $(addsuffix .d,$(MLIFILES))

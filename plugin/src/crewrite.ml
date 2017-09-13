@@ -70,42 +70,42 @@ let rec compute_constants e = match e with
   | _ -> [] ;;
 
 let compute_env_constants env =
-    if Env.getContextList env=[] then
+    if Renv.getContextList env=[] then
         (try List.map (fun (x) -> ExpIntern.decode_exp (REF x)) (Cache.get_relevant_constants [])
          with Cache.NoEntry ->
          let res = List.fold_right List.append
              (List.map compute_constants
-                 (List.map ExpIntern.decode_exp (Env.getAllRules env))) []
+                 (List.map ExpIntern.decode_exp (Renv.getAllRules env))) []
          in
             Cache.add_relevant_constants []
                 (List.map
                     (fun (REF x) -> x)
                     (List.map
-                        (fun (x) -> ExpIntern.intern_exp (Env.isACorC env) x)
+                        (fun (x) -> ExpIntern.intern_exp (Renv.isACorC env) x)
                         res)) ;
             res)
     else
-        (try (List.map (fun (x) -> ExpIntern.decode_exp (REF x)) (Cache.get_relevant_constants (Env.getContextList env)))
+        (try (List.map (fun (x) -> ExpIntern.decode_exp (REF x)) (Cache.get_relevant_constants (Renv.getContextList env)))
           with Cache.NoEntry ->
           let res = List.fold_right List.append
                             (List.map compute_constants
                                 (List.map (fun (APPL (_,[l;r;c])) -> r)
-                                    ((Env.getAllRules env)@
+                                    ((Renv.getAllRules env)@
                                      (List.map
                                          (fun (x) -> ExpIntern.decode_exp (REF x))
-                                         (Env.getContextList env))))) []
+                                         (Renv.getContextList env))))) []
           in
-              Cache.add_relevant_constants (Env.getContextList env)
+              Cache.add_relevant_constants (Renv.getContextList env)
                 (List.map
                      (fun (REF x) -> x)
-                     (List.map (fun (x) -> ExpIntern.intern_exp (Env.isACorC env) x) res)) ;
+                     (List.map (fun (x) -> ExpIntern.intern_exp (Renv.isACorC env) x) res)) ;
               res
           )
 
 let old_relevant_rule env exp rule =
-   (try let REF n = ExpIntern.intern_exp (Env.isACorC env) rule
+   (try let REF n = ExpIntern.intern_exp (Renv.isACorC env) rule
     in
-        Cache.has_relevant_constants (Env.getContextList env) n
+        Cache.has_relevant_constants (Renv.getContextList env) n
     with Cache.NoEntry ->
     let constants = compute_env_constants env in
     let (APPL (_,[l;_;_])) = (ExpIntern.decode_exp rule) in
@@ -114,8 +114,8 @@ let old_relevant_rule env exp rule =
     let exp_constants = (Mylist.remove_dups (compute_constants exp))@
                         (List.map (fun (x) -> (MARKED_VAR x)) (Rcontext.getFreeVars exp)) in
     let res = (Mylist.difference (Mylist.difference rule_constants exp_constants) constants = []) in
-    let REF n = ExpIntern.intern_exp (Env.isACorC env) rule in
-        Cache.add_has_relevant_constants (Env.getContextList env) n res ;
+    let REF n = ExpIntern.intern_exp (Renv.isACorC env) rule in
+        Cache.add_has_relevant_constants (Renv.getContextList env) n res ;
         res
     )
 
@@ -155,10 +155,10 @@ let rec relevant_rule env e r = match (e,r) with
     if has_default exp then true else let l = Rcontext.markVars l
     in
         (match l with
-           | (APPL (f,[a;b])) -> if ((Env.getAttrib env intern_po [S(f)])@
-                                     (Env.getAttrib env intern_to [S(f)])@
-                                     (Env.getAttrib env intern_epo [S(f)])@
-                                     (Env.getAttrib env intern_eto [S(f)]))=[]
+           | (APPL (f,[a;b])) -> if ((Renv.getAttrib env intern_po [S(f)])@
+                                     (Renv.getAttrib env intern_to [S(f)])@
+                                     (Renv.getAttrib env intern_epo [S(f)])@
+                                     (Renv.getAttrib env intern_eto [S(f)]))=[]
                                  then
                                      Match.equal_smaller env l exp
                                  else true
@@ -222,7 +222,7 @@ let rec orient_rule env e = match e with
 
 let add_rule rewrite env exp rule =
     (Rtrace.trace "rewrite" (fun (x) -> "Adding " ^ (prExp exp) ^ "\n") ;
-     Env.addContextRules env
+     Renv.addContextRules env
      (List.filter
       (*(relevant_rule env exp) |>*)
       (fun (r) -> (match (ExpIntern.decode_exp r) with
@@ -230,7 +230,7 @@ let add_rule rewrite env exp rule =
                      | (APPL (f,[APPL (5,[]);_;c])) -> false
                      | (APPL (1,[l;r;c])) -> not(l=r)
                      | _ -> false))
-      (Derive.derive env (ExpIntern.intern_exp (Env.isACorC env) rule)))) ;;
+      (Derive.derive env (ExpIntern.intern_exp (Renv.isACorC env) rule)))) ;;
 
 let create_rules rewrite env e n = match (e,n) with
   | ((APPL (9,l)),n) ->

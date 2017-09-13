@@ -287,7 +287,7 @@ and uu_equal env e1 e2 q = match (e1,e2) with
         false
   | ((APPL (s,l)),(APPL (s2,l2))) ->
     if s = s2 then
-       (if (Env.isAC env s) || (Env.isC env s) then
+       (if (Renv.isAC env s) || (Renv.isC env s) then
             c_equal_pairs env l l2 q
         else
             u_equal_pairs env l l2 q)
@@ -334,7 +334,7 @@ let equal env p e =
 
 let rec subset_equal env e ee = match ee with
   | (APPL (f,l)) ->
-    if Env.isAC env f then
+    if Renv.isAC env f then
         List.fold_right List.append
             (List.map
                 (fun (m,r) ->
@@ -365,10 +365,10 @@ let match_unassigned_var env v rest s q theta =
     List.fold_left List.append []
         (List.map (fun (e,r) ->
            if List.length e = 0 then
-               (if Env.getID env s = NOEXP then
+               (if Renv.getID env s = NOEXP then
                     []
                 else
-                    [(Rsubst.addPair theta v (Env.getID env s),r)])
+                    [(Rsubst.addPair theta v (Renv.getID env s),r)])
            else if List.length e = 1 then
                [(Rsubst.addPair theta v (List.hd e),r)]
            else
@@ -390,7 +390,7 @@ let rec u_match env t1 t2 q theta = match (t1,t2) with
                         (subset_equal env (Rsubst.apply theta v) e)
                 else
                     match e with
-                      | (APPL (s,l)) -> if (Env.isAC env s) then
+                      | (APPL (s,l)) -> if (Renv.isAC env s) then
                                              match_unassigned_var env
                                                  v l s q theta
                                          else
@@ -450,11 +450,11 @@ let rec u_match env t1 t2 q theta = match (t1,t2) with
     (match  e with
       | (APPL (s2,l2)) ->
             if s = s2 then
-                (if (Env.isAC env s) then
+                (if (Renv.isAC env s) then
                     ac_match_pairs env s l l2 q theta
-                else if (Env.isA env s) then
+                else if (Renv.isA env s) then
                     []
-                else if (Env.isC env s) then
+                else if (Renv.isC env s) then
                     c_match_pairs env l l2 q theta
                 else
                     (List.map
@@ -608,7 +608,7 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
                         (subset_equal env (Rsubst.apply theta1 v) e)
                 else
                     match e with
-                      | (APPL (s,l)) -> if (Env.isAC env s) then
+                      | (APPL (s,l)) -> if (Renv.isAC env s) then
                                              (List.map
                                                  (fun (theta1,x) -> (theta1,theta2,x,[]))
                                                  (match_unassigned_var env
@@ -629,7 +629,7 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
                         (subset_equal env (Rsubst.apply theta2 v) e)
                 else
                     match e with
-                      | (APPL (s,l)) -> if (Env.isAC env s) then
+                      | (APPL (s,l)) -> if (Renv.isAC env s) then
                                              (List.map
                                                  (fun (theta2,x) -> (theta1,theta2,[],x))
                                                  (match_unassigned_var env
@@ -687,11 +687,11 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
         []
   | ((APPL (s,l)),(APPL (s2,l2))) ->
     if s = s2 then
-       (if (Env.isAC env s) then
+       (if (Renv.isAC env s) then
             ac_unify_pairs env s l l2 q theta1 theta2
-        else if (Env.isA env s) then
+        else if (Renv.isA env s) then
             []
-        else if (Env.isC env s) then
+        else if (Renv.isC env s) then
             c_unify_pairs env l l2 q theta1 theta2
         else
             (List.map
@@ -860,7 +860,7 @@ let rec unify env p e = match (p,e) with
 
 let rec all_smaller env l s = match l with
   | [] -> true
-  | (a::b) -> (Env.hasSmallerPrecedence env a s) &&
+  | (a::b) -> (Renv.hasSmallerPrecedence env a s) &&
     (all_smaller env b s)
   ;;
 
@@ -872,7 +872,7 @@ let rec all_smaller_list env l l2 = match l2 with
 let rec smaller_list env f l = match l with
   | [] -> true
   | (a::b) ->
-    (Env.hasSmallerPrecedence env f a) && (smaller_list env f b)
+    (Renv.hasSmallerPrecedence env f a) && (smaller_list env f b)
   ;;
 
 let rec member_eq env x l = match l with
@@ -883,7 +883,7 @@ let rec has_forbidden env t =
     hf env t []
 and hf env t bound =
     (Mylist.intersect (Rcontext.getFreeVars t) bound)=[] &&
-    member_eq env t (Env.getForbids env) || hfs env t bound
+    member_eq env t (Renv.getForbids env) || hfs env t bound
 and hfs env e bound = match e with
   | (APPL (f,l)) ->
     let rec h l = match l with
@@ -948,16 +948,16 @@ let rec extend_list l n = match (l,n) with
   ;;
 
 let map_list env s l f =
-    let ex = Env.getExpanders env s in
-    let ex2 = if f>0 then Env.filterList env s (extend_list ex f) else ex
+    let ex = Renv.getExpanders env s in
+    let ex2 = if f>0 then Renv.filterList env s (extend_list ex f) else ex
     in
         pair_map env s ex2 l
     ;;
 
 let rec equal_smaller env x y =
-    if member_eq env x (Env.getForbids env) then
+    if member_eq env x (Renv.getForbids env) then
         false
-    else if member_eq env y (Env.getForbids env) then
+    else if member_eq env y (Renv.getForbids env) then
         true
     else es env x y
 and es env p e = match (p,e) with
@@ -978,11 +978,11 @@ and es env p e = match (p,e) with
   | ((STRING s),(VAR v)) -> true
   | ((APPL (s1,ll1)),(APPL (s2,ll2))) ->
     let _ = Rtrace.trace "match" (fun (x) -> "comparing " ^ (prExp (APPL (s1,ll1))) ^ " " ^ (prExp (APPL (s2,ll2)))) in
-    let l1=map_list env s1 (Env.filterList env s1 ll1) (List.length ll1) in
-    let l2=map_list env s2 (Env.filterList env s2 ll2) (List.length ll2) in
-    let res=if (Env.hasEqualPrecedence env s1 s2) then
+    let l1=map_list env s1 (Renv.filterList env s1 ll1) (List.length ll1) in
+    let l2=map_list env s2 (Renv.filterList env s2 ll2) (List.length ll2) in
+    let res=if (Renv.hasEqualPrecedence env s1 s2) then
                     not(List.mem false (List.map (fun (x) -> equal_smaller_than_list env x l2) l1))
-                else if (Env.hasSmallerPrecedence env s1 s2) then
+                else if (Renv.hasSmallerPrecedence env s1 s2) then
                     all_smaller env l1 (APPL (s2,l2))
                 else
                     equal_smaller_than_list env (APPL (s1,l1)) l2
@@ -990,9 +990,9 @@ and es env p e = match (p,e) with
         if res || (l1=ll1 && l2=ll2) then
             res
         else
-            let res2=if (Env.hasEqualPrecedence env s1 s2) then
+            let res2=if (Renv.hasEqualPrecedence env s1 s2) then
                          not(List.mem false (List.map (fun (x) -> equal_smaller_than_list env x l1) l2))
-                     else if (Env.hasSmallerPrecedence env s2 s1) then
+                     else if (Renv.hasSmallerPrecedence env s2 s1) then
                          all_smaller env l2 (APPL (s1,l1))
                      else
                          equal_smaller_than_list env (APPL (s2,l2)) l1
@@ -1001,9 +1001,9 @@ and es env p e = match (p,e) with
                 else
                     let l1=map_list env s1 ll1 0 in
                     let l2=map_list env s2 ll2 0 in
-                        if (Env.hasEqualPrecedence env s1 s2) then
+                        if (Renv.hasEqualPrecedence env s1 s2) then
                             not(List.mem false (List.map (fun (x) -> equal_smaller_than_list env x l2) l1))
-                        else if (Env.hasSmallerPrecedence env s1 s2) then
+                        else if (Renv.hasSmallerPrecedence env s1 s2) then
                             all_smaller env l1 (APPL (s2,l2))
                         else
                             equal_smaller_than_list env (APPL (s1,l1)) l2

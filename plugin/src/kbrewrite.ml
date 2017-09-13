@@ -76,7 +76,7 @@ let rec parent l = match l with
 let rec is_relevant_operator env e = match e with
   | (REF x) -> is_relevant_operator env (ExpIntern.decode_two_exp (REF x))
   | (APPL (f,[a;b])) ->
-    (Env.isEQ env f) || (Env.isOrder env f)
+    (Renv.isEQ env f) || (Renv.isOrder env f)
   | _ -> false
   ;;
 
@@ -130,13 +130,13 @@ let possible_terms env e =
 
 let collect_terms env attrib f n =
     List.filter
-    (fun ((Env.E e)::(Env.E v)::_) ->
+    (fun ((Renv.E e)::(Renv.E v)::_) ->
         (match e with
-          | (APPL (ff,l)) -> (f=ff) && ((n= -1) || (Env.isAC env f) || (Env.isC env f) || (Match.equal env (List.nth l n) v))
+          | (APPL (ff,l)) -> (f=ff) && ((n= -1) || (Renv.isAC env f) || (Renv.isC env f) || (Match.equal env (List.nth l n) v))
           | _             -> false
         )
     )
-    (Env.selectAttrib env attrib f)
+    (Renv.selectAttrib env attrib f)
   ;;
 
 let get_subst env p e =
@@ -153,20 +153,20 @@ let test_subterm_relationship rewrite env (APPL (f,l)) n um cm =
         (*val _ = print ("[Testing " ^ (prExp (APPL (f,l))) ^ " " ^ (Int.toString n) ^ " " ^ um ^ " " ^ cm ^ "]\n")*)
         mt_ops = List.map
                      (fun (x) -> (match x with
-                                    | [_;_;(Env.S oo)] -> (oo,0)
-                                    | [_;_;(Env.S oo);(Env.S eo)] -> (oo,eo))
+                                    | [_;_;(Renv.S oo)] -> (oo,0)
+                                    | [_;_;(Renv.S oo);(Renv.S eo)] -> (oo,eo))
                      )
                      (collect_terms env um f n) in
         (*val _ = print ("[" ^ (string_of_int (List.length mt_ops)) ^ "]\n")*)
     let ct_ops = List.map
                      (fun (x) -> (match x with
-                                    | [_;_;(Env.S oo);_] -> (oo,0)
-                                    | [_;_;(Env.S oo);(Env.S eo);_] -> (oo,eo))
+                                    | [_;_;(Renv.S oo);_] -> (oo,0)
+                                    | [_;_;(Renv.S oo);(Renv.S eo);_] -> (oo,eo))
                      )
                      (List.filter
                          (fun (ct) ->
                              (match (ct) with
-                                  | [(Env.E e);_;_;(Env.E c)] ->
+                                  | [(Renv.E e);_;_;(Renv.E c)] ->
                                      List.mem
                                          (APPL (intern_true,[]))
                                          (rewrite
@@ -176,7 +176,7 @@ let test_subterm_relationship rewrite env (APPL (f,l)) n um cm =
                                                  c
                                              )
                                          )
-                                  | [(Env.E e);_;_;_;(Env.E c)] ->
+                                  | [(Renv.E e);_;_;_;(Renv.E c)] ->
                                      List.mem
                                          (APPL (intern_true,[]))
                                          (rewrite
@@ -212,16 +212,16 @@ let rec get_term_attrib env e = match e with
         else
             (e1,o1,t1)
   | (APPL (f,l)) ->
-    (match Env.getAttrib env intern_to [S(f)] with
+    (match Renv.getAttrib env intern_to [S(f)] with
        | [S(f);S(e)] -> (intern_to,f,e)
        | _ -> (
-         match Env.getAttrib env intern_po [S(f)] with
+         match Renv.getAttrib env intern_po [S(f)] with
              | [S(f);S(e)] -> (intern_po,f,e)
              | _ -> (
-              match Env.getAttrib env intern_epo [S(f)] with
+              match Renv.getAttrib env intern_epo [S(f)] with
                  | [S(f);S(e)] -> (intern_epo,f,e)
                  | _ -> (
-                   match Env.getAttrib env intern_eto [S(f)] with
+                   match Renv.getAttrib env intern_eto [S(f)] with
                       | [S(f);S(e)] -> (intern_eto,f,e)
                       | _ -> (0,0,0)
     ))))
@@ -327,7 +327,7 @@ let rec binary_term e = match e with
 let get_env_terms env vars =
     let rules = List.map
                     (fun (x) -> ExpIntern.decode_exp (REF x))
-                    (Env.getContextList env) in
+                    (Renv.getContextList env) in
     (*let _ = print "Rules:\n" in
     let _ = map (fn (x) => print ("    rule " ^ (prExp x) ^ "\n")) rules in*)
     let rules = (List.filter
@@ -447,7 +447,7 @@ let rec intern_term env e = match e with
   | (REF x) -> intern_term env (ExpIntern.decode_one_exp (REF x))
   | x ->
     ExpIntern.decode_one_exp
-        (ExpIntern.intern_exp (Env.isACorC env) x) ;;
+        (ExpIntern.intern_exp (Renv.isACorC env) x) ;;
 
 let and_combine_operands oper op1 op2 =
     let l1 = get_left_operand oper op1 in
@@ -530,7 +530,7 @@ let elaborate_phase env oper terms =
                 (*val _ = print ("t1 = " ^ (prExp f) ^ "\n")*)
             let (REF l) = get_left_operand oper f in
             let (REF r) = get_right_operand oper f in
-            let (REF n) = ExpIntern.intern_exp (Env.isACorC env) f in
+            let (REF n) = ExpIntern.intern_exp (Renv.isACorC env) f in
             let lv = try SingleMap.find l oo with Not_found -> [] in
             let rv = try SingleMap.find r oo with Not_found -> [] in
             let dv = try PairsMap.find (l,r) t with Not_found -> [] in
@@ -548,7 +548,7 @@ let elaborate_phase env oper terms =
                 (*val _ = print ("t2 = " ^ (prExp f) ^ "\n")*)
             let (REF l) = get_left_operand oper f in
             let (REF r) = get_right_operand oper f in
-            let (REF n) = ExpIntern.intern_exp (Env.isACorC env) f in
+            let (REF n) = ExpIntern.intern_exp (Renv.isACorC env) f in
             let lv = try SingleMap.find l oo with Not_found -> [] in
             let rv = try SingleMap.find r oo with Not_found -> [] in
             let dv = try PairsMap.find (l,r) t with Not_found -> [] in
@@ -573,7 +573,7 @@ let elaborate_phase env oper terms =
                 if List.length nl < 2 then
                     (st,dt)
                 else let terms = (List.map (fun (x) -> decode_term (REF x)) nl) in
-                     let (REF nnew) = ExpIntern.intern_exp (Env.isACorC env) (combine_all terms) in
+                     let (REF nnew) = ExpIntern.intern_exp (Renv.isACorC env) (combine_all terms) in
                      let (st,dt) = delete_terms st dt (List.map (fun (x) -> REF x) nl) in
                      let (st,dt) = add_terms st dt [(REF nnew)]
                      in
@@ -590,7 +590,7 @@ let elaborate_phase env oper terms =
                 let rps = try PairsMap.find (r,l) dt with Not_found -> [] in
                     if rps=[] then (st,dt)
                     else let [rt] = rps in
-                         let REF (nnew) = ExpIntern.intern_exp (Env.isACorC env) (and_combine_operands oper (decode_term (REF rt)) term) in
+                         let REF (nnew) = ExpIntern.intern_exp (Renv.isACorC env) (and_combine_operands oper (decode_term (REF rt)) term) in
                          (*let _ = Rtrace.trace "kbrewrite" (fun x -> "found pair " ^ (prExp term) ^ " " ^ (prExp (decode_term (REF rt)))) in*)
                          let (st,dt) = delete_terms st dt (List.map (fun (x) -> REF x) nl) in
                          let (st,dt) = add_terms st dt [(REF nnew)] in
@@ -717,7 +717,7 @@ let elaborate_phase env oper terms =
             let _ = Rtrace.trace "kbrewrite" (fun x -> "    Cycle") in
             let _ = Rtrace.trace_list "kbrewrite" (fun xx -> (List.map (fun (x) -> ("    b " ^ (prExp x))) nt)) in
             let nt1 = List.map (fun (REF x) -> x)
-                          (List.map (ExpIntern.intern_exp (Env.isACorC env)) nt)
+                          (List.map (ExpIntern.intern_exp (Renv.isACorC env)) nt)
  in
             let ntdict = List.fold_right (fun e -> (fun d -> SingleMap.add e true d)) nt1 (SingleMap.empty) in
             let nt = List.map

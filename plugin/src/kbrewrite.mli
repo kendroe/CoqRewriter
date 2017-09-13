@@ -19,10 +19,10 @@
 (* require "env.sml" ;  *)
 (* require "exp.sml" ;  *)
 
-val possible_terms: Env.env -> Exp.exp -> ((int list) list)
-val useful_subterm: Env.env -> Exp.exp -> (int list) -> bool
-val kbrewrite: (Env.env -> Exp.exp -> (Exp.exp list)) -> Env.env -> Exp.exp -> (int list) -> (Exp.exp list)
-val kbrewrite2: (Env.env -> Exp.exp -> (Exp.exp list)) -> Env.env -> Exp.exp -> (int list) -> (Exp.exp list)
+val possible_terms: Renv.env -> Exp.exp -> ((int list) list)
+val useful_subterm: Renv.env -> Exp.exp -> (int list) -> bool
+val kbrewrite: (Renv.env -> Exp.exp -> (Exp.exp list)) -> Renv.env -> Exp.exp -> (int list) -> (Exp.exp list)
+val kbrewrite2: (Renv.env -> Exp.exp -> (Exp.exp list)) -> Renv.env -> Exp.exp -> (int list) -> (Exp.exp list)
 
 
 

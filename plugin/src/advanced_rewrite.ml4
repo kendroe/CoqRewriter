@@ -24,6 +24,9 @@ open Univ
 open Term
 open Names
 
+open Intern
+open Exp
+
 (*
  * Plugin to print an s-expression representing the (possibly expanded) AST for a definition.
  * Based on TemplateCoq: https://github.com/gmalecha/template-coq/blob/master/src/reify.ml4
@@ -134,8 +137,8 @@ let build_name (n : name) =
 
 let build_exp_name (n : name) =
   match n with
-    Name id -> Exp.VAR (Intern.intern (string_of_id id))
-  | Anonymous -> Exp.VAR (Intern.intern "(Anonymous)")
+    Name id -> VAR (intern (string_of_id id))
+  | Anonymous -> VAR (intern "(Anonymous)")
 
 
 (* --- Variables --- *)
@@ -163,6 +166,9 @@ let build_var (v : identifier) =
 
 let build_meta (n : metavariable) =
   build "Meta" [string_of_int n]
+
+let build_exp_meta (n : metavariable) =
+  VAR (intern ("(Meta_"^ (string_of_int n) ^ ")"))
 
 (* --- Existential variables --- *)
 
@@ -697,9 +703,9 @@ let print_ast (depth : int) (def : Constrexpr.constr_expr) =
 (* PrintAST command
    The depth specifies the depth at which to unroll nested type definitions *)
 VERNAC COMMAND EXTEND Print_AST
-| [ "arewrite" constr(def) ] ->
+| [ "printAST" constr(def) ] ->
   [ print_ast 0 def ]
-| [ "arewrite" constr(def) "with" "depth" integer(depth)] ->
+| [ "printAST" constr(def) "with" "depth" integer(depth)] ->
   [ print_ast depth def ]
 END
 

@@ -19,13 +19,13 @@
 (* require "env.sml" ;  *)
 (* require "exp.sml" ;  *)
 
-val possibleRewritesUsingRule: (Env.env -> Exp.exp -> Exp.exp list) -> Env.env -> Exp.exp ->
+val possibleRewritesUsingRule: (Renv.env -> Exp.exp -> Exp.exp list) -> Renv.env -> Exp.exp ->
                                (int list) -> Exp.exp ->
-                               (Exp.exp * Env.env * Exp.exp * (Exp.exp list)) list ;;
-val rewriteUsingRule: (Env.env -> Exp.exp -> Exp.exp list) -> Env.env -> Exp.exp ->
+                               (Exp.exp * Renv.env * Exp.exp * (Exp.exp list)) list ;;
+val rewriteUsingRule: (Renv.env -> Exp.exp -> Exp.exp list) -> Renv.env -> Exp.exp ->
                       (int list) -> Exp.exp -> Exp.exp list ;;
-val forceRewrites: (Env.env -> Exp.exp -> Exp.exp list)-> Env.env -> Exp.exp -> ((Exp.exp * Env.env * Exp.exp * Exp.exp) list) ;;
+val forceRewrites: (Renv.env -> Exp.exp -> Exp.exp list)-> Renv.env -> Exp.exp -> ((Exp.exp * Renv.env * Exp.exp * Exp.exp) list) ;;
 
-val rewriteRule: (Env.env -> Exp.exp -> Exp.exp list) -> Env.env -> Exp.exp ->
+val rewriteRule: (Renv.env -> Exp.exp -> Exp.exp list) -> Renv.env -> Exp.exp ->
                  (int list) -> Exp.exp list ;;
 

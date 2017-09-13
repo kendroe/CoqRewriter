@@ -70,12 +70,12 @@ let rec remove_normals e = match e with
   | y -> y ;;
 
 let rec mark_vars env x =
-   (try let (REF n) = ExpIntern.intern_exp (Env.isACorC env) x in
+   (try let (REF n) = ExpIntern.intern_exp (Renv.isACorC env) x in
         let res = Cache.get_mark_vars n in
         (REF res)
     with Cache.NoEntry ->
-    let (REF n) = ExpIntern.intern_exp (Env.isACorC env) x in
-    let (REF res) = ExpIntern.intern_exp (Env.isACorC env) (Rcontext.markVars (ExpIntern.decode_exp x)) in
+    let (REF n) = ExpIntern.intern_exp (Renv.isACorC env) x in
+    let (REF res) = ExpIntern.intern_exp (Renv.isACorC env) (Rcontext.markVars (ExpIntern.decode_exp x)) in
          Cache.add_mark_vars n res ;
          (REF res)
     ) ;;
@@ -88,7 +88,7 @@ let generate_rules r env e = match r with
                       | (APPL (1,[l;r;c])) -> not(l=r)
                       | _ -> false))
        (List.map remove_normals
-           (Derive.derive env (ExpIntern.intern_exp (Env.isACorC env) (APPL (intern_oriented_rule,[mark_vars env (remove_normals e);(APPL (intern_true,[]));(APPL (intern_true,[]))]))))))
+           (Derive.derive env (ExpIntern.intern_exp (Renv.isACorC env) (APPL (intern_oriented_rule,[mark_vars env (remove_normals e);(APPL (intern_true,[]));(APPL (intern_true,[]))]))))))
   |10 ->
        (List.filter
            (fun (r) -> (match (ExpIntern.decode_exp r) with
@@ -97,7 +97,7 @@ let generate_rules r env e = match r with
                       | (APPL (1,[l;r;c])) -> true
                       | _ -> false))
            (List.map remove_normals
-               (Derive.derive env (ExpIntern.intern_exp (Env.isACorC env) (APPL (intern_oriented_rule,[mark_vars env e;(APPL (intern_false,[]));(APPL (intern_true,[]))])))))) ;;
+               (Derive.derive env (ExpIntern.intern_exp (Renv.isACorC env) (APPL (intern_oriented_rule,[mark_vars env e;(APPL (intern_false,[]));(APPL (intern_true,[]))])))))) ;;
 
 let rec generate_rules_list f env l = match l with
   | [] -> []
@@ -108,15 +108,15 @@ let rec generate_rules_list f env l = match l with
 let rec add_c_rules env l = match l with
   | [] -> env
   | (a::b) ->
-    add_c_rules (Env.addProperty env a) b
+    add_c_rules (Renv.addProperty env a) b
   ;;
 
 let rec add_context_rules env l n term =
     (*let _ = print_string ("Adding " ^ (string_of_int n) ^ "\n") in*)
     let l = Mylist.delete_nth l n in
     (*let _ = List.map (fun x -> (List.map (fun y -> print_string ("Rule " ^ (prExp (ExpIntern.decode_exp y)) ^ "\n")) x)) l in*)
-        (*addContextRules env (List.map (fun (x) -> (REF x)) (junction_filter_rule_list env term (List.map (fun (x) -> let val REF x = ExpIntern.intern_exp (Env.isACorC env) x in x end ) (foldr append [] l))))*)
-        Env.addContextRules env (List.fold_right List.append l [])
+        (*addContextRules env (List.map (fun (x) -> (REF x)) (junction_filter_rule_list env term (List.map (fun (x) -> let val REF x = ExpIntern.intern_exp (Renv.isACorC env) x in x end ) (foldr append [] l))))*)
+        Renv.addContextRules env (List.fold_right List.append l [])
   ;;
 
 let rec context_rewrite_list rewrite env f rules l n =
@@ -144,7 +144,7 @@ let rec repeat_context_rewrite_list rewrite env f rules l =
 let rec repeat_rewrite rewrite ((APPL (f,l)),env) =
     let rules = generate_rules_list f env l in
     let (r,env) = repeat_context_rewrite_list rewrite env f rules l in
-        (Env.flatten_top env r,env)
+        (Renv.flatten_top env r,env)
     ;;
 
 exception NoRewrite ;;
@@ -152,14 +152,14 @@ exception NoRewrite ;;
 let intern_exp_true = ExpIntern.intern_exp (fun (x) -> false) (parseExp "True") ;;
 let intern_exp_false = ExpIntern.intern_exp (fun (x) -> false) (parseExp "False") ;;
 
-let flt (e,env) = (Env.flatten_top env e,env) ;;
+let flt (e,env) = (Renv.flatten_top env e,env) ;;
 
 let kbmode = ref true ;;
 
 let rec rewriteTop (exp,env) kb =
     (let _ = Rtrace.trace "rewrite" (fun (x) -> "builtin " ^ (prExp exp)) in
     let _ = Rtrace.indent () in
-    let exp = ExpIntern.decode_two_exp (ExpIntern.intern_exp (Env.isACorC env) exp) in
+    let exp = ExpIntern.decode_two_exp (ExpIntern.intern_exp (Renv.isACorC env) exp) in
     let rew = Builtin.builtin rewrite2_front env exp in
     (*let _ = print_string ("exp = " ^ (prExp exp) ^ "\n") in
     let _ = print_string ("builtin results " ^ (string_of_int (List.length rew)) ^ "\n") in*)
@@ -181,12 +181,12 @@ let rec rewriteTop (exp,env) kb =
             else 
                 (List.hd rew,env,kb))
     in
-        (Env.flatten env res,env,kb))
+        (Renv.flatten env res,env,kb))
 and rewriteTopCont orig (f,env) kb =
    (try let (x,env,kb) = rewriteTop (f,env) kb
         (*val _ = print ("[Pre: " ^ (prExp f) ^ "]\n[Post: " ^ (prExp x) ^ "]\n")*)
     in
-        if (ExpIntern.intern_exp (Env.isACorC env) orig)=(ExpIntern.intern_exp (Env.isACorC env) x) then
+        if (ExpIntern.intern_exp (Renv.isACorC env) orig)=(ExpIntern.intern_exp (Renv.isACorC env) x) then
             (x,env)
         else
             try if kb then
@@ -230,14 +230,14 @@ and int_rewrite e kb = (match e with
   | (APPL (9,l),env) ->
     rewriteTopCont (APPL (9,l)) (flt (repeat_rewrite rewrite_nokb_front ((APPL (intern_and,l)),env))) kb
   | ((APPL (10,[])),env) -> (intern_exp_false,env)
-  | ((APPL (10,[x])),env) -> rewrite_front (ExpIntern.intern_exp (Env.isACorC env) x,env)
+  | ((APPL (10,[x])),env) -> rewrite_front (ExpIntern.intern_exp (Renv.isACorC env) x,env)
   | (APPL (10,l),env) ->
     rewriteTopCont (APPL (10,l)) (flt (repeat_rewrite rewrite_front ((APPL (intern_or,l)),env))) kb
   | (APPL (1,[l;r;c]),env) ->
     let (c,env) = rewrite_front (c,env) in
     let e2 = Crewrite.create_rules (fun (x) -> [remove_normals x]) env
                  (APPL (intern_oriented_rule,[l;r;c])) 0 in
-    let _ = Rtrace.trace_list "rewrite" (fun (x) -> List.map (fun (x) -> "contadd " ^ (prExp (ExpIntern.decode_exp (REF x)))) (Env.getContextList e2)) in
+    let _ = Rtrace.trace_list "rewrite" (fun (x) -> List.map (fun (x) -> "contadd " ^ (prExp (ExpIntern.decode_exp (REF x)))) (Renv.getContextList e2)) in
     let (l,_) = rewrite_front (l,e2) in
     let (r,_) = rewrite_front (r,e2) in
         rewriteTopCont (APPL (1,[l;r;c])) (APPL (intern_oriented_rule,[l;r;c]),env) kb
@@ -261,7 +261,7 @@ and int_rewrite e kb = (match e with
                                    (r@[e],env,n+1)
                                 )) ([],env,0) l2 in
     let (res,env) = rewriteTopCont (APPL (s,l2)) ((APPL (s,l)),envs) kb in
-        if l=l2 then (Env.flatten_top env res,env) else (res,env)
+        if l=l2 then (Renv.flatten_top env res,env) else (res,env)
   | ((QUANT (v,t,e,p)),env) ->
     let (r_e,env) = try rewrite_front (e,env) with NoRewrite -> (e,env) in
     let (r_p,env) = try rewrite_front (p,env) with NoRewrite -> (p,env) in
@@ -293,26 +293,26 @@ and rewrite2_front env x =
     let _ = (Rtrace.undent () ; Rtrace.undent ()) in
     let _ = Rtrace.trace "rewrite" (fun (xx) -> "end rewrite subterm: " ^ (prExp x)) in
     let _ = (Rtrace.indent () ; Rtrace.undent ()) in
-        List.map (ExpIntern.intern_exp (Env.isACorC env)) res)
+        List.map (ExpIntern.intern_exp (Renv.isACorC env)) res)
 and rewrite2 env x = (Cache.save_good_rewrites () ; [(ExpIntern.decode_exp (List.hd (rewrite2_front env x)))])
 and rewrite_front_k (x,env) kb =
     let _ = Rtrace.trace "rewrite"
                 (fun (xx) -> "rewriting expression: " ^ (prExp x)) in
     let _ = Rtrace.indent () in
-    let (REF x1) = ExpIntern.intern_exp (Env.isACorC env) x in
+    let (REF x1) = ExpIntern.intern_exp (Renv.isACorC env) x in
     let (res1,env) =
-           if Cache.is_rewrite_failure (Env.getContextList env) x1 then
+           if Cache.is_rewrite_failure (Renv.getContextList env) x1 then
                (REF x1,env)
            else
-               (try ((REF (Cache.get_rewrite (Env.getContextList env) x1)),env)
+               (try ((REF (Cache.get_rewrite (Renv.getContextList env) x1)),env)
                 with Cache.NoEntry ->
                 let x = ExpIntern.decode_two_exp (REF x1) in
                 let (r,env) = int_rewrite (x,env) kb in
-                let (REF res) = ExpIntern.intern_exp (Env.isACorC env) r in
+                let (REF res) = ExpIntern.intern_exp (Renv.isACorC env) r in
                     if x1=res then
-                        Cache.add_rewrite_failure (Env.getContextList env) x1
+                        Cache.add_rewrite_failure (Renv.getContextList env) x1
                     else
-                        Cache.add_rewrite (Env.getContextList env) x1 res ;
+                        Cache.add_rewrite (Renv.getContextList env) x1 res ;
                     ((REF res),env)
                 ) in
     let _ = Rtrace.trace "rewrite" (fun (x) -> "Result:") in
@@ -322,25 +322,25 @@ and rewrite_front_k (x,env) kb =
     let _ = (Rtrace.undent () ; Rtrace.undent ()) in
     let _ = Rtrace.trace "rewrite" (fun (xx) -> "end rewrite for: " ^ (prExp x)) in
     let _ = (Rtrace.indent () ; Rtrace.undent ()) in
-        (ExpIntern.intern_exp (Env.isACorC env) res1,env)
+        (ExpIntern.intern_exp (Renv.isACorC env) res1,env)
 and rewrite_front (x,env) =
     let _ = Rtrace.trace "rewrite"
                 (fun (xx) -> "rewriting expression: " ^ (prExp x)) in
     let _ = Rtrace.indent () in
-    let (REF x1) = ExpIntern.intern_exp (Env.isACorC env) x in
+    let (REF x1) = ExpIntern.intern_exp (Renv.isACorC env) x in
     let (res1,env) =
-           if Cache.is_rewrite_failure (Env.getContextList env) x1 then
+           if Cache.is_rewrite_failure (Renv.getContextList env) x1 then
                (REF x1,env)
            else
-               (try ((REF (Cache.get_rewrite (Env.getContextList env) x1)),env)
+               (try ((REF (Cache.get_rewrite (Renv.getContextList env) x1)),env)
                 with Cache.NoEntry ->
                 let x = ExpIntern.decode_two_exp (REF x1) in
                 let (r,env) = int_rewrite (x,env) true in
-                let (REF res) = ExpIntern.intern_exp (Env.isACorC env) r in
+                let (REF res) = ExpIntern.intern_exp (Renv.isACorC env) r in
                     if x1=res then
-                        Cache.add_rewrite_failure (Env.getContextList env) x1
+                        Cache.add_rewrite_failure (Renv.getContextList env) x1
                     else
-                        Cache.add_rewrite (Env.getContextList env) x1 res ;
+                        Cache.add_rewrite (Renv.getContextList env) x1 res ;
                     ((REF res),env)
                 ) in
     let _ = Rtrace.trace "rewrite" (fun (x) -> "Result:") in
@@ -351,25 +351,25 @@ and rewrite_front (x,env) =
     let _ = Rtrace.trace "rewrite" (fun (xx) -> "end rewrite for: " ^ (prExp x)) in
     let _ = (Rtrace.indent () ; Rtrace.undent ())
     in
-        (ExpIntern.intern_exp (Env.isACorC env) res1,env)
+        (ExpIntern.intern_exp (Renv.isACorC env) res1,env)
 and rewrite_nokb_front (x,env) =
     let _ = Rtrace.trace "rewrite"
                 (fun (xx) -> "rewriting expression: " ^ (prExp x)) in
     let _ = Rtrace.indent () in
-    let (REF x1) = ExpIntern.intern_exp (Env.isACorC env) x in
+    let (REF x1) = ExpIntern.intern_exp (Renv.isACorC env) x in
     let (res1,env) =
-           if Cache.is_rewrite_failure (Env.getContextList env) x1 then
+           if Cache.is_rewrite_failure (Renv.getContextList env) x1 then
                (REF x1,env)
            else
-               (try ((REF (Cache.get_rewrite (Env.getContextList env) x1)),env)
+               (try ((REF (Cache.get_rewrite (Renv.getContextList env) x1)),env)
                 with Cache.NoEntry ->
                 let x = ExpIntern.decode_two_exp (REF x1) in
                 let (r,env) = int_rewrite (x,env) false in
-                let (REF res) = ExpIntern.intern_exp (Env.isACorC env) r in
+                let (REF res) = ExpIntern.intern_exp (Renv.isACorC env) r in
                     if x1=res then
-                        Cache.add_rewrite_failure (Env.getContextList env) x1
+                        Cache.add_rewrite_failure (Renv.getContextList env) x1
                     else
-                        Cache.add_rewrite (Env.getContextList env) x1 res ;
+                        Cache.add_rewrite (Renv.getContextList env) x1 res ;
                     ((REF res),env)
                 ) in
     let _ = Rtrace.trace "rewrite" (fun (x) -> "Result:") in
@@ -378,7 +378,7 @@ and rewrite_nokb_front (x,env) =
     let _ = (Rtrace.undent () ; Rtrace.undent ()) in
     let _ = Rtrace.trace "rewrite" (fun (xx) -> "end rewrite for: " ^ (prExp x)) in
     let _ = (Rtrace.indent () ; Rtrace.undent ()) in
-        (ExpIntern.intern_exp (Env.isACorC env) res1,env)
+        (ExpIntern.intern_exp (Renv.isACorC env) res1,env)
 and rewrite_nokb (x,env) =
     let _ = Cache.save_good_rewrites () in
     let (x,env) = rewrite_nokb_front (x,env) in
@@ -400,7 +400,7 @@ let rewrite_in_context (e,c,d,env) =
         (*val _ = print ("e(1) = " ^ (prExp e) ^ "\n")*)
     let (e,_) = rewrite_front (e,e3) in
         (*val _ = print ("e(2) = " ^ (prExp (ExpIntern.decode_exp e)) ^ "\n")*)
-        (*val _ = map (fun (x) -> print ("r " ^ (prExp (ExpIntern.decode_exp (REF x))) ^ "\n")) (Env.getContextList e3)*)
+        (*val _ = map (fun (x) -> print ("r " ^ (prExp (ExpIntern.decode_exp (REF x))) ^ "\n")) (Renv.getContextList e3)*)
     let e = List.hd ((Kbrewrite.kbrewrite2 rewrite2 e3 (ExpIntern.decode_exp e) [])@[e])
         (*val _ = print ("e(3) = " ^ (prExp (ExpIntern.decode_exp e)) ^ "\n")*)
     in

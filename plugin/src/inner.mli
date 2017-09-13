@@ -19,9 +19,9 @@
 (* require "exp.sml" ;  *)
 (* require "env.sml" ;  *)
 
-val rewrite_in_context: (Exp.exp * Exp.exp * Exp.exp * Env.env) ->
+val rewrite_in_context: (Exp.exp * Exp.exp * Exp.exp * Renv.env) ->
     Exp.exp ;;
-val rewrite: (Exp.exp * Env.env) -> (Exp.exp * Env.env) ;;
-val rewrite_nokb: (Exp.exp * Env.env) -> (Exp.exp * Env.env) ;;
-val rewrite2: Env.env -> Exp.exp -> Exp.exp list ;;
+val rewrite: (Exp.exp * Renv.env) -> (Exp.exp * Renv.env) ;;
+val rewrite_nokb: (Exp.exp * Renv.env) -> (Exp.exp * Renv.env) ;;
+val rewrite2: Renv.env -> Exp.exp -> Exp.exp list ;;
 

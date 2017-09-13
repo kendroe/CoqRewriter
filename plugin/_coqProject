@@ -14,8 +14,8 @@ src/derive.ml
 src/derive.mli
 src/disc.ml
 src/disc.mli
-src/env.ml
-src/env.mli
+src/renv.ml
+src/renv.mli
 src/exp.ml
 src/exp.mli
 src/intern.ml

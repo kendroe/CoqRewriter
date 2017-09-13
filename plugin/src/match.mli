@@ -18,12 +18,12 @@
 (* require "subst.sml" ;  *)
 (* require "env.sml" ;  *)
 
-val thematch: Env.env -> Exp.exp -> Exp.exp -> ((Rsubst.unifier * Exp.exp list) list) ;;
-val unify: Env.env -> Exp.exp -> Exp.exp -> ((Rsubst.unifier * Rsubst.unifier * Exp.exp list * Exp.exp list) list) ;;
-val equal: Env.env -> Exp.exp -> Exp.exp -> bool ;;
-val equal_smaller: Env.env -> Exp.exp -> Exp.exp -> bool ;;
-val much_smaller: Env.env -> Exp.exp -> Exp.exp -> bool ;;
-val remove_equal_dups: Env.env -> Exp.exp list -> Exp.exp list ;;
+val thematch: Renv.env -> Exp.exp -> Exp.exp -> ((Rsubst.unifier * Exp.exp list) list) ;;
+val unify: Renv.env -> Exp.exp -> Exp.exp -> ((Rsubst.unifier * Rsubst.unifier * Exp.exp list * Exp.exp list) list) ;;
+val equal: Renv.env -> Exp.exp -> Exp.exp -> bool ;;
+val equal_smaller: Renv.env -> Exp.exp -> Exp.exp -> bool ;;
+val much_smaller: Renv.env -> Exp.exp -> Exp.exp -> bool ;;
+val remove_equal_dups: Renv.env -> Exp.exp list -> Exp.exp list ;;
 
 
 

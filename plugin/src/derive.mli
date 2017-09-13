@@ -21,8 +21,8 @@
 
 val set_equality_test: (Exp.exp -> Exp.exp -> bool) -> unit ;;
 val equality_terms: Exp.exp -> Exp.exp -> bool ;;
-val derive: Env.env -> Exp.exp -> Exp.exp list ;;
-val rule_add_derive: Env.env -> Exp.exp -> Exp.exp list ;;
+val derive: Renv.env -> Exp.exp -> Exp.exp list ;;
+val rule_add_derive: Renv.env -> Exp.exp -> Exp.exp list ;;
 
 
 

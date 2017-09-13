@@ -193,7 +193,7 @@ let ra_derive e = match e with
     ;;
 
 let user_derives env user_disc e =
-    let user_rules = Disc.find (Env.isAorC env) user_disc e
+    let user_rules = Disc.find (Renv.isAorC env) user_disc e
     in
         List.fold_left List.append [] (List.map (fun (APPL (f,[pat;res;_])) ->
                   (List.map
@@ -224,13 +224,13 @@ let generalize e = match e with
 
 let make_user_rules env =
     (List.fold_left List.append [] (List.map
-        (fun ([Env.E (APPL (f1,[l1;r1;c1]));
-             Env.E (APPL (f2,[l2;r2;c2]))]) ->
+        (fun ([Renv.E (APPL (f1,[l1;r1;c1]));
+             Renv.E (APPL (f2,[l2;r2;c2]))]) ->
             [(APPL (intern_unoriented_rule,[l1;r1;c1]),APPL (f2,[l2;r2;c2]));
              (APPL (intern_oriented_rule,[l1;r1;c1]),APPL (f2,[l2;r2;c2]));
              (APPL (intern_unoriented_rule,[l1;r1;generalize c1]),APPL (f2,[l2;r2;generalize c2]));
              (APPL (intern_oriented_rule,[l1;r1;generalize c1]),APPL (f2,[l2;r2;generalize c2]))])
-(Env.allAttrib env intern_derive []))) ;;
+(Renv.allAttrib env intern_derive []))) ;;
 
 let rec map_def e = match e with
   | (APPL (72,[x])) -> (APPL (72,[x]))
@@ -245,7 +245,7 @@ let rec derive env e = match e with
   (try (List.map (fun (x) -> (REF x)) (Cache.get_derived_rules x)) with Cache.NoEntry ->
     let r = derive env (ExpIntern.decode_exp (REF x)) in
         (*val _ = print ("cache deriving for " ^ (makestring x) ^ "\n")*)
-    let r1 = List.map (ExpIntern.intern_exp (Env.isACorC env)) r in
+    let r1 = List.map (ExpIntern.intern_exp (Renv.isACorC env)) r in
     let r2 = List.map (fun (REF x) -> x) r1 in
         Cache.add_derived_rules x r2 ;
         r1)
@@ -255,7 +255,7 @@ let rec derive env e = match e with
         (*val _ = print ("Deriving for " ^ (prExp e) ^ "\n")*)
     let user_rules = make_user_rules env in
     let user_disc = List.fold_right (fun (oo,n) -> (fun d ->
-                                Disc.add (Env.isAorC env) d (APPL (intern_oriented_rule,[oo;n;(APPL (intern_true,[]))]))
+                                Disc.add (Renv.isAorC env) d (APPL (intern_oriented_rule,[oo;n;(APPL (intern_true,[]))]))
                               )) user_rules Disc.newDisc in
     let _ = Rtrace.trace "derive" (fun (xx) -> "Deriving " ^ (prExp e)) in
     let _ = Rtrace.indent () in
@@ -279,7 +279,7 @@ let rec rule_add_derive env (APPL (f,[l;r;c])) =
     let _ = Rtrace.indent () in
     let user_rules = make_user_rules env in
     let user_disc = List.fold_right (fun (oo,n) -> (fun d ->
-Disc.add (Env.isAorC env) d (APPL (intern_oriented_rule,[oo;n;(APPL (intern_true,[]))]))
+Disc.add (Renv.isAorC env) d (APPL (intern_oriented_rule,[oo;n;(APPL (intern_true,[]))]))
                                  )) user_rules Disc.newDisc in
     let res = (List.filter
                   (fun (APPL (f,[l;r;c])) ->

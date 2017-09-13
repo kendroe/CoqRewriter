@@ -109,7 +109,7 @@ let rec flatten_constructors l = match l with
 let rec e_member env x l = match l with
   | [] -> false
   | (f::r) ->
-    (ExpIntern.intern_exp (Env.isACorC env) x)=(ExpIntern.intern_exp (Env.isACorC env) f) ||
+    (ExpIntern.intern_exp (Renv.isACorC env) x)=(ExpIntern.intern_exp (Renv.isACorC env) f) ||
     e_member env x r ;;
 
 exception NoProper ;;
@@ -142,7 +142,7 @@ let rec returns_bool env e = match e with
   | (QUANT (14,_,_,_)) -> true
   | (QUANT (15,_,_,_)) -> true
   | (APPL (s,l)) ->
-    Rtype.getReturnetype (Env.getType env s) = bool_type
+    Rtype.getReturnetype (Renv.getType env s) = bool_type
   | _ -> false
   ;;
 
@@ -432,32 +432,32 @@ let rec is_finite_clause_list env l = match l with
   | ((REF r,b)::rr) ->
     is_finite_clause_list env ((ExpIntern.decode_one_exp (REF r),b)::rr)
   | ((APPL (f,[]),_)::_) ->
-    Env.isFiniteConstructor env f
+    Renv.isFiniteConstructor env f
   | _ -> false ;;
 
 let isFiniteTerm env e = match e with
   | (VAR x) ->
-    (try let v = Env.getVarType env x
+    (try let v = Renv.getVarType env x
      in
-         Rtype.isFiniteetype (Env.getTypeDefinition env (Rtype.getetypeName v))
-     with Env.UndefinedSymbol _ -> false)
-  | (APPL (f,[])) -> Env.isFiniteConstructor env f
+         Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName v))
+     with Renv.UndefinedSymbol _ -> false)
+  | (APPL (f,[])) -> Renv.isFiniteConstructor env f
   | (APPL (f,l)) ->
-    let t = Rtype.getReturnetype (Env.getType env f)
+    let t = Rtype.getReturnetype (Renv.getType env f)
     in
-        Rtype.isFiniteetype (Env.getTypeDefinition env (Rtype.getetypeName t))
+        Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName t))
   | _ -> false
   ;;
 
 let rec getTermType env e = match e with
-  | (VAR x) -> (try Env.getVarType env x with Env.UndefinedSymbol _ -> Rtype.notype)
-  | (APPL (f,l)) -> Rtype.getReturnetype (Env.getType env f)
+  | (VAR x) -> (try Renv.getVarType env x with Renv.UndefinedSymbol _ -> Rtype.notype)
+  | (APPL (f,l)) -> Rtype.getReturnetype (Renv.getType env f)
   | _ -> Rtype.notype ;;
 
 let create_equal_case env l r =
     let t = getTermType env l in
     let t = if t=Rtype.notype then getTermType env r else t in
-    let td = Env.getTypeDefinition env (Rtype.getetypeName t) in
+    let td = Renv.getTypeDefinition env (Rtype.getetypeName t) in
     let tc = Rtype.getConstructorList td in
         (CASE (l,Rtype.notype,
               (List.map (fun (x) ->
@@ -470,11 +470,11 @@ let create_equal_case env l r =
 
 let rec find_inversion env e = match e with
   | (CASE (e,_,cl)) ->
-    let REF t1 = ExpIntern.intern_exp (Env.isACorC env) e in
+    let REF t1 = ExpIntern.intern_exp (Renv.isACorC env) e in
     let rec find_smaller_case (f,t1) l = match l with
           | [] -> (f,t1)
           | ((APPL (f1,_),CASE (e1,t,cl))::r) ->
-            let REF t2= ExpIntern.intern_exp (Env.isACorC env) e1
+            let REF t2= ExpIntern.intern_exp (Renv.isACorC env) e1
             in
                 if t2<t1 && is_finite_clause_list env cl then find_smaller_case (f1,t2) r
                 else find_smaller_case (f,t1) r
@@ -482,7 +482,7 @@ let rec find_inversion env e = match e with
     let rec find_case l = match l with
           | [] -> (0,0)
           | ((APPL (f,_),CASE (e1,t,cl))::r) ->
-            let REF t2= ExpIntern.intern_exp (Env.isACorC env) e1
+            let REF t2= ExpIntern.intern_exp (Renv.isACorC env) e1
             in
                 if t2<t1 && is_finite_clause_list env cl then find_smaller_case (f,t2) r else find_case r
           | (_::r) -> find_case r in
@@ -710,10 +710,10 @@ let rec builtin rewrite env e = match e with
   | (APPL (17,[APPL (10,l)])) ->
       [APPL (intern_and,List.map (fun (x) -> (APPL (intern_not,[NORMAL x]))) l)]
   | (APPL (72,[x])) ->
-    let c = ExpIntern.intern_exp (Env.isACorC env) x in
+    let c = ExpIntern.intern_exp (Renv.isACorC env) x in
     let cl= List.filter
             (fun (y) -> Crewrite.relevant_rule env c (REF y))
-            (Env.getContextList env) in
+            (Renv.getContextList env) in
     let _ = Rtrace.trace "rewriteRule" (fun (x) -> "Building relevant rule list") in
     let _ = Rtrace.trace "rewriteRule" (fun (z) -> ("exp " ^ (prExp (ExpIntern.decode_exp x)) ^ "\n")) in
     let _ = Rtrace.trace_list "rewriteRule" (fun (x) -> (List.map (fun (x) -> "cl " ^ (prExp (ExpIntern.decode_exp (REF x))) ^ "\n") cl))
@@ -723,7 +723,7 @@ let rec builtin rewrite env e = match e with
         else
         [APPL (intern_default,x::(List.map (fun (x) -> REF x) cl))]
   | (APPL (71,x::l)) ->
-    let env1 = Env.addContextRules (Env.clearContextRules env) l in
+    let env1 = Renv.addContextRules (Renv.clearContextRules env) l in
     let rl= rewrite env1 x
     in
         if List.mem (APPL (intern_true,[])) rl ||
@@ -1310,7 +1310,7 @@ let rec builtin rewrite env e = match e with
     if (is_constructor s1) && (is_constructor s2) then
         (if s1=s2 && (List.length l1)=(List.length l2) then
             [APPL (intern_and,(precPairJoin l1 l2))]
-        else if Env.hasSmallerPrecedence env s1 s2 then
+        else if Renv.hasSmallerPrecedence env s1 s2 then
             [APPL (intern_and,lpFactor l1 (APPL (s2,l2)))]
         else
             [APPL (intern_or,spFactor (APPL (s1,l1)) l2)]
@@ -1318,7 +1318,7 @@ let rec builtin rewrite env e = match e with
         [APPL (intern_true,[])]
     else if subterm_member env (APPL (s1,l1)) (APPL (s2,l2)) then
         [APPL (intern_true,[])]
-    else if (is_constructor s1) && (Env.smallestSymbolOfType env s1)
+    else if (is_constructor s1) && (Renv.smallestSymbolOfType env s1)
             && (l1=[]) then
         [APPL (intern_true,[])]
     else
@@ -1350,7 +1350,7 @@ let rec builtin rewrite env e = match e with
     if (is_constructor s) &&
        (List.mem x (Rcontext.getFreeVars (APPL (s,l)))) then
         [APPL (intern_false,[])]
-    else if (is_constructor s) && (Env.smallestSymbolOfType env s)
+    else if (is_constructor s) && (Renv.smallestSymbolOfType env s)
             && (l=[]) then
         [APPL (intern_true,[])]
     else
@@ -1360,7 +1360,7 @@ let rec builtin rewrite env e = match e with
   | (APPL (12,[(APPL (s,l));b])) ->
     if (subterm_member env (APPL (s,l)) b) then
         [APPL (intern_true,[])]
-    else if (is_constructor s) && (Env.smallestSymbolOfType env s)
+    else if (is_constructor s) && (Renv.smallestSymbolOfType env s)
        && (l=[]) then
         [APPL (intern_true,[])]
     else
@@ -1403,10 +1403,10 @@ let rec builtin rewrite env e = match e with
   | (APPL (13,[APPL (13,l)])) ->
 [APPL (intern_true,[])]
   | (APPL (13,[APPL (f,l)])) ->
-    if (Env.isAC env f) && (List.length l)>2 then
+    if (Renv.isAC env f) && (List.length l)>2 then
         try let (a::r) =l in
         let l2 = [a;(APPL (f,r))] in
-        let (e,p) = Env.getFunctionPrecondition env f in
+        let (e,p) = Renv.getFunctionPrecondition env f in
         let theta = first_proper (Match.thematch env e (APPL (f,l2))) in
             if p=NOEXP then
                 []
@@ -1419,7 +1419,7 @@ let rec builtin rewrite env e = match e with
             if is_constructor f then
                 [(APPL (intern_and,r))]
             else
-                (try let (e,p) = Env.getFunctionPrecondition env f in
+                (try let (e,p) = Renv.getFunctionPrecondition env f in
                 let theta = first_proper (Match.thematch env e (APPL (f,l))) in
                     if p=NOEXP then
                         []
@@ -1485,7 +1485,7 @@ let rec builtin rewrite env e = match e with
     else
         []
   | (APPL (f,l)) ->
-    if Env.hasSmallerPrecedence env intern_if f then
+    if Renv.hasSmallerPrecedence env intern_if f then
        (try let (b,(APPL (_,[c;t;e])),a) = first_if [] l
         in
             [(APPL (intern_if,[c;APPL (f,b@[t]@a);APPL (f,b@[e]@a)]))]
@@ -1512,13 +1512,13 @@ let rec builtin rewrite env e = match e with
        (let x = reduce_finite_case v t cl in
            if not(x=[]) then x
            else
-              (let tl = List.map (fun (_,x) -> ExpIntern.intern_exp (Env.isACorC env) x) cl in
+              (let tl = List.map (fun (_,x) -> ExpIntern.intern_exp (Renv.isACorC env) x) cl in
                let rec all_equal l = match l with
                      | (f::s::r) -> f=s && (all_equal (s::r))
                      | _ -> true in
                let (APPL (f,l),_) = List.hd cl in
                let rec full_list cl =
-                       let t = Env.getTypeDefinition env (Rtype.getetypeName (Rtype.getReturnetype (Env.getType env f))) in
+                       let t = Renv.getTypeDefinition env (Rtype.getetypeName (Rtype.getReturnetype (Renv.getType env f))) in
                        let tc = Rtype.getConstructorList t in
                        let c = Mylist.remove_dups (List.map (fun (APPL (f,x),_) -> f) cl) in
                            (List.length tc)=(List.length c) in

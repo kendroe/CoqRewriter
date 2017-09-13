@@ -38,7 +38,7 @@
 (* infix 2 <> ; *)
 (* infix 3 >< ; *)
 
-open Env ;;
+open Renv ;;
 open Exp ;;
 open Intern ;;
 (* open EXP_INTERNimpl ; *)
@@ -255,7 +255,7 @@ let identity_theta theta =
 let rec unify_refine rewrite env c theta =
     let _ = Rtrace.trace "rewriteRule" (fun (x) -> ("u: " ^ (prExp c))) in
     let _ = Rtrace.trace "rewriteRule" (fun (x) -> ("t: " ^ (pr_theta theta))) in
-    let _ = Rtrace.trace_list "rewriteRule" (fun (x) -> List.map (fun (x) -> ("cr: " ^ (prExp (ExpIntern.decode_exp (REF x))))) (Env.getContextList env)) in
+    let _ = Rtrace.trace_list "rewriteRule" (fun (x) -> List.map (fun (x) -> ("cr: " ^ (prExp (ExpIntern.decode_exp (REF x))))) (Renv.getContextList env)) in
     let rec terms = match c with
                        | (APPL (9,l)) -> l
                        | _            -> [c] in
@@ -263,16 +263,16 @@ let rec unify_refine rewrite env c theta =
           | [] -> Rsubst.empty
           | (f::r) ->
             let _ = Rtrace.trace "rewriteRule" (fun (x) -> ("test: " ^ (prExp f))) in
-            let (REF num) = ExpIntern.intern_exp (Env.isACorC env) f in
+            let (REF num) = ExpIntern.intern_exp (Renv.isACorC env) f in
             let rules0 = try Cache.get_urules num with Cache.NoEntry ->
-                    let fr = Disc.ufind (Env.isAorC env) (Env.getRules env) (ExpIntern.decode_exp f) in
+                    let fr = Disc.ufind (Renv.isAorC env) (Renv.getRules env) (ExpIntern.decode_exp f) in
                     let fr2 = List.map (fun (x) -> let (REF e)=ExpIntern.intern_exp (isACorC env) x in e) fr in
                         Cache.add_urules num fr2 ;
                         fr2 in
             let rules1 = try Cache.get_context_rules num (getContextList env) with Cache.NoEntry ->
-                    (let rl = Disc.findSmall (Env.getContextDisc env) (ExpIntern.decode_exp f) in
+                    (let rl = Disc.findSmall (Renv.getContextDisc env) (ExpIntern.decode_exp f) in
                     let rl1 = List.map (fun (x) -> let (REF e)=ExpIntern.intern_exp (isACorC env) x in e) rl in
-                        (Cache.add_context_rules num (Env.getContextList env) rl1 ;
+                        (Cache.add_context_rules num (Renv.getContextList env) rl1 ;
                         rl1)
                     ) in
             let rules = List.map (fun (x) -> ExpIntern.decode_exp (REF x)) (Mylist.remove_dups (rules1@rules0)) in
@@ -310,12 +310,12 @@ let rec unify_refine rewrite env c theta =
     ;;
 
 let unify_refine_cache rewrite env c =
-    let (REF x) = ExpIntern.intern_exp (Env.isACorC env) c
+    let (REF x) = ExpIntern.intern_exp (Renv.isACorC env) c
     in
-        try Cache.get_unify_refine x (Env.getContextList env) with Cache.NoEntry ->
+        try Cache.get_unify_refine x (Renv.getContextList env) with Cache.NoEntry ->
         (let theta = unify_refine rewrite env c Rsubst.empty
          in
-             Cache.add_unify_refine x (Env.getContextList env) theta ;
+             Cache.add_unify_refine x (Renv.getContextList env) theta ;
              theta
          )
     ;;
@@ -365,12 +365,12 @@ let rewriteUsingRuleUnify rewrite env e vars ee = match ee with
                         (List.fold_left List.append [] (List.map
                          (fun (x,ll) ->
                           let c = Rsubst.subst x c in
-                          let c1 = ExpIntern.intern_exp (Env.isACorC env) c in
+                          let c1 = ExpIntern.intern_exp (Renv.isACorC env) c in
                           let _ = Rtrace.trace "rewriteRule" (fun (x) -> "START UNIFY") in
                           (*val l = CREWRITEimpl.filter_rule_list env c1 (getContextList env)*)
-                          let l = (Env.getContextList env) in
-                          let env = Env.addContextRules (Env.clearContextRules env) (List.map (fun (x) -> REF x) l) in
-                          let _ = Rtrace.trace_list "rewriteRule" (fun (x) -> List.map (fun (r) -> "pr: " ^ (prExp (ExpIntern.decode_exp (REF r)))) (Env.getContextList env)) in
+                          let l = (Renv.getContextList env) in
+                          let env = Renv.addContextRules (Renv.clearContextRules env) (List.map (fun (x) -> REF x) l) in
+                          let _ = Rtrace.trace_list "rewriteRule" (fun (x) -> List.map (fun (r) -> "pr: " ^ (prExp (ExpIntern.decode_exp (REF r)))) (Renv.getContextList env)) in
                           let _ = Rtrace.trace_list "rewriteRule" (fun (x) -> List.map (fun (r) -> "r: " ^ (prExp (ExpIntern.decode_exp (REF r)))) l) in
                           let s = unify_refine_cache rewrite env (map_def c) in
                           let _ = Rtrace.trace "rewriteRule" (fun (x) ->"DONE UNIFY") in
@@ -450,21 +450,21 @@ let introduced_vars x =
 let rewriteRule rewrite env e vars =
     let (REF num) = ExpIntern.intern_exp (isACorC env) e in
     let rules0 = (try Cache.get_rules num with Cache.NoEntry ->
-            let fr = Disc.find (Env.isAorC env) (Env.getRules env) (ExpIntern.decode_exp e) in
-            let fr2 = List.map (fun (x) -> let (REF e)=ExpIntern.intern_exp (Env.isACorC env) x in e) fr in
+            let fr = Disc.find (Renv.isAorC env) (Renv.getRules env) (ExpIntern.decode_exp e) in
+            let fr2 = List.map (fun (x) -> let (REF e)=ExpIntern.intern_exp (Renv.isACorC env) x in e) fr in
                 Cache.add_rules num fr2 ;
                 fr2
             ) in
         let rules1 = (try Cache.get_context_rules num (getContextList env) with Cache.NoEntry ->
             (*let _ = print_string ("Small for " ^ (prExp (ExpIntern.decode_exp e)) ^ "\n") in*)
-            let rl = Disc.findSmall (Env.getContextDisc env) (ExpIntern.decode_exp e) in
+            let rl = Disc.findSmall (Renv.getContextDisc env) (ExpIntern.decode_exp e) in
             (*let _ = List.map (fun (x) -> print_string ("Rule: " ^ (prExp x) ^ "n")) rl in*)
             let rl1 = List.map (fun (x) -> let (REF e)=ExpIntern.intern_exp (isACorC env) x in e) rl in
                 Cache.add_context_rules num (getContextList env) rl1 ;
                 rl1
             ) in
         let rules = List.map (fun (x) -> (x,introduced_vars x)) (Mylist.remove_dups (rules1@rules0)) in
-        let _ = Rtrace.trace_list "rewriteRuleDisc" (fun (x) -> List.map prExp (Env.getAllRules env)) in
+        let _ = Rtrace.trace_list "rewriteRuleDisc" (fun (x) -> List.map prExp (Renv.getAllRules env)) in
         let _ = Rtrace.trace "rewriteRuleDisc" (fun (x) -> Disc.makedcstring (getRules env)) in
         let _ = Rtrace.trace "rewriteRule" (fun (x) -> "Rules:") in
         let _ = Rtrace.indent () in
@@ -494,13 +494,13 @@ let rewriteRule rewrite env e vars =
     ;;
 
 let forceRewrites rewrite env e =
-    let rules = (Disc.find (Env.isAorC env) (Env.getViolationDisc env) e) in
+    let rules = (Disc.find (Renv.isAorC env) (Renv.getViolationDisc env) e) in
     let _ = Rtrace.trace "rewriteRule" (fun (x) -> "Force rules") in
-    let _ = Rtrace.trace_list "rewriteRuleDisc" (fun (x) -> List.map prExp (Env.getAllRules env)) in
+    let _ = Rtrace.trace_list "rewriteRuleDisc" (fun (x) -> List.map prExp (Renv.getAllRules env)) in
     let _ = Rtrace.trace "rewriteRuleDisc" (fun (x) -> Disc.makedcstring (getRules env)) in
     let _ = Rtrace.trace "rewriteRule" (fun (x) -> "Rules:") in
     let _ = Rtrace.indent () in
-    let _ = Rtrace.trace "rewriteRuleDisc" (fun (x) -> ("P: " ^ (Disc.makedcstring (Env.getRules env)))) in
+    let _ = Rtrace.trace "rewriteRuleDisc" (fun (x) -> ("P: " ^ (Disc.makedcstring (Renv.getRules env)))) in
     let _ = Rtrace.trace_list "rewriteRule" (fun (xx) -> List.map prExp rules) in
     let _ = Rtrace.undent () in
     let res = (List.fold_left List.append [] (List.map

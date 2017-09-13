@@ -19,7 +19,7 @@
 (* require "env.sml" ;  *)
 (* require "exp.sml" ;  *)
 
-val builtin: (Env.env -> Exp.exp -> (Exp.exp list)) -> Env.env -> Exp.exp -> (Exp.exp list) ;;
+val builtin: (Renv.env -> Exp.exp -> (Exp.exp list)) -> Renv.env -> Exp.exp -> (Exp.exp list) ;;
 
 
 
