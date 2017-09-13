@@ -109,8 +109,10 @@ let intern_rat_less        = 86 ;;
 let intern_rat_mod         = 87 ;;
 let intern_rat_to_nat      = 88 ;;
 let intern_nat_to_rat      = 89 ;;
+let intern_implies         = 90 ;;
+let intern_fix             = 91 ;;
 
-let next = ref 90 ;;
+let next = ref 92 ;;
 
 let count () = (!next)-1;;
 
@@ -207,6 +209,8 @@ let decode_array = ref (Array.init (!next)
                                      | 87 -> "rmod"
                                      | 88 -> "ratnat"
                                      | 89 -> "natrat"
+                                     | 90 -> "implies"
+                                     | 91 -> "fix"
                                      | _  -> "")) ;;
 
 let rec update n t = if n=0 then t else

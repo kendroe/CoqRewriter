@@ -107,6 +107,8 @@ val intern_rat_less : int       (* 86 *)
 val intern_rat_mod : int        (* 87 *)
 val intern_rat_to_nat : int     (* 88 *)
 val intern_nat_to_rat : int     (* 89 *)
+val intern_implies : int        (* 90 *)
+val intern_fix : int            (* 91 *)
 
 val count : unit -> int
 

@@ -210,6 +210,16 @@ and int_rewrite e kb = (match e with
                           rewriteTopCont (APPL (18,[c;e1;e2])) ((APPL (intern_if,[x;res1;res2])),env) kb
     in
         res)
+  | ((APPL (90,[APPL (5,[]);_])),env) -> (intern_exp_true,env)
+  | ((APPL (90,[APPL (4,[]);x])),env) -> (x,env)
+  | ((APPL (90,[x;APPL (4,[])])),env) -> (intern_exp_true,env)
+  | ((APPL (90,[x;APPL (5,[])])),env) -> ((APPL (17,[x])),env)
+  | (APPL (90,[l;r]),env) ->
+    let (l',env) = rewrite_front (l,env) in
+    let e2 = Crewrite.create_rules (fun (x) -> [remove_normals x]) env
+                 (APPL (intern_implies,[l';r])) 1 in
+    let (r',_) = rewrite_front (r,e2) in
+        rewriteTopCont (APPL (intern_implies,[l;r])) (APPL (intern_implies,[l';r']),env) kb
   | ((APPL (9,[])),env) -> (intern_exp_true,env)
   | ((APPL (9,[(APPL (17,[x]))])),env) ->
     if (!kbmode) && kb && Kbrewrite.useful_subterm env x [] then

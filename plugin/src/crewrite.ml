@@ -241,6 +241,8 @@ let create_rules rewrite env e n = match (e,n) with
     add_rule rewrite env (List.nth l n) (APPL (intern_oriented_rule,[(APPL (intern_or,List.map Rcontext.markVars (Mylist.delete_nth l n)));
                               (APPL (intern_false,[]));
                               (APPL (intern_true,[]))]))
+  | ((APPL (90,[l;r])),1) ->
+    add_rule rewrite env r (APPL (intern_oriented_rule,[Rcontext.markVars l;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
   | ((APPL (18,[c;e1;e2])),1) ->
     add_rule rewrite env e1 (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
   | ((APPL (18,[c;e1;e2])),2) ->

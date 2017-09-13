@@ -1444,6 +1444,7 @@ let l1 =
       Function (Exp.parseExp "a&b", Rtype.parse "Bool * Bool -> Bool",parseExp "True");
       Function (Exp.parseExp "not(a)", Rtype.parse "Bool -> Bool",Exp.parseExp "True");
       Function (Exp.parseExp "a|b", Rtype.parse "Bool * Bool -> Bool",Exp.parseExp "True");
+      Function (Exp.parseExp "implies(a,b)", Rtype.parse "Bool * Bool -> Bool",Exp.parseExp "True");
       Function (Exp.parseExp "Default(a)", Rtype.parse "Bool -> Bool",Exp.parseExp "True");
       Function (Exp.parseExp "Def(a)", Rtype.parse "Bool -> Bool",Exp.parseExp "True");
       Function (Exp.parseExp "a==b", Rtype.parse "'a * 'a -> Bool",Exp.parseExp "True");
