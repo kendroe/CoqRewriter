@@ -464,4 +464,9 @@ print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
+let exp_test = Exp.parseExp "implies((x==3),True)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
 

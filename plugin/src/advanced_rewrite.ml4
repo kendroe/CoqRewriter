@@ -153,6 +153,9 @@ let build_exp_name (n : name) =
 let build_var (v : identifier) =
   build "Var" [string_of_id v]
 
+let build_var_exp (v : identifier) =
+  VAR (intern (string_of_id v))
+
 (* --- Metavariables --- *)
 
 (*
@@ -184,6 +187,9 @@ let build_exp_meta (n : metavariable) =
 
 let build_evar (k : existential_key) (c_asts : string list) =
   build "Evar" ((string_of_int (Evar.repr k)) :: c_asts)
+
+let build_evar_exp (k : existential_key) (c_asts : exp list) =
+  (APPL ((intern (string_of_int (Evar.repr k))), c_asts))
 
 (* --- Indexes --- *)
 
@@ -218,6 +224,9 @@ let build_rel (env : Environ.env) (i : int) =
   else
     build_rel_named env i
 
+let build_rel_exp (env : Environ.env) (i : int) =
+    VAR (intern ("(REL "^(string_of_int i)^")"))
+
 (* --- Universes --- *)
 
 (*
@@ -232,6 +241,9 @@ let build_rel (env : Environ.env) (i : int) =
 let build_universe_level (l : Level.t)  =
   build "Level" [print_to_string pp_univ_level l]
 
+let build_universe_level_exp (l : Level.t)  =
+  APPL ((intern "Level"),[VAR (intern (print_to_string pp_univ_level l))])
+
 (*
  * Build the AST for the universe levels of a universe
  *
@@ -243,11 +255,19 @@ let build_universe_levels (u : universe) =
     Some l -> build_universe_level l
   | None -> build "Max" (List.map build_universe_level (LSet.elements (Universe.levels u)))
 
+let build_universe_levels_exp (u : universe) =
+  match Universe.level u with
+    Some l -> build_universe_level_exp l
+  | None -> APPL ((intern "Max"),(List.map build_universe_level_exp (LSet.elements (Universe.levels u))))
+
 (*
  * Build the AST for a universe
  *)
 let build_universe (u : universe) =
   build "Universe" [build_universe_levels u]
+
+let build_universe_exp (u : universe) =
+  APPL ((intern "Universe"),[build_universe_levels_exp u])
 
 (* --- Universe instances --- *)
 
@@ -286,6 +306,13 @@ let build_sort (s : sorts) =
     | Type u -> build "Type" [build_universe u]
   in build "Sort" [s_ast]
 
+let build_sort_exp (s : sorts) =
+  let s_ast =
+    match s with
+      Prop _ -> if s = prop_sort then (APPL ((intern "Prop"),[])) else (APPL ((intern "Set"),[]))
+    | Type u -> APPL ((intern "Type"),[build_universe_exp u])
+  in APPL ((intern "Sort"),[s_ast])
+
 (* --- Casts --- *)
 
 (*
@@ -305,11 +332,21 @@ let build_cast_kind (k : cast_kind) =
   | REVERTcast -> "REVERTcast"
   | NATIVEcast -> "NATIVEcast"
 
+let build_cast_kind_exp (k : cast_kind) =
+  match k with
+    VMcast -> (APPL (intern "VMcast",[]))
+  | DEFAULTcast -> (APPL (intern "DEFAULTcast",[]))
+  | REVERTcast -> (APPL (intern "REVERTcast",[]))
+  | NATIVEcast -> (APPL (intern "NATIVEcast",[]))
+
 (*
  * Build the AST for a cast
  *)
 let build_cast (trm_ast : string) (kind : cast_kind) (typ_ast : string) =
   build "Cast" [trm_ast; build_cast_kind kind; typ_ast]
+
+let build_cast_exp (trm_ast : exp) (kind : cast_kind) (typ_ast : exp) =
+  APPL ((intern "Cast"),[trm_ast; build_cast_kind_exp kind; typ_ast])
 
 (* --- Product types and lambdas --- *)
 
@@ -330,11 +367,17 @@ let build_cast (trm_ast : string) (kind : cast_kind) (typ_ast : string) =
 let build_product (n : name) (typ_ast : string) (body_ast : string) =
   build "Prod" [build_name n; typ_ast; body_ast]
 
+let build_product_exp (n : name) (typ_ast : exp) (body_ast : exp) =
+  APPL ((intern "Prod"),[build_exp_name n; typ_ast; body_ast])
+
 (*
  * Build the AST for a lambda
  *)
 let build_lambda (n : name) (typ_ast : string) (body_ast : string) =
   build "Lambda" [build_name n; typ_ast; body_ast]
+
+let build_lambda_exp (n : name) (typ_ast : exp) (body_ast : exp) =
+  APPL ((intern "Lambda"),[build_exp_name n; typ_ast; body_ast])
 
 (* --- Let --- *)
 
@@ -396,6 +439,10 @@ let get_definition (cd : Declarations.constant_body) =
 (*
  * Build the AST for an axiom, which is a constant with no associated body
  *)
+let build_axiom_exp (kn : kernel_name) (typ_ast : exp) (u : Instance.t) =
+  let kn' = build_kername kn in
+    APPL ((intern "Axiom"),[APPL ((intern kn'),[typ_ast])])
+
 let build_axiom (kn : kernel_name) (typ_ast : string) (u : Instance.t) =
   let kn' = build_kername kn in
   if show_universes () then
@@ -412,6 +459,10 @@ let build_definition (kn : kernel_name) (typ_ast : string) (u : Instance.t) =
      build "Definition" [kn'; typ_ast; build_universe_instance u]
    else
      build "Definition" [kn'; typ_ast]
+
+let build_definition_exp (kn : kernel_name) (typ_ast : exp) (u : Instance.t) =
+   let kn' = build_kername kn in
+     APPL ((intern"Definition"),[APPL ((intern kn'),[typ_ast])])
 
 (* --- Fixpoints --- *)
 
@@ -442,17 +493,26 @@ let bindings_for_fix (names : name array) (typs : constr array) =
 let build_fix_fun (index : int) (n : name) (typ_ast : string) (body_ast : string) =
   build (build_name n) [string_of_int index; typ_ast; body_ast]
 
+let build_fix_fun_exp (index : int) (n : name) (typ_ast : exp) (body_ast : exp) =
+  APPL ((intern (build_name n)),[NUM index; typ_ast; body_ast])
+
 (*
  * Build the AST for a fixpoint
  *)
 let build_fix (funs : string list) (index : int) =
   build "Fix" [build "Functions" funs; string_of_int index]
 
+let build_fix_exp (funs : exp list) (index : int) =
+  APPL ((intern "Fix"),[APPL ((intern "Functions"),funs); NUM index])
+
 (*
  * Build the AST for a cofixpoint
  *)
 let build_cofix (funs : string list) (index : int) =
   build "CoFix" [build "Functions" funs; string_of_int index]
+
+let build_cofix_exp (funs : exp list) (index : int) =
+  APPL ((intern "CoFix"),[APPL ((intern "Functions"),funs); NUM index])
 
 (* --- Inductive types --- *)
 
@@ -509,11 +569,23 @@ let build_inductive (ind_or_coind : Decl_kinds.recursivity_kind) (body_asts : st
   else
     build kind_of_ind body_asts
 
+let build_inductive_exp (ind_or_coind : Decl_kinds.recursivity_kind) (body_asts : exp list) (u : Instance.t) =
+  let kind_of_ind =
+    match ind_or_coind with
+      Finite -> "Inductive"
+    | CoFinite -> "CoInductive"
+    | BiFinite -> "Record"
+  in
+    (APPL ((intern kind_of_ind),body_asts))
+
 (*
  * Build an AST for a single inductive body
  *)
 let build_inductive_body (constr_asts : string list) =
   build "inductive_body" constr_asts
+
+let build_inductive_body_exp (constr_asts : exp list) =
+  APPL ((intern "inductive_body"),constr_asts)
 
 (* --- Inductive constructors --- *)
 
@@ -544,6 +616,9 @@ let build_constructor (t_ast : string) (index : int) (u : Instance.t) =
   else
     build "Construct" [t_ast; index']
 
+let build_constructor_exp (t_ast : exp) (index : int) (u : Instance.t) =
+    APPL ((intern "Construct"),[t_ast; NUM index])
+
 (* --- Pattern matching --- *)
 
 (*
@@ -564,6 +639,12 @@ let build_case (info : case_info) (case_typ_ast : string) (match_ast : string) (
   let branches = build "CaseBranches" branch_asts in
   build "Case" [num_args; case_typ_ast; match_typ; branches]
 
+let build_case_exp (info : case_info) (case_typ_ast : exp) (match_ast : exp) (branch_asts : exp list) =
+  let num_args = info.ci_npar in
+  let match_typ = APPL ((intern "CaseMatch"),[match_ast]) in
+  let branches = APPL ((intern "CaseBranches"),branch_asts) in
+  APPL ((intern "Case"),[NUM num_args; case_typ_ast; match_typ; branches])
+
 (* --- Projections --- *)
 
 (*
@@ -578,6 +659,9 @@ let build_case (info : case_info) (case_typ_ast : string) (match_ast : string) (
 
 let build_proj (p_const_ast : string) (c_ast : string) =
   build "Proj" [p_const_ast; c_ast]
+
+let build_proj_exp (p_const_ast : exp) (c_ast : exp) =
+  APPL ((intern "Proj"),[p_const_ast; c_ast])
 
 (* --- Full AST --- *)
 
@@ -678,6 +762,103 @@ and build_minductive (env : Environ.env) (depth : int) (((i, i_index), u) : pind
     let ind_or_coind = mutind_body.mind_finite in
     build_inductive ind_or_coind cs u
 
+(* --- build advanced rewriting term --- *)
+
+let rec build_exp (env : Environ.env) (trm : types) =
+  match kind_of_term trm with
+    Rel i ->
+      build_rel_exp env i
+  | Var v ->
+      build_var_exp v
+  | Meta mv ->
+      build_exp_meta mv
+  | Evar (k, cs) ->
+      let cs' = List.map (build_exp env) (Array.to_list cs) in
+      build_evar_exp k cs'
+  | Sort s ->
+      build_sort_exp s
+  | Cast (c, k, t) ->
+      let c' = build_exp env c in
+      let t' = build_exp env t in
+      build_cast_exp c' k t'
+  | Prod (n, t, b) ->
+      let t' = build_exp env t in
+      let b' = build_exp (Environ.push_rel (n, None, t) env) b in
+      build_product_exp n t' b'
+  | Lambda (n, t, b) ->
+      let t' = build_exp env t in
+      let b' = build_exp (Environ.push_rel (n, None, t) env) b in
+      build_lambda_exp n t' b'
+  | LetIn (n, trm, typ, b) ->
+      let trm' = build_exp env trm in
+      let typ' = build_exp env typ in
+      let b' = build_exp (Environ.push_rel (n, Some b, typ) env) b in
+      LET (trm',Rtype.notype,typ',b')
+  | App (f, xs) ->
+      let f' = build_exp env f in
+      let xs' = List.map (build_exp env) (Array.to_list xs) in
+      (APPL (intern_apply,(f'::xs')))
+  | Const (c, u) ->
+      build_const_exp env (c, u)
+  | Construct ((i, c_index), u) ->
+      (*let Ind (i', i_index') = i in*)
+      let i' = build_exp env (Term.mkInd i) in
+      build_constructor_exp i' c_index u
+  | Ind ((i, i_index), u) ->
+      build_minductive_exp env ((i, i_index), u)
+  | Case (ci, ct, m, bs) ->
+      let typ = build_exp env ct in
+      let match_typ = build_exp env m in
+      let branches = List.map (build_exp env) (Array.to_list bs) in
+      build_case_exp ci typ match_typ branches
+  | Fix ((is, i), (ns, ts, ds)) ->
+      build_fix_exp (build_fixpoint_functions_exp env ns ts ds) i
+  | CoFix (i, (ns, ts, ds)) ->
+      build_cofix_exp (build_fixpoint_functions_exp env ns ts ds) i
+  | Proj (p, c) ->
+      let p' = build_exp env (Term.mkConst (Projection.constant p)) in
+      let c' = build_exp env c in
+      build_proj_exp p' c'
+
+and build_const_exp (env : Environ.env) ((c, u) : pconstant) =
+  let kn = Constant.canonical c in
+  let cd = Environ.lookup_constant c env in
+  let global_env = Global.env () in
+  match get_definition cd with
+    None ->
+      begin
+        match cd.const_type with
+          RegularArity ty -> build_axiom_exp kn (build_exp global_env ty) u
+        | TemplateArity _ -> assert false (* pre-8.5 universe polymorphism *)
+      end
+  | Some c ->
+      build_definition_exp kn (build_exp global_env c) u
+
+and build_fixpoint_functions_exp (env : Environ.env) (names : name array) (typs : constr array) (defs : constr array)  =
+  let env_fix = Environ.push_rel_context (bindings_for_fix names typs) env in
+  List.map
+    (fun i ->
+      let typ = build_exp env (Array.get typs i) in
+      let def = build_exp env_fix (Array.get defs i) in
+      build_fix_fun_exp i (Array.get names i) typ def)
+    (range 0 (Array.length names))
+
+and build_oinductive_exp (env : Environ.env) (ind_body : one_inductive_body) =
+  let constrs =
+    List.map
+      (fun (i, (n, typ)) -> APPL ((intern (Names.string_of_id n)),[APPL ((intern i),[]); build_exp env typ]))
+    (named_constructors ind_body)
+  in APPL ((intern ("Name "^(Names.string_of_id ind_body.mind_typename))),[build_inductive_body_exp constrs])
+
+and build_minductive_exp (env : Environ.env) (((i, i_index), u) : pinductive) =
+  let mutind_body = lookup_mutind_body i env in
+  let ind_bodies = mutind_body.mind_packets in
+    let ind_bodies_list = Array.to_list ind_bodies in
+    let env_ind = Environ.push_rel_context (bindings_for_inductive env mutind_body ind_bodies_list) env in
+    let cs = List.map (build_oinductive_exp env_ind) ind_bodies_list in
+    let ind_or_coind = mutind_body.mind_finite in
+    build_inductive_exp ind_or_coind cs u
+
 (* --- Top-level functionality --- *)
 
 (*
@@ -700,11 +881,20 @@ let print_ast (depth : int) (def : Constrexpr.constr_expr) =
   let ast = apply_to_definition build_ast env depth body in
   print ast
 
+(* Top-level print AST functionality *)
+let print_exp (depth : int) (def : Constrexpr.constr_expr) =
+  let (evm, env) = Lemmas.get_current_context() in
+  let (body, _) = Constrintern.interp_constr env evm def in
+  let ast = prExp (build_exp env body) in
+  print ast
+
 (* PrintAST command
    The depth specifies the depth at which to unroll nested type definitions *)
 VERNAC COMMAND EXTEND Print_AST
 | [ "printAST" constr(def) ] ->
   [ print_ast 0 def ]
+| [ "printExp" constr(def) ] ->
+  [ print_exp 0 def ]
 | [ "printAST" constr(def) "with" "depth" integer(depth)] ->
   [ print_ast depth def ]
 END

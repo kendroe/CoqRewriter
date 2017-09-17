@@ -606,3 +606,13 @@ rewriting subterm: implies(x == 3, nless(x, 5))
     <<614>>
     implies(x == 3, True)
 end rewrite subterm: implies(x == 3, nless(x, 5))
+rewriting subterm: implies(x == 3, True)
+  rewriting expression: implies(x == 3, True)
+    Result:
+      <<19>>
+      True
+  end rewrite for: implies(x == 3, True)
+  Result:
+    <<19>>
+    True
+end rewrite subterm: implies(x == 3, True)
