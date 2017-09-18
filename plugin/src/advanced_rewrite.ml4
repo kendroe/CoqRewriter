@@ -764,6 +764,24 @@ and build_minductive (env : Environ.env) (depth : int) (((i, i_index), u) : pind
 
 (* --- build advanced rewriting term --- *)
 
+let rec natFor (trm : types) =
+  match kind_of_term trm with
+  | Construct ((i, c_index), u) ->
+      let (x,_) = i in
+          if MutInd.to_string x="Coq.Init.Datatypes.nat" && c_index=1 then
+              Some 0 else None
+  | App (f, xs) ->
+      (match kind_of_term f with
+      | Construct ((i, c_index),u) ->
+                  let (x,_) = i in
+                      if MutInd.to_string x="Coq.Init.Datatypes.nat" && c_index=2 && Array.length xs==1 then
+                          (match natFor (Array.get xs 0) with
+                           | Some x -> Some (x+1)
+                           | None -> None) else None
+      | _ -> None)
+  | _ -> None
+  ;;
+
 let rec build_exp (env : Environ.env) (trm : types) =
   match kind_of_term trm with
     Rel i ->
@@ -795,15 +813,21 @@ let rec build_exp (env : Environ.env) (trm : types) =
       let b' = build_exp (Environ.push_rel (n, Some b, typ) env) b in
       LET (trm',Rtype.notype,typ',b')
   | App (f, xs) ->
-      let f' = build_exp env f in
-      let xs' = List.map (build_exp env) (Array.to_list xs) in
-      (APPL (intern_apply,(f'::xs')))
+      (match natFor trm with
+      | Some n -> NUM n
+      | None -> let f' = build_exp env f in
+                let xs' = List.map (build_exp env) (Array.to_list xs) in
+                    (APPL (intern_apply,(f'::xs'))))
   | Const (c, u) ->
       build_const_exp env (c, u)
   | Construct ((i, c_index), u) ->
-      (*let Ind (i', i_index') = i in*)
       let i' = build_exp env (Term.mkInd i) in
-      build_constructor_exp i' c_index u
+      let (x,_) = i in
+      let _ = print_string ((MutInd.to_string x) ^ "\n") in
+          if MutInd.to_string x="Coq.Init.Datatypes.nat" && c_index=1 then
+              NUM 0
+          else
+              build_constructor_exp i' c_index u
   | Ind ((i, i_index), u) ->
       build_minductive_exp env ((i, i_index), u)
   | Case (ci, ct, m, bs) ->
