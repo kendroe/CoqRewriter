@@ -2,7 +2,7 @@
  *
  * REWRITELIB
  *
- * exp.ml
+ * advanced_rewrite.ml4
  *
  * This file contains the interface between Coq and the rewriting library
  *
@@ -225,7 +225,11 @@ let build_rel (env : Environ.env) (i : int) =
     build_rel_named env i
 
 let build_rel_exp (env : Environ.env) (i : int) =
-    VAR (intern ("(REL "^(string_of_int i)^")"))
+    let (name, body, typ) = Environ.lookup_rel i env in
+    let n = (match name with
+                 Name id -> string_of_id id
+               | Anonymous -> "(Anonymous)") in
+    VAR (intern n)
 
 (* --- Universes --- *)
 
@@ -365,10 +369,23 @@ let build_cast_exp (trm_ast : exp) (kind : cast_kind) (typ_ast : exp) =
  * Build the AST for a product
  *)
 let build_product (n : name) (typ_ast : string) (body_ast : string) =
-  build "Prod" [build_name n; typ_ast; body_ast]
+  build "Prod" [build_name n; typ_ast; body_ast];;
+
+let map_type t = match (decode t) with
+  | "Coq.Init.Datatypes.nat" -> intern "Natural"
+  | "Coq.Init.Datatypes.bool" -> intern "Bool"
+  | _ -> t ;;
+
+let rec convert_exp_to_type e =
+  match e with
+  | (APPL (f,l)) -> Rtype.mkProduct (map_type f) (List.map convert_exp_to_type l)
+  | _ -> Rtype.notype ;;
 
 let build_product_exp (n : name) (typ_ast : exp) (body_ast : exp) =
-  APPL ((intern "Prod"),[build_exp_name n; typ_ast; body_ast])
+  (match n with
+   | Anonymous -> APPL (intern_implies,[typ_ast; body_ast])
+   | Name n -> QUANT (intern_all,[(intern (string_of_id n),convert_exp_to_type typ_ast)],body_ast,(APPL (intern_true,[])))
+   );;
 
 (*
  * Build the AST for a lambda
@@ -377,7 +394,10 @@ let build_lambda (n : name) (typ_ast : string) (body_ast : string) =
   build "Lambda" [build_name n; typ_ast; body_ast]
 
 let build_lambda_exp (n : name) (typ_ast : exp) (body_ast : exp) =
-  APPL ((intern "Lambda"),[build_exp_name n; typ_ast; body_ast])
+  let nn = match n with
+           | Name id -> (intern (string_of_id id))
+           | Anonymous -> (intern "(Anonymous)") in
+      (QUANT (intern_lambda,[(nn, convert_exp_to_type typ_ast)], body_ast, (APPL (intern_true,[]))))
 
 (* --- Let --- *)
 
@@ -639,11 +659,34 @@ let build_case (info : case_info) (case_typ_ast : string) (match_ast : string) (
   let branches = build "CaseBranches" branch_asts in
   build "Case" [num_args; case_typ_ast; match_typ; branches]
 
+let getConstructors (t : Rtype.etype) (branch_asts : exp list) =
+    let name = decode (Rtype.nameProduct t) in
+    let rec bc e n l = match e with
+                     | (QUANT (intern_lambda,([(v,t)]),ex,te)) ->
+                       bc ex n (l@[v])
+                     | e -> ((APPL (intern (name ^ (string_of_int n)),List.map (fun x -> VAR x) l)),e) in
+    let rec ge e = match e with
+                   | (QUANT (intern_lambda,([(v,t)]),ex,te)) ->
+                     ge ex
+                   | e -> e in
+    let rec bf bl n = match bl with
+                    | [] -> []
+                    | (f::r) -> (bc f n [])::(bf r (n+1)) in
+        if name="Natural" then
+            let (QUANT (intern_lambda,([(v,t)]),ex,te)) = List.nth branch_asts 1 in
+                [((NUM 0),(List.nth branch_asts 0));((APPL (intern "S",[VAR (intern "n")])),ex)]
+        else if name="Bool" then
+            [((APPL (intern_true,[])),(List.nth branch_asts 0));((APPL (intern_false,[])),(List.nth branch_asts 1))]
+        else bf branch_asts 1
+
 let build_case_exp (info : case_info) (case_typ_ast : exp) (match_ast : exp) (branch_asts : exp list) =
   let num_args = info.ci_npar in
   let match_typ = APPL ((intern "CaseMatch"),[match_ast]) in
+  let (QUANT (l,[(v,t)],_,_)) = case_typ_ast in
+  (*let _ = print_string ((Rtype.pretype t)^"\n") in*)
   let branches = APPL ((intern "CaseBranches"),branch_asts) in
-  APPL ((intern "Case"),[NUM num_args; case_typ_ast; match_typ; branches])
+  CASE (match_ast,convert_exp_to_type case_typ_ast,(getConstructors t branch_asts))
+  (*APPL ((intern "Case"),[NUM num_args; t; match_typ; branches])*)
 
 (* --- Projections --- *)
 
@@ -782,6 +825,20 @@ let rec natFor (trm : types) =
   | _ -> None
   ;;
 
+let rec build_type (env : Environ.env) (trm : types) =
+  match kind_of_term trm with
+  | Construct ((i, c_index), u) ->
+      let (x,_) = i in
+          Rtype.mkProduct (intern (MutInd.to_string x)) []
+  | App (f, xs) ->
+      (match kind_of_term f with
+      | Construct ((i, c_index),u) ->
+             let (x,_) = i in
+             let xs' = List.map (build_type env) (Array.to_list xs) in
+                 Rtype.mkProduct (intern (MutInd.to_string x)) xs'
+      | _ -> Rtype.notype)
+  | _ -> Rtype.notype
+
 let rec build_exp (env : Environ.env) (trm : types) =
   match kind_of_term trm with
     Rel i ->
@@ -814,22 +871,35 @@ let rec build_exp (env : Environ.env) (trm : types) =
       LET (trm',Rtype.notype,typ',b')
   | App (f, xs) ->
       (match natFor trm with
-      | Some n -> NUM n
-      | None -> let f' = build_exp env f in
-                let xs' = List.map (build_exp env) (Array.to_list xs) in
-                    (APPL (intern_apply,(f'::xs'))))
+       | Some n -> NUM n
+       | None -> (match build_app_constant_term env f xs with
+                  | Some e -> e
+                  | None ->
+                    (match build_app_term env f xs with
+                     | Some e -> e
+                     | None ->
+                        let f' = build_exp env f in
+                        let xs' = List.map (build_exp env) (Array.to_list xs) in
+                            (APPL (intern_apply,(f'::xs'))))))
   | Const (c, u) ->
       build_const_exp env (c, u)
   | Construct ((i, c_index), u) ->
       let i' = build_exp env (Term.mkInd i) in
       let (x,_) = i in
-      let _ = print_string ((MutInd.to_string x) ^ "\n") in
-          if MutInd.to_string x="Coq.Init.Datatypes.nat" && c_index=1 then
+      let s = (MutInd.to_string x) in
+          if s="Coq.Init.Datatypes.nat" && c_index=1 then
               NUM 0
+          else if s="Coq.Init.Datatypes.bool" && c_index=1 then
+              (APPL (intern_true,[]))
+          else if s="Coq.Init.Datatypes.bool" && c_index=2 then
+              (APPL (intern_false,[]))
           else
-              build_constructor_exp i' c_index u
+              (APPL ((intern ((s^(string_of_int c_index)))),[]))
+              (*build_constructor_exp i' c_index u*)
   | Ind ((i, i_index), u) ->
-      build_minductive_exp env ((i, i_index), u)
+      (match build_inductive_term env i i_index with
+       | Some x -> x
+       | None -> build_minductive_exp env ((i, i_index), u))
   | Case (ci, ct, m, bs) ->
       let typ = build_exp env ct in
       let match_typ = build_exp env m in
@@ -843,7 +913,44 @@ let rec build_exp (env : Environ.env) (trm : types) =
       let p' = build_exp env (Term.mkConst (Projection.constant p)) in
       let c' = build_exp env c in
       build_proj_exp p' c'
-
+and build_inductive_term (env : Environ.env) i i_index =
+    Some (match ((MutInd.to_string i),i_index) with
+          | ("Coq.Init.Logic.True",_) -> (APPL (intern_true,[]))
+          | ("Coq.Init.Logic.False",_) -> (APPL (intern_false,[]))
+          | (x,_) -> (APPL (intern x,[])))
+and build_app_term (env : Environ.env) f xs =
+      (match kind_of_term f with
+      | Ind ((i, c_index),u) ->
+             let xs' = List.map (build_exp env) (Array.to_list xs) in
+                 Some (match MutInd.to_string i with
+                       | "Coq.Init.Logic.or" -> (APPL (intern_or,xs'))
+                       | "Coq.Init.Logic.and" -> (APPL (intern_and,xs'))
+                       | "Coq.Init.Logic.ex" ->
+                              (match xs' with
+                              | [t1;(QUANT (intern_lambda,[(v1,t2)],b,_))] ->
+                                    (QUANT (intern_exists,[(v1,t2)],b,(APPL (intern_true,[]))))
+                              | _ -> (APPL ((intern "Coq.Init.Logic.ex"),xs')))
+                       | "Coq.Init.Logic.eq" -> (APPL (intern_equal,[(List.nth xs' 1);(List.nth xs' 2)]))
+                       | x -> (APPL ((intern x ),xs')))
+      | Const (c, u) ->
+            let kn = Constant.canonical c in
+            let kn' = build_kername kn in
+            let xs' = List.map (build_exp env) (Array.to_list xs) in
+                 Some (match kn' with
+                       | "Coq.Init.Nat.add" -> (APPL (intern_nat_plus,xs'))
+                       | "Coq.Init.Nat.sub" -> (APPL (intern_nat_minus,xs'))
+                       | "Coq.Init.Nat.mul" -> (APPL (intern_nat_times,xs'))
+                       | "Coq.Init.Peano.lt" -> (APPL (intern_nat_less,xs'))
+                       | "Coq.Init.Logic.eq" -> (APPL (intern_equal,xs'))
+                       | x -> (APPL ((intern x),xs')))
+      | _ -> None)
+and build_app_constant_term (env : Environ.env) f xs =
+      (match kind_of_term f with
+      | Construct ((i, c_index),u) ->
+             let (x,_) = i in
+             let xs' = List.map (build_exp env) (Array.to_list xs) in
+                 Some (APPL ((intern ((MutInd.to_string x)^(string_of_int c_index))),xs'))
+      | _ -> None)
 and build_const_exp (env : Environ.env) ((c, u) : pconstant) =
   let kn = Constant.canonical c in
   let cd = Environ.lookup_constant c env in
@@ -909,7 +1016,7 @@ let print_ast (depth : int) (def : Constrexpr.constr_expr) =
 let print_exp (depth : int) (def : Constrexpr.constr_expr) =
   let (evm, env) = Lemmas.get_current_context() in
   let (body, _) = Constrintern.interp_constr env evm def in
-  let ast = prExp (build_exp env body) in
+  let ast = prExp (Renv.flatten Renv.emptyEnv (build_exp env body)) in
   print ast
 
 (* PrintAST command
