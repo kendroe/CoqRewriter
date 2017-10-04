@@ -169,7 +169,8 @@ OBJFILES=$(call vo_to_obj,$(VOFILES))
 ALLNATIVEFILES=$(OBJFILES:.o=.cmi) $(OBJFILES:.o=.cmo) $(OBJFILES:.o=.cmx) $(OBJFILES:.o=.cmxs)
 NATIVEFILES=$(foreach f, $(ALLNATIVEFILES), $(wildcard $f))
 NATIVEFILES1=$(patsubst theories/%,%,$(filter theories/%,$(NATIVEFILES)))
-ML4FILES:=src/advanced_rewrite.ml4
+ML4FILES:=src/plugin.ml4\
+  src/advanced_rewrite.ml4
 
 ifneq ($(filter-out archclean clean cleanall printenv,$(MAKECMDGOALS)),)
 -include $(addsuffix .d,$(ML4FILES))
@@ -187,7 +188,7 @@ MLFILES:=src/builtin.ml\
   src/crewrite.ml\
   src/derive.ml\
   src/disc.ml\
-  src/env.ml\
+  src/renv.ml\
   src/exp.ml\
   src/intern.ml\
   src/expIntern.ml\
@@ -203,7 +204,8 @@ MLFILES:=src/builtin.ml\
   src/rsubst.ml\
   src/rtrace.ml\
   src/rtype.ml\
-  src/rtrie.ml
+  src/rtrie.ml\
+  src/lib_coq.ml
 
 ifneq ($(filter-out archclean clean cleanall printenv,$(MAKECMDGOALS)),)
 -include $(addsuffix .d,$(MLFILES))
@@ -233,7 +235,7 @@ MLIFILES:=src/builtin.mli\
   src/crewrite.mli\
   src/derive.mli\
   src/disc.mli\
-  src/env.mli\
+  src/renv.mli\
   src/exp.mli\
   src/intern.mli\
   src/expIntern.mli\
@@ -249,7 +251,8 @@ MLIFILES:=src/builtin.mli\
   src/rsubst.mli\
   src/rtrace.mli\
   src/rtype.mli\
-  src/rtrie.mli
+  src/rtrie.mli\
+  src/lib_coq.mli
 
 ifneq ($(filter-out archclean clean cleanall printenv,$(MAKECMDGOALS)),)
 -include $(addsuffix .d,$(MLIFILES))

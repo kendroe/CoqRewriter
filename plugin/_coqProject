@@ -1,7 +1,5 @@
--I src
--R theories AdvancedRewrite
-
-src/AdvancedRewritePlugin.mllib
+-I ./src
+-R ./src AdvancedRewrite
 src/builtin.ml
 src/builtin.mli
 src/cache.ml
@@ -48,5 +46,9 @@ src/rtype.ml
 src/rtype.mli
 src/rtrie.ml
 src/rtrie.mli
+src/lib_coq.ml
+src/lib_coq.mli
+src/plugin.ml4
+src/AdvancedRewritePlugin.mllib
 src/advanced_rewrite.ml4
-theories/advancedRewrite.v
+src/advancedRewrite.v

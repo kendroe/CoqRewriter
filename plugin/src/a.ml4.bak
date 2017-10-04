@@ -16,7 +16,7 @@
  *
  *****************************************************************************)
 
-DECLARE PLUGIN "theplug"
+DECLARE PLUGIN "advanced_rewrite"
 
 module Stuff = struct
 (*
@@ -843,44 +843,34 @@ let rec build_type (env : Environ.env) (trm : types) =
 let rec build_exp (env : Environ.env) (trm : types) =
   match kind_of_term trm with
     Rel i ->
-      print_string "rel\n" ;
       build_rel_exp env i
   | Var v ->
-      print_string "var\n" ;
       build_var_exp v
   | Meta mv ->
-      print_string "meta\n" ;
       build_exp_meta mv
   | Evar (k, cs) ->
-      print_string "evar\n" ;
       let cs' = List.map (build_exp env) (Array.to_list cs) in
       build_evar_exp k cs'
   | Sort s ->
-      print_string "sort\n" ;
       build_sort_exp s
   | Cast (c, k, t) ->
-      print_string "cast\n" ;
       let c' = build_exp env c in
       let t' = build_exp env t in
       build_cast_exp c' k t'
   | Prod (n, t, b) ->
-      print_string "prod\n" ;
       let t' = build_exp env t in
       let b' = build_exp (Environ.push_rel (n, None, t) env) b in
       build_product_exp n t' b'
   | Lambda (n, t, b) ->
-      print_string "lambda\n" ;
       let t' = build_exp env t in
       let b' = build_exp (Environ.push_rel (n, None, t) env) b in
       build_lambda_exp n t' b'
   | LetIn (n, trm, typ, b) ->
-      print_string "letIn\n" ;
       let trm' = build_exp env trm in
       let typ' = build_exp env typ in
       let b' = build_exp (Environ.push_rel (n, Some b, typ) env) b in
       LET (trm',Rtype.notype,typ',b')
   | App (f, xs) ->
-      print_string "App\n" ;
       (match natFor trm with
        | Some n -> NUM n
        | None -> (match build_app_constant_term env f xs with
@@ -893,10 +883,8 @@ let rec build_exp (env : Environ.env) (trm : types) =
                         let xs' = List.map (build_exp env) (Array.to_list xs) in
                             (APPL (intern_apply,(f'::xs'))))))
   | Const (c, u) ->
-      print_string "Const\n" ;
       build_const_exp env (c, u)
   | Construct ((i, c_index), u) ->
-      print_string "Construct\n" ;
       let i' = build_exp env (Term.mkInd i) in
       let (x,_) = i in
       let s = (MutInd.to_string x) in
@@ -910,24 +898,19 @@ let rec build_exp (env : Environ.env) (trm : types) =
               (APPL ((intern ((s^(string_of_int c_index)))),[]))
               (*build_constructor_exp i' c_index u*)
   | Ind ((i, i_index), u) ->
-      print_string "Ind\n" ;
       (match build_inductive_term env i i_index with
        | Some x -> x
        | None -> build_minductive_exp env ((i, i_index), u))
   | Case (ci, ct, m, bs) ->
-      print_string "Case\n";
       let typ = build_exp env ct in
       let match_typ = build_exp env m in
       let branches = List.map (build_exp env) (Array.to_list bs) in
       build_case_exp ci typ match_typ branches
   | Fix ((is, i), (ns, ts, ds)) ->
-      print_string "Fix\n";
       build_fix_exp (build_fixpoint_functions_exp env ns ts ds) i
   | CoFix (i, (ns, ts, ds)) ->
-      print_string "CoFix\n";
       build_cofix_exp (build_fixpoint_functions_exp env ns ts ds) i
   | Proj (p, c) ->
-      print_string "Proj\n";
       let p' = build_exp env (Term.mkConst (Projection.constant p)) in
       let c' = build_exp env c in
       build_proj_exp p' c'
@@ -1037,135 +1020,14 @@ let print_exp (depth : int) (def : Constrexpr.constr_expr) =
   let ast = prExp (Renv.flatten Renv.emptyEnv (build_exp env body)) in
   print ast
 
-(*let rec buildResult exp =*)
-
-let reify_nat = lazy (Lib_coq.init_constant ["Coq" ; "Init"; "Datatypes"] "nat")
-let reify_bool = lazy (Lib_coq.init_constant ["Coq" ; "Init"; "Datatypes"] "bool")
-let reify_eq = lazy (Lib_coq.init_constant ["Coq";"Init";"Logic"] "eq")
-let reify_eq_val = lazy (Lib_coq.init_constant ["Coq";"Bool";"BoolEq"] "beq")
-let reify_lt = lazy (Lib_coq.init_constant ["Coq";"Init";"Peano"] "lt")
-let reify_lt_val = lazy (Lib_coq.init_constant ["Coq";"Init";"Nat"] "ltb")
-let reify_true = lazy (Lib_coq.init_constant ["Coq";"Init";"Logic"] "True")
-let reify_false = lazy (Lib_coq.init_constant ["Coq";"Init";"Logic"] "False")
-let reify_true_val = lazy (Lib_coq.init_constant ["Coq";"Init";"Datatypes"] "true")
-let reify_false_val = lazy (Lib_coq.init_constant ["Coq";"Init";"Datatypes"] "false")
-let reify_and = lazy (Lib_coq.init_constant ["Coq";"Init";"Logic"] "and")
-let reify_or = lazy (Lib_coq.init_constant ["Coq";"Init";"Logic"] "or")
-let reify_and_val = lazy (Lib_coq.init_constant ["Coq";"Init";"Datatypes"] "andb")
-let reify_or_val = lazy (Lib_coq.init_constant ["Coq";"Init";"Datatypes"] "orb")
-let reify_not_val = lazy (Lib_coq.init_constant ["Coq";"Init";"Datatypes"] "negb")
-let reify_imply_val = lazy (Lib_coq.init_constant ["Coq";"Init";"Datatypes"] "implb")
-let reify_add = lazy (Lib_coq.init_constant ["Coq";"Init";"Nat"] "add")
-let reify_mul = lazy (Lib_coq.init_constant ["Coq";"Init";"Nat"] "mul")
-let reify_sub = lazy (Lib_coq.init_constant ["Coq";"Init";"Nat"] "sub")
-let reify_div = lazy (Lib_coq.init_constant ["Coq";"Init";"Nat"] "div")
-
-let test_term = Term.mkApp (Lazy.force reify_eq, [|(Lazy.force reify_nat);Lib_coq.Nat.of_int 2;Lib_coq.Nat.of_int 3|])
-
-let rec build_term x = Lib_coq.Nat.of_int 42 ;;
-
-exception NoTypeInfo;;
-
-let rec get_type x tenv = match x with
-  | (NUM _) -> (Lazy.force reify_nat)
-  | (APPL (4,[])) -> (Lazy.force reify_bool)
-  | (APPL (5,[])) -> (Lazy.force reify_bool)
-  | (APPL (11,_)) -> (Lazy.force reify_bool)
-  | (APPL (12,_)) -> (Lazy.force reify_bool)
-  | (APPL (17,_)) -> (Lazy.force reify_bool)
-  | (APPL (18,[c;l;r])) -> (try get_type l tenv with NoTypeInfo -> get_type r tenv)
-  | (APPL (76,_)) -> (Lazy.force reify_nat)
-  | (APPL (77,_)) -> (Lazy.force reify_nat)
-  | (APPL (78,_)) -> (Lazy.force reify_nat)
-  | (APPL (79,_)) -> (Lazy.force reify_nat)
-  | (APPL (80,_)) -> (Lazy.force reify_bool)
-  | (APPL (86,_)) -> (Lazy.force reify_bool)
-  | (APPL (90,_)) -> (Lazy.force reify_bool)
-  | _ -> raise NoTypeInfo ;;
-
-let rec build_term e tenv = match e with
-  | (NUM x) -> Lib_coq.Nat.of_int x
-  | (APPL (4,[])) -> (Lazy.force reify_true_val)
-  | (APPL (5,[])) -> (Lazy.force reify_false_val)
-  | (APPL (9,l)) -> build_and_term l tenv
-  | (APPL (10,l)) -> build_or_term l tenv
-  | (APPL (11,[a;b])) -> Term.mkApp (Lazy.force reify_eq_val, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
-  | (APPL (17,[a])) -> Term.mkApp (Lazy.force reify_not_val, [| build_term a tenv |])
-  | (APPL (76,l)) -> build_add_term l tenv
-  | (APPL (77,[l;r])) -> Term.mkApp((Lazy.force reify_sub),[|build_term l tenv;build_term r tenv|])
-  | (APPL (78,l)) -> build_mul_term l tenv
-  | (APPL (79,[l;r])) -> Term.mkApp(Lazy.force reify_div,[|build_term l tenv;build_term r tenv|])
-  | (APPL (80,[l;r])) -> Term.mkApp(Lazy.force reify_lt_val,[|build_term l tenv;build_term r tenv|])
-  | (APPL (90,[l;r])) -> Term.mkApp(Lazy.force reify_imply_val,[|build_term l tenv;build_term r tenv|])
-  | _ -> (Lazy.force reify_false_val)
-and build_mul_term l tenv = match l with
-  | [] -> Lib_coq.Nat.of_int 1
-  | [a] -> build_term a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_mul,[|build_term f tenv;build_mul_term r tenv|])
-and build_add_term l tenv = match l with
-  | [] -> Lib_coq.Nat.of_int 0
-  | [a] -> build_term a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_add,[|build_term f tenv;build_add_term r tenv|])
-and build_and_term l tenv = match l with
-  | [] -> Lazy.force reify_true_val
-  | [a] -> build_term a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_and_val,[|build_term f tenv;build_and_term r tenv|])
-and build_or_term l tenv = match l with
-  | [] -> Lazy.force reify_false_val
-  | [a] -> build_term a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_or_val,[|build_term f tenv;build_or_term r tenv|])
-  ;;
-
-let rec build_predicate e tenv = match e with
-  | (APPL (4,[])) -> (Lazy.force reify_true)
-  | (APPL (5,[])) -> (Lazy.force reify_false)
-  | (APPL (9,l)) -> build_and l tenv
-  | (APPL (10,l)) -> build_or l tenv
-  | (APPL (11,[a;b])) -> Term.mkApp (Lazy.force reify_eq, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
-  | (APPL (80,[a;b])) -> Term.mkApp (Lazy.force reify_lt, [| build_term a tenv;build_term b tenv|])
-and build_and l tenv = match l with
-  | [] -> Lazy.force reify_true
-  | [a] -> build_predicate a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_and,[|build_predicate f tenv;build_and r tenv|])
-and build_or l tenv = match l with
-  | [] -> Lazy.force reify_false
-  | [a] -> build_predicate a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_or,[|build_predicate f tenv;build_or r tenv|])
-  ;;
-
 (* Top-level arewrite functionality *)
 let arewrite : unit Proofview.tactic =
   Proofview.Goal.enter (fun gl ->
   let concl = Proofview.Goal.raw_concl gl in
-  let (evm, env) = Lemmas.get_current_context() in
-  (*let (body, _) = Constrintern.interp_constr env evm concl in*)
-  (*let _ = print "******* BEGIN *******" in
-  let ast = apply_to_definition build_ast env 0 test_term in
-  let _ = print ast in
-  let _ = print "******* MIDDLE *******" in
-  let ast = apply_to_definition build_ast env 0 concl in
-  let _ = print ast in
-  let _ = print "******* END *******" in*)
-  let e = build_exp env concl in
-  (*let _ = "Rewriting" in
-  let _ = print (prExp e) in*)
-  let e' = List.hd (Inner.rewrite2 Renv.emptyEnv e) in
-  (*let _ = print (prExp e') in
-  let ast = apply_to_definition build_ast env 0 (build_predicate e' []) in
-  let _ = print ast in
-  let ast' = apply_to_definition build_ast env 0 (build_predicate e []) in
-  let _ = print ast' in*)
   (print_string "This is a test";
-   (*Tacticals.New.tclFAIL 1
-    (Pp.str "The tactic is not imlplemented.")*)
-          Tacticals.New.tclTHENLIST
-            [
-              (** Our list of tactics consists in the following single
-                  tactic, that changes the conclusion of the goal to
-                  [concl'] if [concl] and [concl'] are convertible.
-                  (see [tactics/tactis.mli] for other tactics.)  *)
-              Equality.replace concl (build_predicate e' []) ;
-            ]))
+   Tacticals.New.tclFAIL 1
+    (Pp.str "The tactic is not imlplemented.")))
+
 end
 
 (** We reify the structure of coq expressions as an ocaml

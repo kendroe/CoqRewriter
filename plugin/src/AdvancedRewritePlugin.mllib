@@ -21,5 +21,6 @@ Kbrewrite
 Builtin
 Rule_app
 Inner
+Lib_coq
 Advanced_rewrite
 
