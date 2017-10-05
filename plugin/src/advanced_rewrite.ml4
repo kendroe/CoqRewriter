@@ -42,7 +42,7 @@ open Exp
 (*
  * Toggles between DeBruijn indexing and names
  *)
-let opt_debruijn = ref (false)
+let opt_debruijn = ref (true)
 let _ = Goptions.declare_bool_option {
   Goptions.optsync = true;
   Goptions.optdepr = false;
@@ -1066,6 +1066,16 @@ let rec build_term x = Lib_coq.Nat.of_int 42 ;;
 
 exception NoTypeInfo;;
 
+let rec build_var v tenv = match tenv with
+  | ((vv,n)::r) -> if v=vv then mkRel n else build_var v r
+  | _ -> mkVar (Id.of_string v)
+
+
+let rec push_var v tenv = ((v,(List.length tenv)+1)::tenv)
+  (*match tenv with
+  | ((vv,n)::r) -> ((vv,n+1)::(push_var v r))
+  | _ -> [(v,1)]*)
+
 let rec get_type x tenv = match x with
   | (NUM _) -> (Lazy.force reify_nat)
   | (APPL (4,[])) -> (Lazy.force reify_bool)
@@ -1097,6 +1107,7 @@ let rec build_term e tenv = match e with
   | (APPL (79,[l;r])) -> Term.mkApp(Lazy.force reify_div,[|build_term l tenv;build_term r tenv|])
   | (APPL (80,[l;r])) -> Term.mkApp(Lazy.force reify_lt_val,[|build_term l tenv;build_term r tenv|])
   | (APPL (90,[l;r])) -> Term.mkApp(Lazy.force reify_imply_val,[|build_term l tenv;build_term r tenv|])
+  | (VAR x) -> build_var (decode x) tenv
   | _ -> (Lazy.force reify_false_val)
 and build_mul_term l tenv = match l with
   | [] -> Lib_coq.Nat.of_int 1
@@ -1116,6 +1127,17 @@ and build_or_term l tenv = match l with
   | (f::r) -> Term.mkApp(Lazy.force reify_or_val,[|build_term f tenv;build_or_term r tenv|])
   ;;
 
+let build_leaf_type t = match (decode t) with
+  | "Natural" -> Lazy.force reify_nat
+  | "Bool" -> Lazy.force reify_bool
+  | x -> Lib_coq.init_constant [] x
+
+let rec build_coq_type t =
+  let tl = Rtype.paramProduct t in
+  match tl with
+  | [] -> build_leaf_type (Rtype.nameProduct t)
+  | l -> Term.mkApp((build_leaf_type (Rtype.nameProduct t)),Array.of_list (List.map build_coq_type l))
+
 let rec build_predicate e tenv = match e with
   | (APPL (4,[])) -> (Lazy.force reify_true)
   | (APPL (5,[])) -> (Lazy.force reify_false)
@@ -1123,6 +1145,13 @@ let rec build_predicate e tenv = match e with
   | (APPL (10,l)) -> build_or l tenv
   | (APPL (11,[a;b])) -> Term.mkApp (Lazy.force reify_eq, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
   | (APPL (80,[a;b])) -> Term.mkApp (Lazy.force reify_lt, [| build_term a tenv;build_term b tenv|])
+  | (APPL (17,[x])) -> Term.mkProd(Anonymous,build_predicate x tenv,(Lazy.force reify_false))
+  | (APPL (90,[l;r])) -> Term.mkProd(Anonymous,build_predicate l tenv,build_predicate r tenv)
+  | (QUANT (14,vtl,e,p)) -> push_uvars tenv vtl e
+and push_uvars tenv vtl e = match vtl with
+  | ((v,t)::r) -> let tenv' = push_var (decode v) tenv in
+                  Term.mkProd ((Name (Id.of_string (decode v))),(build_coq_type t),(push_uvars tenv' r e))
+  | _ -> build_predicate e tenv
 and build_and l tenv = match l with
   | [] -> Lazy.force reify_true
   | [a] -> build_predicate a tenv
@@ -1139,19 +1168,16 @@ let arewrite : unit Proofview.tactic =
   let concl = Proofview.Goal.raw_concl gl in
   let (evm, env) = Lemmas.get_current_context() in
   (*let (body, _) = Constrintern.interp_constr env evm concl in*)
-  (*let _ = print "******* BEGIN *******" in
-  let ast = apply_to_definition build_ast env 0 test_term in
-  let _ = print ast in
-  let _ = print "******* MIDDLE *******" in
+  let _ = print "******* BEGIN *******" in
   let ast = apply_to_definition build_ast env 0 concl in
   let _ = print ast in
-  let _ = print "******* END *******" in*)
+  let _ = print "******* END *******" in
   let e = build_exp env concl in
-  (*let _ = "Rewriting" in
-  let _ = print (prExp e) in*)
+  let _ = "Rewriting" in
+  let _ = print (prExp e) in
   let e' = List.hd (Inner.rewrite2 Renv.emptyEnv e) in
-  (*let _ = print (prExp e') in
-  let ast = apply_to_definition build_ast env 0 (build_predicate e' []) in
+  let _ = print (prExp e') in
+  (*let ast = apply_to_definition build_ast env 0 (build_predicate e' []) in
   let _ = print ast in
   let ast' = apply_to_definition build_ast env 0 (build_predicate e []) in
   let _ = print ast' in*)

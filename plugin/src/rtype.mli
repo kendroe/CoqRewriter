@@ -41,6 +41,7 @@ val untypeSlot : etype -> tyvar ;;
 val mkProduct: int -> etype list -> etype ;;
 val untypeProduct: int -> int -> etype -> etype list ;;
 val nameProduct: etype -> int ;;
+val paramProduct: etype -> (etype list) ;;
 val mkTfun: etype -> etype -> etype ;;
 val untypeTfun: etype -> etype * etype ;;
 val notype: etype ;;

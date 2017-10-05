@@ -157,6 +157,9 @@ let mkProduct s tl = P(s,tl) ;;
 let nameProduct p = match p with
   | (P(x,tl)) -> x
   | t -> raise (TypeError (t,t,[]));;
+let paramProduct p = match p with
+  | (P(x,tl)) -> tl
+  | t -> raise (TypeError (t,t,[]));;
 let untypeProduct s n p = match p with
   | (P(x,tl)) ->
         if s = x && (List.length tl) = n then tl else
