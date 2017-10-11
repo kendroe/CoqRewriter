@@ -8,7 +8,18 @@
  *
  * (C) 2017, Kenneth Roe
  *
- * All rights reserved--This is an incomplete work.  An appropriate license
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * will be provided when the work is complete.
  *
  * For a commercial license, contact Roe Mobile Development, LLC at
@@ -378,8 +389,10 @@ let map_type t = match (decode t) with
   | _ -> t ;;
 
 let rec convert_exp_to_type e =
+  print_string ("Convert_exp_to_type " ^ (prExp e) ^ "\n") ;
   match e with
   | (APPL (f,l)) -> Rtype.mkProduct (map_type f) (List.map convert_exp_to_type l)
+  | (QUANT (14,[(v,t)],e,p)) -> Rtype.mkTfun t (convert_exp_to_type e)
   | _ -> Rtype.notype ;;
 
 let build_product_exp (n : name) (typ_ast : exp) (body_ast : exp) =
@@ -880,13 +893,13 @@ let rec build_exp (env : Environ.env) (trm : types) =
       let b' = build_exp (Environ.push_rel (n, Some b, typ) env) b in
       LET (trm',Rtype.notype,typ',b')
   | App (f, xs) ->
-      print_string "App\n" ;
+      print_string "Appxxx\n" ;
       (match natFor trm with
        | Some n -> NUM n
-       | None -> (match build_app_constant_term env f xs with
+       | None -> (print "Here a\n";match build_app_constant_term env f xs with
                   | Some e -> e
                   | None ->
-                    (match build_app_term env f xs with
+                    (print "Here b\n";match build_app_term env f xs with
                      | Some e -> e
                      | None ->
                         let f' = build_exp env f in
@@ -900,12 +913,15 @@ let rec build_exp (env : Environ.env) (trm : types) =
       let i' = build_exp env (Term.mkInd i) in
       let (x,_) = i in
       let s = (MutInd.to_string x) in
+      let _ = print ("s = "^s^" i = "^(string_of_int c_index)^"\n") in
           if s="Coq.Init.Datatypes.nat" && c_index=1 then
               NUM 0
           else if s="Coq.Init.Datatypes.bool" && c_index=1 then
               (APPL (intern_true,[]))
           else if s="Coq.Init.Datatypes.bool" && c_index=2 then
               (APPL (intern_false,[]))
+          else if s="Coq.Init.Datatypes.list" && c_index=1 then
+              (APPL (intern_nil,[]))
           else
               (APPL ((intern ((s^(string_of_int c_index)))),[]))
               (*build_constructor_exp i' c_index u*)
@@ -937,9 +953,11 @@ and build_inductive_term (env : Environ.env) i i_index =
           | ("Coq.Init.Logic.False",_) -> (APPL (intern_false,[]))
           | (x,_) -> (APPL (intern x,[])))
 and build_app_term (env : Environ.env) f xs =
-      (match kind_of_term f with
+      (print "Here 0\n";
+       match kind_of_term f with
       | Ind ((i, c_index),u) ->
              let xs' = List.map (build_exp env) (Array.to_list xs) in
+             let _ = print ("Ind s = "^(MutInd.to_string i)^"\n") in
                  Some (match MutInd.to_string i with
                        | "Coq.Init.Logic.or" -> (APPL (intern_or,xs'))
                        | "Coq.Init.Logic.and" -> (APPL (intern_and,xs'))
@@ -961,13 +979,25 @@ and build_app_term (env : Environ.env) f xs =
                        | "Coq.Init.Peano.lt" -> (APPL (intern_nat_less,xs'))
                        | "Coq.Init.Logic.eq" -> (APPL (intern_equal,xs'))
                        | x -> (APPL ((intern x),xs')))
+      | Construct ((i, c_index),u) ->
+             let (x,_) = i in
+             let _ = print ("s = "^(MutInd.to_string x)^" i = "^(string_of_int c_index)^"\n") in
+                 if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=2 then
+                     Some (APPL (intern_cons,[build_exp env (Array.get xs 1);build_exp env (Array.get xs 2)]))
+                 else
+                     None
       | _ -> None)
 and build_app_constant_term (env : Environ.env) f xs =
       (match kind_of_term f with
       | Construct ((i, c_index),u) ->
              let (x,_) = i in
              let xs' = List.map (build_exp env) (Array.to_list xs) in
-                 Some (APPL ((intern ((MutInd.to_string x)^(string_of_int c_index))),xs'))
+                 if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=2 then
+                     Some (APPL (intern_cons,[build_exp env (Array.get xs 1);build_exp env (Array.get xs 2)]))
+                 else if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=1 then
+                     Some (APPL (intern_nil,[]))
+                 else
+                     Some (APPL ((intern ((MutInd.to_string x)^(string_of_int c_index))),xs'))
       | _ -> None)
 and build_const_exp (env : Environ.env) ((c, u) : pconstant) =
   let kn = Constant.canonical c in
@@ -1039,9 +1069,12 @@ let print_exp (depth : int) (def : Constrexpr.constr_expr) =
 
 (*let rec buildResult exp =*)
 
+let reify_cons = lazy (Lib_coq.init_constant ["Coq" ; "Init"; "Datatypes"] "cons")
+let reify_nil = lazy (Lib_coq.init_constant ["Coq" ; "Init"; "Datatypes"] "nil")
 let reify_nat = lazy (Lib_coq.init_constant ["Coq" ; "Init"; "Datatypes"] "nat")
 let reify_bool = lazy (Lib_coq.init_constant ["Coq" ; "Init"; "Datatypes"] "bool")
 let reify_eq = lazy (Lib_coq.init_constant ["Coq";"Init";"Logic"] "eq")
+let reify_ex = lazy (Lib_coq.init_constant ["Coq";"Init";"Logic"] "ex")
 let reify_eq_val = lazy (Lib_coq.init_constant ["Coq";"Bool";"BoolEq"] "beq")
 let reify_lt = lazy (Lib_coq.init_constant ["Coq";"Init";"Peano"] "lt")
 let reify_lt_val = lazy (Lib_coq.init_constant ["Coq";"Init";"Nat"] "ltb")
@@ -1067,14 +1100,31 @@ let rec build_term x = Lib_coq.Nat.of_int 42 ;;
 exception NoTypeInfo;;
 
 let rec build_var v tenv = match tenv with
-  | ((vv,n)::r) -> if v=vv then mkRel n else build_var v r
+  | ((vv,t,n)::r) -> if v=vv then mkRel n else build_var v r
   | _ -> mkVar (Id.of_string v)
 
-
-let rec push_var v tenv = ((v,(List.length tenv)+1)::tenv)
+let rec push_var v t tenv = ((v,t,(List.length tenv)+1)::tenv)
   (*match tenv with
-  | ((vv,n)::r) -> ((vv,n+1)::(push_var v r))
+  | ((vv,t,n)::r) -> ((vv,t,n+1)::(push_var v r))
   | _ -> [(v,1)]*)
+
+let build_leaf_type t = match (decode t) with
+  | "Natural" -> Lazy.force reify_nat
+  | "Bool" -> Lazy.force reify_bool
+  | x -> Lib_coq.init_constant [] x
+
+let rec build_coq_type t =
+  try (print_string "HEREprod\n";let tl = Rtype.paramProduct t in
+  match tl with
+  | [] -> build_leaf_type (Rtype.nameProduct t)
+  | l -> Term.mkApp((build_leaf_type (Rtype.nameProduct t)),Array.of_list (List.map build_coq_type l))) with (Rtype.TypeError(_)) ->
+    let _ = print "CAUGHT\n" in
+    let (t1,t2) = Rtype.untypeTfun t in
+    Term.mkProd(Anonymous,build_coq_type t1,build_coq_type t2)
+
+let rec get_var_type tenv v = match tenv with
+  | ((vv,t,n)::r) -> if v=vv then (build_coq_type t) else get_var_type r v
+  | _ -> raise NoTypeInfo ;;
 
 let rec get_type x tenv = match x with
   | (NUM _) -> (Lazy.force reify_nat)
@@ -1091,7 +1141,73 @@ let rec get_type x tenv = match x with
   | (APPL (80,_)) -> (Lazy.force reify_bool)
   | (APPL (86,_)) -> (Lazy.force reify_bool)
   | (APPL (90,_)) -> (Lazy.force reify_bool)
-  | _ -> raise NoTypeInfo ;;
+  | (VAR x) -> get_var_type tenv (decode x)
+  | (CASE (e,t,c)) -> get_case_type c tenv
+  | _ -> raise NoTypeInfo
+and get_case_type c tenv = match c with
+  | [] -> raise NoTypeInfo
+  | ((p,e)::r) -> try get_type e tenv with NoTypeInfo -> get_case_type r tenv
+  ;;
+
+let constructorList t =
+    let name = decode (Rtype.nameProduct t) in
+    match name with
+    | "Natural" -> [(intern "Z",[]);(intern "S",[t])]
+    | "Bool" -> [(intern_true,[]);(intern_false,[])]
+    | "List" -> (print_string "param product 2";[(intern "Nil",[]);(intern_cons,[List.hd (Rtype.paramProduct t);t])])
+    | _ -> []
+
+let buildCase t constructor cases =
+    let rec name_away_vars e l = match l with
+        | [] -> []
+        | t::r -> let v = Rcontext.name_away e (intern "v") in
+                  v::(name_away_vars (APPL (intern_and,[VAR v;e])) r) in
+    let rec getRelevant c l cases =
+        match cases with
+        | []-> []
+        | (((APPL (x,e)),t)::r) ->
+          if c=x then ((e,t)::getRelevant c l r) else getRelevant c l r
+        | ((VAR x,e)::r) ->
+          let r' = List.map (fun x -> VAR x) (name_away_vars e l) in
+              (r',Rsubst.subst (Rsubst.addPair Rsubst.empty x (APPL (c,r'))) e)::(getRelevant c l r)
+        | (_::r) -> getRelevant c l r in
+    let rec all_vars l = match l with
+                     | [] -> true
+                     | ((VAR _)::r) -> all_vars r
+                     | _ -> false in
+    let rec get_types cl = match cl with
+      | ((n,t)::r) -> if n=constructor then t else get_types r in
+    let types = get_types (constructorList t) in
+    let rec build_lambda l tl e = match (l,tl) with
+      | ([],[]) -> e
+      | ((VAR v)::r1,t::r2) -> (QUANT (intern_lambda,[(v,t)],build_lambda r1 r2 e,(APPL (intern_true,[])))) in
+        let rl = getRelevant constructor types cases in
+            if List.length rl=1 then
+               (let (v,t) = List.hd rl in
+                   if all_vars v then
+                       (build_lambda v types t)
+                   else (APPL (intern_undef,[])))
+            else (APPL (intern_undef,[]))
+
+(*let buildConstructors (t : Rtype.etype) (branch_asts :  constr list) =
+    let name = decode (Rtype.nameProduct t) in
+    let rec bc e n l = match e with
+                     | (QUANT (intern_lambda,([(v,t)]),ex,te)) ->
+                       bc ex n (l@[v])
+                     | e -> ((APPL (intern (name ^ (string_of_int n)),List.map (fun x -> VAR x) l)),e) in
+    let rec ge e = match e with
+                   | (QUANT (intern_lambda,([(v,t)]),ex,te)) ->
+                     ge ex
+                   | e -> e in
+    let rec bf bl n = match bl with
+                    | [] -> []
+                    | (f::r) -> (bc f n [])::(bf r (n+1)) in
+        if name="Natural" then
+            let (QUANT (intern_lambda,([(v,t)]),ex,te)) = List.nth branch_asts 1 in
+                [((NUM 0),(List.nth branch_asts 0));((APPL (intern "S",[VAR (intern "n")])),ex)]
+        else if name="Bool" then
+            [((APPL (intern_true,[])),(List.nth branch_asts 0));((APPL (intern_false,[])),(List.nth branch_asts 1))]
+        else bf branch_asts 1*)
 
 let rec build_term e tenv = match e with
   | (NUM x) -> Lib_coq.Nat.of_int x
@@ -1101,6 +1217,9 @@ let rec build_term e tenv = match e with
   | (APPL (10,l)) -> build_or_term l tenv
   | (APPL (11,[a;b])) -> Term.mkApp (Lazy.force reify_eq_val, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
   | (APPL (17,[a])) -> Term.mkApp (Lazy.force reify_not_val, [| build_term a tenv |])
+  (*| (APPL (21,[])) -> (Lazy.force reify_nil)*)
+  (*| (APPL (22,[f;e])) -> Term.mkApp(Lazy.force reify_cons,[|build_term f tenv;build_termn e tenv|])*)
+  | (APPL (75,[f;e])) -> Term.mkApp(build_term f tenv,[|build_term e tenv|])
   | (APPL (76,l)) -> build_add_term l tenv
   | (APPL (77,[l;r])) -> Term.mkApp((Lazy.force reify_sub),[|build_term l tenv;build_term r tenv|])
   | (APPL (78,l)) -> build_mul_term l tenv
@@ -1108,7 +1227,11 @@ let rec build_term e tenv = match e with
   | (APPL (80,[l;r])) -> Term.mkApp(Lazy.force reify_lt_val,[|build_term l tenv;build_term r tenv|])
   | (APPL (90,[l;r])) -> Term.mkApp(Lazy.force reify_imply_val,[|build_term l tenv;build_term r tenv|])
   | (VAR x) -> build_var (decode x) tenv
-  | _ -> (Lazy.force reify_false_val)
+  | (QUANT (73,[(v,t)],e,p)) -> 
+    let tenv' = push_var (decode v) t tenv in
+        Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_term e tenv')
+  | (CASE (e,t,c)) -> buildMatch e t c tenv
+  (*| _ -> (Lazy.force reify_false_val)*)
 and build_mul_term l tenv = match l with
   | [] -> Lib_coq.Nat.of_int 1
   | [a] -> build_term a tenv
@@ -1125,18 +1248,14 @@ and build_or_term l tenv = match l with
   | [] -> Lazy.force reify_false_val
   | [a] -> build_term a tenv
   | (f::r) -> Term.mkApp(Lazy.force reify_or_val,[|build_term f tenv;build_or_term r tenv|])
+and buildMatch e (t : Rtype.etype) cases tenv =
+    let constructors = constructorList t in
+    let terms = List.map (fun (c,l) -> build_term (buildCase t c cases) tenv) constructors in
+    let eterm = build_term e tenv in
+    let tterm = mkLambda (Name (Id.of_string "x"),(build_coq_type t),(get_case_type cases tenv)) in Lazy.force reify_true
+    (*let ci = make_case_info Global.env ind RegularStyle in
+    mkCase (ci, tterm, eterm, Array.of_list terms)*)
   ;;
-
-let build_leaf_type t = match (decode t) with
-  | "Natural" -> Lazy.force reify_nat
-  | "Bool" -> Lazy.force reify_bool
-  | x -> Lib_coq.init_constant [] x
-
-let rec build_coq_type t =
-  let tl = Rtype.paramProduct t in
-  match tl with
-  | [] -> build_leaf_type (Rtype.nameProduct t)
-  | l -> Term.mkApp((build_leaf_type (Rtype.nameProduct t)),Array.of_list (List.map build_coq_type l))
 
 let rec build_predicate e tenv = match e with
   | (APPL (4,[])) -> (Lazy.force reify_true)
@@ -1144,13 +1263,22 @@ let rec build_predicate e tenv = match e with
   | (APPL (9,l)) -> build_and l tenv
   | (APPL (10,l)) -> build_or l tenv
   | (APPL (11,[a;b])) -> Term.mkApp (Lazy.force reify_eq, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
-  | (APPL (80,[a;b])) -> Term.mkApp (Lazy.force reify_lt, [| build_term a tenv;build_term b tenv|])
   | (APPL (17,[x])) -> Term.mkProd(Anonymous,build_predicate x tenv,(Lazy.force reify_false))
+  | (APPL (80,[a;b])) -> Term.mkApp (Lazy.force reify_lt, [| build_term a tenv;build_term b tenv|])
+  | (APPL (75,[f;e])) -> Term.mkApp(build_term f tenv,[|build_term e tenv|])
   | (APPL (90,[l;r])) -> Term.mkProd(Anonymous,build_predicate l tenv,build_predicate r tenv)
   | (QUANT (14,vtl,e,p)) -> push_uvars tenv vtl e
+  | (QUANT (15,vtl,e,p)) -> push_evars tenv vtl e
+  | (QUANT (73,[(v,t)],e,p)) -> 
+    let tenv' = push_var (decode v) t tenv in
+        Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_predicate e tenv')
 and push_uvars tenv vtl e = match vtl with
-  | ((v,t)::r) -> let tenv' = push_var (decode v) tenv in
+  | ((v,t)::r) -> let tenv' = push_var (decode v) t tenv in
                   Term.mkProd ((Name (Id.of_string (decode v))),(build_coq_type t),(push_uvars tenv' r e))
+  | _ -> build_predicate e tenv
+and push_evars tenv vtl e = match vtl with
+  | ((v,t)::r) -> let tenv' = push_var (decode v) t tenv in
+                  Term.mkApp (Lazy.force reify_ex, [|build_coq_type t;Term.mkLambda ((Name (Id.of_string (decode v))),(build_coq_type t),(push_evars tenv' r e))|])
   | _ -> build_predicate e tenv
 and build_and l tenv = match l with
   | [] -> Lazy.force reify_true
@@ -1181,7 +1309,7 @@ let arewrite : unit Proofview.tactic =
   let _ = print ast in
   let ast' = apply_to_definition build_ast env 0 (build_predicate e []) in
   let _ = print ast' in*)
-  (print_string "This is a test";
+  (
    (*Tacticals.New.tclFAIL 1
     (Pp.str "The tactic is not imlplemented.")*)
           Tacticals.New.tclTHENLIST

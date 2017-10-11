@@ -182,7 +182,9 @@ let untypeTfun t = match t with
   | t -> raise (TypeError(t,t,[]));;
 let notype = N ;;
 
-let getetypeName (P (n,tl)) = n ;;
+let getetypeName t = match t with
+  | (P (n,tl)) -> n
+  | _ -> (print_string "NameError" ;raise (TypeError(t,t,[])))
 
 let rec allNames t = (match t with
   | (P (n,tl)) ->

@@ -63,9 +63,9 @@ let rec allInsertions x l = match l with
 let rec allPermutations l = match l with
   | [] -> [[]]
   | (a::b) ->
-    List.fold_left List.append (List.map
-            (fun (x) -> allInsertions a x) ;
-            (allPermutations b)) [] ;;
+    List.fold_left List.append [] (List.map
+            (fun (x) -> allInsertions a x)
+            (allPermutations b)) ;;
 
 let rec strip l = match l with
   | [] -> []
@@ -433,6 +433,7 @@ let rec u_match env t1 t2 q theta = match (t1,t2) with
                     (fun (x) -> uu_match env b1 b2 (x::q) theta)
                     (match_consts v1 v2))))))
   | ((CASE (e1,t1,c1)),(CASE (e2,t2,c2))) ->
+    let _ = print_string "HERE1\n" in
     let permutations = allMappings c1 c2 in
     let matches = List.fold_left List.append [] (List.map
                       (fun (t) -> uu_match env e1 e2 q t)
@@ -448,7 +449,8 @@ let rec u_match env t1 t2 q theta = match (t1,t2) with
         List.map (fun (x) -> (x,[])) matches
   | ((QUANT (s1,v1,e1,p1)),(QUANT (s2,v2,e2,p2))) ->
     if (s1 = s2) && (List.length v1 = List.length v2) then
-        (List.fold_left List.append [] (List.map
+        (print_string "HERE2\n" ;
+         List.fold_left List.append [] (List.map
             (fun (x) -> List.filter
                             (fun (t,r) -> r=[])
                             (List.fold_left List.append [] (List.map
@@ -484,7 +486,8 @@ and uu_match env e p q theta =
             (u_match env e p q theta)))
 and c_match_pairs env l l2 q theta =
     if (List.length l)=(List.length l2) then
-        (List.map
+        (print_string "HERE3\n" ;
+         List.map
             (fun (x) -> (x,[]))
             (List.fold_left List.append [] (List.map
                 (fun (x) -> match_mapping env x q theta)
@@ -668,6 +671,7 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
         (List.fold_left List.append [] (List.map (fun (x) -> uu_unify env b1 b2 (x::q) theta1 theta2)
         (match_consts v1 v2))))))
   | ((CASE (e1,t1,c1)),(CASE (e2,t2,c2))) ->
+    let _ = print_string "HERE4\n" in
     let permutations = allMappings c1 c2 in
     let matches = List.fold_left List.append [] (List.map
             (fun (t1,t2) -> uu_unify env e1 e2 q t1 t2)
@@ -686,6 +690,7 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
             matches
   | ((QUANT (s1,v1,e1,p1)),(QUANT (s2,v2,e2,p2))) ->
     if (s1 = s2) && (List.length v1 = List.length v2) then
+        (print_string "HERE5\n" ;
          List.fold_left List.append [] (List.map
             (fun (x) ->
                        List.filter
@@ -693,7 +698,7 @@ let rec u_unify env t1 t2 q theta1 theta2 = match (t1,t2) with
                            (List.fold_left List.append [] (List.map
                                (fun (t1,t2) -> u_unify env p1 p2 (x::q) t1 t2)
                                (uu_unify env e1 e2 (x::q) theta1 theta2))))
-            (allMappings (strip v1) (strip v2)))
+            (allMappings (strip v1) (strip v2))))
     else
         []
   | ((APPL (s,l)),(APPL (s2,l2))) ->
@@ -719,7 +724,7 @@ and uu_unify env e p q theta1 theta2 =
             (u_unify env e p q theta1 theta2))
 and c_unify_pairs env l l2 q theta1 theta2 =
     if (List.length l)=(List.length l2) then
-        (List.map
+        (print_string "HERE6\n" ; List.map
             (fun (x,y) -> (x,y,[],[]))
             (List.fold_left List.append [] (List.map
                 (fun (x) -> unify_mapping env x q theta1 theta2)

@@ -392,6 +392,15 @@ let env_5 = Renv.addFunction env_4 ((Exp.parseExp "yan(x)"),
 
 let env_6 = Renv.addProperty env_5 (Exp.parseRule "nplus(yin(x),yan(x)) -> 4") ;;
 
+let env_7 = Renv.addFunction env_6 ((Exp.parseExp "f(x)"),
+            (Rtype.parse "Natural -> Natural"),
+            (Exp.parseExp "True"),
+    [
+        Exp.parseRule "append(Cons(f,r),b) -> Cons(f,append(r,b))";
+        Exp.parseRule "append(Nil,b) -> b)"
+    ]) [] ;;
+
+let exp_test = Exp.parseExp "CASE Nil() OF Nil() => nplus(1,10) ||| Cons(a,b) => 2" ;;
 let exp_test = Exp.parseExp "nplus(yin(x),yan(x))" ;;
 print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
@@ -467,6 +476,11 @@ print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 let exp_test = Exp.parseExp "implies((x==3),True)" ;;
 print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "f(x)==x & f(f(x))==x" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_7 exp_test) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
 
