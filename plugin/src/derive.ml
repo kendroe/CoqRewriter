@@ -124,7 +124,7 @@ let equality_terms f g = ((!equality_test) (ExpIntern.decode_exp f) (ExpIntern.d
                          ((is_constant f || is_default f) &&
                           not(is_constant g) && not(is_default g)) ;;
 
-let rec derive_rules e = match e with
+let rec derive_rules env e = match e with
   | (APPL (s,[APPL(9,l);NORMAL (APPL(4,[]));c])) ->
     (List.map (fun (x) -> (APPL (s,[x;NORMAL (APPL (intern_true,[]));c]))) l,[])
   | (APPL (s,[APPL(10,l);NORMAL (APPL(5,[]));c])) ->
@@ -147,7 +147,11 @@ let rec derive_rules e = match e with
   | (APPL (s,[APPL(11,[a;b]);
                            NORMAL (APPL(4,[]));
                            c])) ->
-      ((if is_constant a || is_default a then
+      ((if Match.equal_smaller env a b then
+               [APPL (intern_oriented_rule,[b;NORMAL a;c])]
+        else if Match.equal_smaller env b a then
+               [APPL (intern_oriented_rule,[a;NORMAL b;c])]
+        else if is_constant a || is_default a then
           (if is_constant b || is_default b then
                [APPL (intern_unoriented_rule,[a;NORMAL b;c])]
            else
@@ -186,7 +190,7 @@ let rec derive_rules e = match e with
   | _ -> ([],[])
   ;;
 
-let ra_derive e = match e with
+let ra_derive env e = match e with
   | (APPL (s,[APPL(9,l);NORMAL (APPL(5,[]));c])) ->
     (APPL (s,[APPL(intern_and,l);NORMAL (APPL(intern_false,[]));c]))::
     (mk_and_conds c s [] l)
@@ -195,7 +199,7 @@ let ra_derive e = match e with
     (mk_or_conds c s [] l)
   | x ->
     let rec d_rules x =
-            let (a,b) = derive_rules x
+            let (a,b) = derive_rules env x
             in
                 if a=[] then x::b else (List.fold_left List.append [] (List.map d_rules a))@b in
     let res = d_rules x
@@ -213,7 +217,7 @@ let user_derives env user_disc e =
 
 let rec i_derive env user_disc e =
     let _ = Rtrace.trace "derive" (fun (xx) -> "d " ^ (prExp e)) in
-    let (rules,residue) = derive_rules e
+    let (rules,residue) = derive_rules env e
     in
         if rules=[] then
             let
@@ -299,7 +303,7 @@ Disc.add (Renv.isAorC env) d (APPL (intern_oriented_rule,[oo;n;(APPL (intern_tru
                   (fun (APPL (f,[l;r;c])) -> (APPL (f,[NORMAL l;r;c])))
                   (List.fold_left List.append [] (List.map
                   (fun (x) -> (i_derive env user_disc x))
-                  (ra_derive (APPL (f,[l;NORMAL r; NORMAL c]))))))) in
+                  (ra_derive env (APPL (f,[l;NORMAL r; NORMAL c]))))))) in
     let _ = Rtrace.trace "derive" (fun (xx) -> "Result:") in
     let _ = Rtrace.indent () in
     let _ = Rtrace.trace_list "rderive" (fun (x) -> List.map prExp res) in

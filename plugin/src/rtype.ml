@@ -380,8 +380,12 @@ let rec getConstructorList tp = match tp with
   | (t,[]) -> [] 
   | (t,((s,l)::b)) -> s::(getConstructorList (t,b)) ;;
 
+let isNaturalType t = match t with
+  | (P (n,l)) -> if n==Intern.intern "Natural" then true else false
+  | _ -> false
+
 let rec isFiniteetype tp = match tp with
-  | (t,[]) -> true
+  | (t,[]) -> if isNaturalType t then false else true
   | (t,((s,[])::r)) -> isFiniteetype (t,r)
   | t -> false ;;
 
