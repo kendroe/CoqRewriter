@@ -158,28 +158,28 @@ let newVar () = (varCount := !varCount + 1; Var(!varCount)) ;;
 let mkVar v = V(v) ;;
 let untypeVar s v = match v with
   | (V(x)) -> if s = x then x else
-    raise (TypeError (V(x),V(x),[]))
-  | x -> raise (TypeError (x,x,[])) ;;
+    (print_string "HERE1\n";raise (TypeError (V(x),V(x),[])))
+  | x -> (print_string "HERE1.5\n";raise (TypeError (x,x,[]))) ;;
 let mkSlot v = S(v) ;;
 let untypeSlot t = match t with
   | (S(x)) -> x
-  | t -> raise (TypeError (t,t,[]));;
+  | t -> (print_string "HERE2\n";raise (TypeError (t,t,[])));;
 let mkProduct s tl = P(s,tl) ;;
 let nameProduct p = match p with
   | (P(x,tl)) -> x
-  | t -> raise (TypeError (t,t,[]));;
+  | t -> (print_string "HERE3\n";raise (TypeError (t,t,[])));;
 let paramProduct p = match p with
   | (P(x,tl)) -> tl
-  | t -> raise (TypeError (t,t,[]));;
+  | t -> (print_string "HERE4\n";raise (TypeError (t,t,[])));;
 let untypeProduct s n p = match p with
   | (P(x,tl)) ->
         if s = x && (List.length tl) = n then tl else
-        raise (TypeError (P(x,tl),P(x,tl),[]))
-  | t -> raise (TypeError (t,t,[]));;
+        raise (print_string "HERE5\n";TypeError (P(x,tl),P(x,tl),[]))
+  | t -> raise (print_string "HERE6";TypeError (t,t,[]))();;
 let mkTfun t1 t2 = F(t1,t2) ;;
 let untypeTfun t = match t with
   | (F(t1,t2)) -> (t1,t2)
-  | t -> raise (TypeError(t,t,[]));;
+  | t -> raise (print_string "HERE7";TypeError(t,t,[]));;
 let notype = N ;;
 
 let getetypeName t = match t with
@@ -247,7 +247,7 @@ let addSubst (Subst(x)) a b = let (Subst s2) = map_sub (Subst x) a b in
 let rec pairLists l1 l2 = match (l1,l2) with
   | ([],[]) -> []
   | ((a::b),(c::d)) -> ((a,c)::pairLists b d)
-  | (_,_) -> raise (TypeError(N,N,[])) ;;
+  | (_,_) -> raise (print_string "HERE8\n";TypeError(N,N,[])) ;;
 
 let rec tmatch t e s = match (t,e) with
   | ((V x),e) -> (try (tmatch (get s x) e s)
@@ -257,7 +257,7 @@ let rec tmatch t e s = match (t,e) with
     let (m,_) =
         List.fold_left (fun (s,n) -> (fun (p,e) ->
                   ((try tmatch p e s with (TypeError(t1,t2,l)) ->
-                  raise (TypeError(t1,t2,n::l))),
+                  raise (print_string "HERE10\n";TypeError(t1,t2,n::l))),
                   n + 1)
              ))
              (s,0)

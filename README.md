@@ -1,8 +1,24 @@
 # CoqRewriter
 
-(C) 2017, Kenneth Roe
-All rights reserved
+This project is licensed under the GNU General Public License 3.  See the file
+LICENSE for more information.
 
-This is an incomplete work.  While you are welcome to read through the code,
-please do not do anything with the code.  The "All rights reserved" clause
-will be replaced with an appropriate license when the work is complete.
+There are two distinct ways to build.
+
+To build with Coq, make sure you have Coq 8.5pl2 and Ocaml-4.04.0.
+
+To compile standalone
+
+cd plugin/src
+make
+
+To compile with Coq integration
+
+cd plugin
+make
+
+To run some samples from the paper,
+
+cd plugin
+coqtop -q  -R "test-suite" ML_tutorial.Tests -R "src" ML_tutorial -I "src" < test-suite/example.v
+

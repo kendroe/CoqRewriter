@@ -396,8 +396,24 @@ let env_7 = Renv.addFunction env_6 ((Exp.parseExp "f(x)"),
             (Rtype.parse "Natural -> Natural"),
             (Exp.parseExp "True"),
     [
-        Exp.parseRule "append(Cons(f,r),b) -> Cons(f,append(r,b))";
-        Exp.parseRule "append(Nil,b) -> b)"
+    ]) [] ;;
+
+let env_8 = Renv.addFunction env_7 ((Exp.parseExp "g(x)"),
+            (Rtype.parse "Natural -> Natural"),
+            (Exp.parseExp "True"),
+    [
+    ]) [] ;;
+
+let env_9 = Renv.addFunction env_8 ((Exp.parseExp "h(x)"),
+            (Rtype.parse "Natural -> Natural"),
+            (Exp.parseExp "True"),
+    [
+    ]) [] ;;
+
+let env_10 = Renv.addFunction env_9 ((Exp.parseExp "i(x)"),
+            (Rtype.parse "Natural -> Natural"),
+            (Exp.parseExp "True"),
+    [
     ]) [] ;;
 
 let exp_test = Exp.parseExp "CASE Nil() OF Nil() => nplus(1,10) ||| Cons(a,b) => 2" ;;
@@ -476,8 +492,6 @@ print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_6 exp_test) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
-Rtrace.toggle_trace () ;;
-
 let exp_test = Exp.parseExp "f(x)==x & f(f(x))==x" ;;
 print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_7 exp_test) ;;
@@ -488,4 +502,35 @@ print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_7 exp_test) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
+let exp_test = Exp.parseExp "ALL(x) implies((x==3),(nplus(x,1)==4))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_7 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "implies((x==3),(nplus(x,1)==4))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_7 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "implies((ALL(x) nplus(f(x),g(x))==0),nplus(nplus(nplus(g(nplus(x,nplus(2,1))),q),f(nplus(3,x))),r)==nplus(q,r))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_8 (Renv.flatten env_8 exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "implies((ALL(x) (ALL(y) (ALL(q) nplus(f(x),g(ntimes(h(y),ntimes(i(y),q))))==0))),(nplus(g(ntimes(h(3),nplus(2,1))),q,f(nplus(3,x))))==q)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_10 exp_test) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+Rtrace.toggle_trace () ;;
+
+let exp_test = Exp.parseExp "ALL(f) ALL(g) ALL(x) ALL(q) ALL(r) implies(nplus(apply(f, x), apply(g, x)) == 0, nplus(nplus(nplus(apply(g, nplus(nplus(x, 2), 1)), q), apply(f, nplus(3, x))), r) == nplus(q, r))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "nplus(ntimes(2,x),1)==nplus(ntimes(4,y),1)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 

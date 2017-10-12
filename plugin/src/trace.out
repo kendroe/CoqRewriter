@@ -463,3 +463,788 @@ rewriting subterm: f(f(f(x)))  == x & f(f(x))  == x
     <<616>>
     x == f(x)
 end rewrite subterm: f(f(f(x)))  == x & f(f(x))  == x
+rewriting subterm: ALL(x: True) implies(x == 3, nplus(x, 1) == 4)
+  rewriting expression: ALL(x: True) implies(x == 3, nplus(x, 1) == 4)
+    rewriting expression: implies(<<280>>, <<638>>)
+      rewriting expression: <<4>> == <<257>>
+        Result:
+          <<280>>
+          x == 3
+      end rewrite for: <<4>> == <<257>>
+      Adding <<186>> == <<260>>
+
+      rewriting expression: <<186>> == <<260>>
+        rewriting expression: nplus(<<4>>, <<34>>)
+          rewriting expression: x
+            builtin x
+            end builtin x
+            Rules:
+              x' { True } -> 3
+            match x' x
+            end match x' x
+            Applying x' { True } -> 3 to x
+              Match count: 1
+              Match2 count: 1
+              Match3 count: 1
+              rewriting subterm: True
+                rewriting expression: True
+                  Result:
+                    <<19>>
+                    True
+                end rewrite for: True
+                Result:
+                  <<19>>
+                  True
+              end rewrite subterm: True
+              r: 3
+              Result count: 1
+            End apply x' { True } -> 3 to x
+            rewriting expression: 3
+              Result:
+                <<257>>
+                3
+            end rewrite for: 3
+            Result:
+              <<257>>
+              3
+          end rewrite for: x
+          rewriting expression: 1
+            Result:
+              <<34>>
+              1
+          end rewrite for: 1
+          builtin nplus(<<257>>, <<34>>)
+            nplus(4)
+          end builtin nplus(4)
+          rewriting expression: nplus(4)
+            rewriting expression: 4
+              Result:
+                <<260>>
+                4
+            end rewrite for: 4
+            builtin nplus(<<260>>)
+              4
+            end builtin 4
+            rewriting expression: 4
+              Result:
+                <<260>>
+                4
+            end rewrite for: 4
+            Result:
+              <<260>>
+              4
+          end rewrite for: nplus(4)
+          Result:
+            <<260>>
+            4
+        end rewrite for: nplus(<<4>>, <<34>>)
+        rewriting expression: 4
+          Result:
+            <<260>>
+            4
+        end rewrite for: 4
+        builtin <<260>> == <<260>>
+          True
+        end builtin True
+        rewriting expression: True
+          Result:
+            <<19>>
+            True
+        end rewrite for: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: <<186>> == <<260>>
+      builtin implies(<<280>>, <<19>>)
+        True
+      end builtin True
+      rewriting expression: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: implies(<<280>>, <<638>>)
+    rewriting expression: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: True
+    builtin ALL(x: <<19>>) <<19>>
+      ALL(: True) True
+    end builtin ALL(: True) True
+    rewriting expression: ALL(: True) True
+      rewriting expression: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: True
+      rewriting expression: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: True
+      builtin ALL(: <<19>>) <<19>>
+        not(True) | True
+      end builtin not(True) | True
+      rewriting expression: not(True) | True
+        Deriving True { True } -> False
+          d True { N[True] } -> N[False]
+          Result:
+            N[True] { N[True] } -> N[False]
+        end derive for: True { True } -> False
+        rewriting expression: True
+          Result:
+            <<19>>
+            True
+        end rewrite for: True
+        equal <<19>> True
+        equal: Yes
+        rewriting expression: not(<<19>>)
+          rewriting expression: True
+            Result:
+              <<19>>
+              True
+          end rewrite for: True
+          builtin not(<<19>>)
+            False
+          end builtin False
+          rewriting expression: False
+            Result:
+              <<51>>
+              False
+          end rewrite for: False
+          Result:
+            <<51>>
+            False
+        end rewrite for: not(<<19>>)
+        equal <<51>> not(<<19>>)
+        equal: No
+        rewriting expression: <<19>>
+          Result:
+            <<19>>
+            True
+        end rewrite for: <<19>>
+        equal <<19>> <<19>>
+        equal: Yes
+        rewriting expression: <<51>>
+          Result:
+            <<51>>
+            False
+        end rewrite for: <<51>>
+        equal <<51>> <<51>>
+        equal: Yes
+        builtin True | False
+          True
+        end builtin True
+        rewriting expression: True
+          Result:
+            <<19>>
+            True
+        end rewrite for: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: not(True) | True
+      Result:
+        <<19>>
+        True
+    end rewrite for: ALL(: True) True
+    Result:
+      <<19>>
+      True
+  end rewrite for: ALL(x: True) implies(x == 3, nplus(x, 1) == 4)
+  Result:
+    <<19>>
+    True
+end rewrite subterm: ALL(x: True) implies(x == 3, nplus(x, 1) == 4)
+rewriting subterm: implies(x == 3, nplus(x, 1) == 4)
+  rewriting expression: implies(x == 3, nplus(x, 1) == 4)
+    rewriting expression: <<4>> == <<257>>
+      Result:
+        <<280>>
+        x == 3
+    end rewrite for: <<4>> == <<257>>
+    Adding <<186>> == <<260>>
+
+    rewriting expression: <<186>> == <<260>>
+      rewriting expression: nplus(<<4>>, <<34>>)
+        rewriting expression: x
+          builtin x
+          end builtin x
+          Rules:
+            x' { True } -> 3
+          match x' x
+          end match x' x
+          Applying x' { True } -> 3 to x
+            Match count: 1
+            Match2 count: 1
+            Match3 count: 1
+            rewriting subterm: True
+              rewriting expression: True
+                Result:
+                  <<19>>
+                  True
+              end rewrite for: True
+              Result:
+                <<19>>
+                True
+            end rewrite subterm: True
+            r: 3
+            Result count: 1
+          End apply x' { True } -> 3 to x
+          rewriting expression: 3
+            Result:
+              <<257>>
+              3
+          end rewrite for: 3
+          Result:
+            <<257>>
+            3
+        end rewrite for: x
+        rewriting expression: 1
+          Result:
+            <<34>>
+            1
+        end rewrite for: 1
+        builtin nplus(<<257>>, <<34>>)
+          nplus(4)
+        end builtin nplus(4)
+        rewriting expression: nplus(4)
+          rewriting expression: 4
+            Result:
+              <<260>>
+              4
+          end rewrite for: 4
+          builtin nplus(<<260>>)
+            4
+          end builtin 4
+          rewriting expression: 4
+            Result:
+              <<260>>
+              4
+          end rewrite for: 4
+          Result:
+            <<260>>
+            4
+        end rewrite for: nplus(4)
+        Result:
+          <<260>>
+          4
+      end rewrite for: nplus(<<4>>, <<34>>)
+      rewriting expression: 4
+        Result:
+          <<260>>
+          4
+      end rewrite for: 4
+      builtin <<260>> == <<260>>
+        True
+      end builtin True
+      rewriting expression: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: <<186>> == <<260>>
+    builtin implies(<<280>>, <<19>>)
+      True
+    end builtin True
+    rewriting expression: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: True
+    Result:
+      <<19>>
+      True
+  end rewrite for: implies(x == 3, nplus(x, 1) == 4)
+  Result:
+    <<19>>
+    True
+end rewrite subterm: implies(x == 3, nplus(x, 1) == 4)
+rewriting subterm: implies(ALL(x: True) nplus(f(x), g(x)) == 0, nplus(g(nplus(x, 2, 1)), q, f(nplus(3, x)), r) == nplus(q, r))
+  rewriting expression: implies(ALL(x: True) nplus(f(x), g(x)) == 0, nplus(g(nplus(x, 2, 1)), q, f(nplus(3, x)), r) == nplus(q, r))
+    rewriting expression: ALL(x: <<19>>) <<649>>
+      rewriting expression: <<103>> == <<648>>
+        rewriting expression: 0
+          Result:
+            <<103>>
+            0
+        end rewrite for: 0
+        rewriting expression: nplus(<<615>>, <<647>>)
+          rewriting expression: f(<<4>>)
+            Result:
+              <<615>>
+              f(x)
+          end rewrite for: f(<<4>>)
+          rewriting expression: g(<<4>>)
+            rewriting expression: x
+              Result:
+                <<4>>
+                x
+            end rewrite for: x
+            builtin g(<<4>>)
+            end builtin g(x)
+            Rules:
+            Result:
+              <<647>>
+              g(x)
+          end rewrite for: g(<<4>>)
+          builtin nplus(<<615>>, <<647>>)
+          end builtin nplus(f(<<4>>), g(<<4>>))
+          Rules:
+          Result:
+            <<648>>
+            nplus(f(x), g(x))
+        end rewrite for: nplus(<<615>>, <<647>>)
+        builtin <<103>> == <<648>>
+        end builtin 0 == nplus(<<615>>, <<647>>)
+        Rules:
+          x == nplus(x, 1) { True } -> False
+          nplus(y, x) == nplus(z, x) { True } -> y == z
+        match x == nplus(x, 1) 0 == nplus(f(x), g(x))
+        end match x == nplus(x, 1) 0 == nplus(f(x), g(x))
+        match nplus(y, x) == nplus(z, x) 0 == nplus(f(x), g(x))
+        end match nplus(y, x) == nplus(z, x) 0 == nplus(f(x), g(x))
+        KB Rewriting 0 == nplus(<<615>>, <<647>>) 1 1
+          term 0 == nplus(<<615>>, <<647>>)
+          exp_term 0 == nplus(<<615>>, <<647>>)
+          all_term 0 == nplus(<<615>>, <<647>>)
+          Results: 0 == nplus(<<615>>, <<647>>)
+            0 == nplus(<<615>>, <<647>>)
+        Result:
+          <<649>>
+          0 == nplus(f(x), g(x))
+      end rewrite for: <<103>> == <<648>>
+      rewriting expression: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: True
+      builtin ALL(x: <<19>>) <<649>>
+      end builtin ALL(x: True) <<103>> == <<648>>
+      Rules:
+      Result:
+        <<650>>
+        ALL(x: True) 0 == nplus(f(x), g(x))
+    end rewrite for: ALL(x: <<19>>) <<649>>
+    Adding <<654>> == <<655>>
+
+    Deriving ALL(x: True) 0 == nplus(f(x), g(x)) { True } -> True
+      d ALL(x: True) 0 == nplus(f(x), g(x)) { N[True] } -> N[True]
+      d 0 == nplus(f(x), g(x)) { N[True] } -> N[True]
+      d nplus(f(x), g(x)) { N[True] } -> N[0]
+      Result:
+        N[nplus(f(x), g(x))] { N[True] } -> N[0]
+        N[0 == nplus(f(x), g(x))] { N[True] } -> True
+    end derive for: ALL(x: True) 0 == nplus(f(x), g(x)) { True } -> True
+    rewriting expression: <<654>> == <<655>>
+      rewriting expression: nplus(<<488>>, <<489>>, <<652>>, <<653>>)
+        rewriting expression: q
+          builtin q
+          end builtin q
+          Rules:
+          Result:
+            <<488>>
+            q
+        end rewrite for: q
+        rewriting expression: r
+          builtin r
+          end builtin r
+          Rules:
+          Result:
+            <<489>>
+            r
+        end rewrite for: r
+        rewriting expression: g(<<651>>)
+          rewriting expression: nplus(<<4>>, <<34>>, <<269>>)
+            rewriting expression: x
+              builtin x
+              end builtin x
+              Rules:
+              Result:
+                <<4>>
+                x
+            end rewrite for: x
+            rewriting expression: 1
+              builtin 1
+              end builtin 1
+              Rules:
+              Result:
+                <<34>>
+                1
+            end rewrite for: 1
+            rewriting expression: 2
+              builtin 2
+              end builtin 2
+              Rules:
+              Result:
+                <<269>>
+                2
+            end rewrite for: 2
+            builtin nplus(<<4>>, <<34>>, <<269>>)
+              nplus(3, x)
+            end builtin nplus(3, x)
+            rewriting expression: nplus(3, x)
+              rewriting expression: x
+                Result:
+                  <<4>>
+                  x
+              end rewrite for: x
+              rewriting expression: 3
+                builtin 3
+                end builtin 3
+                Rules:
+                Result:
+                  <<257>>
+                  3
+              end rewrite for: 3
+              builtin nplus(<<4>>, <<257>>)
+              end builtin nplus(x, 3)
+              Rules:
+                nplus(f(x), g(x)) { True } -> 0
+              match nplus(f(x), g(x)) nplus(x, 3)
+              end match nplus(f(x), g(x)) nplus(x, 3)
+              Result:
+                <<258>>
+                nplus(x, 3)
+            end rewrite for: nplus(3, x)
+            Result:
+              <<258>>
+              nplus(x, 3)
+          end rewrite for: nplus(<<4>>, <<34>>, <<269>>)
+          builtin g(<<258>>)
+          end builtin g(nplus(<<4>>, <<257>>))
+          Rules:
+          Result:
+            <<661>>
+            g(nplus(x, 3))
+        end rewrite for: g(<<651>>)
+        rewriting expression: f(<<258>>)
+          rewriting expression: nplus(<<4>>, <<257>>)
+            Result:
+              <<258>>
+              nplus(x, 3)
+          end rewrite for: nplus(<<4>>, <<257>>)
+          builtin f(<<258>>)
+          end builtin f(nplus(<<4>>, <<257>>))
+          Rules:
+          Result:
+            <<653>>
+            f(nplus(x, 3))
+        end rewrite for: f(<<258>>)
+        builtin nplus(<<488>>, <<489>>, <<661>>, <<653>>)
+        end builtin nplus(q, r, f(<<258>>), g(<<258>>))
+        Rules:
+          nplus(f(x), g(x)) { True } -> 0
+        match nplus(f(x), g(x)) nplus(q, r, f(nplus(x, 3)), g(nplus(x, 3)))
+          equal nplus(x, 3) nplus(x, 3)
+          equal: Yes
+          equal nplus(x, 3) 3
+          equal: No
+          equal nplus(x, 3) x
+          equal: No
+          equal nplus(x, 3) nplus()
+          equal: No
+        end match nplus(f(x), g(x)) nplus(q, r, f(nplus(x, 3)), g(nplus(x, 3)))
+        Applying nplus(f(x), g(x)) { True } -> 0 to nplus(q, r, f(nplus(x, 3)), g(nplus(x, 3)))
+          Match count: 1
+          Match2 count: 1
+          Match3 count: 1
+          rewriting subterm: True
+            rewriting expression: True
+              builtin True
+              end builtin True
+              Rules:
+              Result:
+                <<19>>
+                True
+            end rewrite for: True
+            Result:
+              <<19>>
+              True
+          end rewrite subterm: True
+          r: 0
+            q
+            r
+          Result count: 1
+        End apply nplus(f(x), g(x)) { True } -> 0 to nplus(q, r, f(nplus(x, 3)), g(nplus(x, 3)))
+        rewriting expression: nplus(0, q, r)
+          rewriting expression: 0
+            builtin 0
+            end builtin 0
+            Rules:
+            Result:
+              <<103>>
+              0
+          end rewrite for: 0
+          rewriting expression: q
+            Result:
+              <<488>>
+              q
+          end rewrite for: q
+          rewriting expression: r
+            Result:
+              <<489>>
+              r
+          end rewrite for: r
+          builtin nplus(<<103>>, <<488>>, <<489>>)
+            nplus(q, r)
+          end builtin nplus(q, r)
+          rewriting expression: nplus(q, r)
+            rewriting expression: q
+              Result:
+                <<488>>
+                q
+            end rewrite for: q
+            rewriting expression: r
+              Result:
+                <<489>>
+                r
+            end rewrite for: r
+            builtin nplus(<<488>>, <<489>>)
+            end builtin nplus(q, r)
+            Rules:
+              nplus(f(x), g(x)) { True } -> 0
+            match nplus(f(x), g(x)) nplus(q, r)
+            end match nplus(f(x), g(x)) nplus(q, r)
+            Result:
+              <<655>>
+              nplus(q, r)
+          end rewrite for: nplus(q, r)
+          Result:
+            <<655>>
+            nplus(q, r)
+        end rewrite for: nplus(0, q, r)
+        Result:
+          <<655>>
+          nplus(q, r)
+      end rewrite for: nplus(<<488>>, <<489>>, <<652>>, <<653>>)
+      rewriting expression: nplus(<<488>>, <<489>>)
+        Result:
+          <<655>>
+          nplus(q, r)
+      end rewrite for: nplus(<<488>>, <<489>>)
+      builtin <<655>> == <<655>>
+        equal nplus(<<488>>, <<489>>) nplus(<<488>>, <<489>>)
+        equal: Yes
+        True
+      end builtin True
+      rewriting expression: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: <<654>> == <<655>>
+    builtin implies(<<650>>, <<19>>)
+      True
+    end builtin True
+    rewriting expression: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: True
+    Result:
+      <<19>>
+      True
+  end rewrite for: implies(ALL(x: True) nplus(f(x), g(x)) == 0, nplus(g(nplus(x, 2, 1)), q, f(nplus(3, x)), r) == nplus(q, r))
+  Result:
+    <<19>>
+    True
+end rewrite subterm: implies(ALL(x: True) nplus(f(x), g(x)) == 0, nplus(g(nplus(x, 2, 1)), q, f(nplus(3, x)), r) == nplus(q, r))
+rewriting subterm: implies(ALL(x: True) nplus(f(x), g(x)) == 0, nplus(g(nplus(x, nplus(2, 1))), q, f(nplus(3, x))) == q)
+  rewriting expression: implies(ALL(x: True) nplus(f(x), g(x)) == 0, nplus(g(nplus(x, nplus(2, 1))), q, f(nplus(3, x))) == q)
+    rewriting expression: ALL(x: <<19>>) <<649>>
+      Result:
+        <<650>>
+        ALL(x: True) 0 == nplus(f(x), g(x))
+    end rewrite for: ALL(x: <<19>>) <<649>>
+    Adding <<488>> == <<669>>
+
+    rewriting expression: <<488>> == <<669>>
+      rewriting expression: q
+        Result:
+          <<488>>
+          q
+      end rewrite for: q
+      rewriting expression: nplus(<<488>>, <<653>>, <<668>>)
+        rewriting expression: q
+          Result:
+            <<488>>
+            q
+        end rewrite for: q
+        rewriting expression: f(<<258>>)
+          Result:
+            <<653>>
+            f(nplus(x, 3))
+        end rewrite for: f(<<258>>)
+        rewriting expression: g(<<667>>)
+          rewriting expression: nplus(<<4>>, <<666>>)
+            rewriting expression: x
+              Result:
+                <<4>>
+                x
+            end rewrite for: x
+            rewriting expression: nplus(<<34>>, <<269>>)
+              rewriting expression: 1
+                Result:
+                  <<34>>
+                  1
+              end rewrite for: 1
+              rewriting expression: 2
+                Result:
+                  <<269>>
+                  2
+              end rewrite for: 2
+              builtin nplus(<<34>>, <<269>>)
+                nplus(3)
+              end builtin nplus(3)
+              rewriting expression: nplus(3)
+                rewriting expression: 3
+                  Result:
+                    <<257>>
+                    3
+                end rewrite for: 3
+                builtin nplus(<<257>>)
+                  3
+                end builtin 3
+                rewriting expression: 3
+                  Result:
+                    <<257>>
+                    3
+                end rewrite for: 3
+                Result:
+                  <<257>>
+                  3
+              end rewrite for: nplus(3)
+              Result:
+                <<257>>
+                3
+            end rewrite for: nplus(<<34>>, <<269>>)
+            builtin nplus(<<4>>, <<257>>)
+            end builtin nplus(x, 3)
+            Rules:
+              nplus(f(x), g(x)) { True } -> 0
+            match nplus(f(x), g(x)) nplus(x, 3)
+            end match nplus(f(x), g(x)) nplus(x, 3)
+            Result:
+              <<258>>
+              nplus(x, 3)
+          end rewrite for: nplus(<<4>>, <<666>>)
+          builtin g(<<258>>)
+          end builtin g(nplus(<<4>>, <<257>>))
+          Rules:
+          Result:
+            <<661>>
+            g(nplus(x, 3))
+        end rewrite for: g(<<667>>)
+        builtin nplus(<<488>>, <<653>>, <<661>>)
+        end builtin nplus(q, f(<<258>>), g(<<258>>))
+        Rules:
+          nplus(f(x), g(x)) { True } -> 0
+        match nplus(f(x), g(x)) nplus(q, f(nplus(x, 3)), g(nplus(x, 3)))
+          equal nplus(x, 3) nplus(x, 3)
+          equal: Yes
+          equal nplus(x, 3) 3
+          equal: No
+          equal nplus(x, 3) x
+          equal: No
+          equal nplus(x, 3) nplus()
+          equal: No
+        end match nplus(f(x), g(x)) nplus(q, f(nplus(x, 3)), g(nplus(x, 3)))
+        Applying nplus(f(x), g(x)) { True } -> 0 to nplus(q, f(nplus(x, 3)), g(nplus(x, 3)))
+          Match count: 1
+          Match2 count: 1
+          Match3 count: 1
+          rewriting subterm: True
+            rewriting expression: True
+              Result:
+                <<19>>
+                True
+            end rewrite for: True
+            Result:
+              <<19>>
+              True
+          end rewrite subterm: True
+          r: 0
+            q
+          Result count: 1
+        End apply nplus(f(x), g(x)) { True } -> 0 to nplus(q, f(nplus(x, 3)), g(nplus(x, 3)))
+        rewriting expression: nplus(0, q)
+          rewriting expression: 0
+            Result:
+              <<103>>
+              0
+          end rewrite for: 0
+          rewriting expression: q
+            Result:
+              <<488>>
+              q
+          end rewrite for: q
+          builtin nplus(<<103>>, <<488>>)
+            nplus(q)
+          end builtin nplus(q)
+          rewriting expression: nplus(q)
+            rewriting expression: q
+              Result:
+                <<488>>
+                q
+            end rewrite for: q
+            builtin nplus(<<488>>)
+              q
+            end builtin q
+            rewriting expression: q
+              Result:
+                <<488>>
+                q
+            end rewrite for: q
+            Result:
+              <<488>>
+              q
+          end rewrite for: nplus(q)
+          Result:
+            <<488>>
+            q
+        end rewrite for: nplus(0, q)
+        Result:
+          <<488>>
+          q
+      end rewrite for: nplus(<<488>>, <<653>>, <<668>>)
+      builtin <<488>> == <<488>>
+        equal q q
+        equal: Yes
+        True
+      end builtin True
+      rewriting expression: True
+        Result:
+          <<19>>
+          True
+      end rewrite for: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: <<488>> == <<669>>
+    builtin implies(<<650>>, <<19>>)
+      True
+    end builtin True
+    rewriting expression: True
+      Result:
+        <<19>>
+        True
+    end rewrite for: True
+    Result:
+      <<19>>
+      True
+  end rewrite for: implies(ALL(x: True) nplus(f(x), g(x)) == 0, nplus(g(nplus(x, nplus(2, 1))), q, f(nplus(3, x))) == q)
+  Result:
+    <<19>>
+    True
+end rewrite subterm: implies(ALL(x: True) nplus(f(x), g(x)) == 0, nplus(g(nplus(x, nplus(2, 1))), q, f(nplus(3, x))) == q)

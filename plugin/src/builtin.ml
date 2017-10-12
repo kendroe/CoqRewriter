@@ -446,7 +446,7 @@ let rec is_finite_clause_list env l = match l with
     Renv.isFiniteConstructor env f
   | _ -> false ;;
 
-let isFiniteTerm env e = match e with
+let isFiniteTerm env e = try (match e with
   | (VAR x) ->
     (try let v = Renv.getVarType env x
      in
@@ -457,7 +457,7 @@ let isFiniteTerm env e = match e with
     let t = Rtype.getReturnetype (Renv.getType env f)
     in
         Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName t))
-  | _ -> false
+  | _ -> false) with (Rtype.TypeError(_)) -> false
   ;;
 
 let rec getTermType env e = match e with
@@ -562,6 +562,9 @@ let rec reduce_finite_case ee t cases = match ee with
   ;;
 
 let rec builtin rewrite env e = match e with
+  | (APPL (90,[_;(APPL (4,[]))])) -> [(APPL (intern_true,[]))]
+  | (APPL (90,[(APPL (5,[]));_])) -> [(APPL (intern_true,[]))]
+  | (APPL (90,[(APPL (4,[]));(APPL (5,[]))])) -> [(APPL (intern_false,[]))]
   | (APPL (76,[])) -> [NUM 0]
   | (APPL (82,[])) -> [RATIONAL(0,1)]
   | (APPL (78,[])) -> [NUM 1]
