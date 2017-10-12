@@ -5,7 +5,8 @@ LICENSE for more information.
 
 There are two distinct ways to build.
 
-To build with Coq, make sure you have Coq 8.5pl2 and Ocaml-4.04.0.
+To build with Coq, make sure you have Coq 8.5pl2 and Ocaml-4.04.0.  This build
+was tested on a Mac running MacOS 10.12.6.
 
 To compile standalone:
 
