@@ -17,7 +17,8 @@ let init_constant dir s = find_constant contrib_name dir s
 (** [decomp_term] returns a user view of a constr, as defined in {v
     kernel/term.ml v}. *)
 let decomp_term (c : Term.constr)  = 
-  Term.kind_of_term (Term.strip_outer_cast c)
+  (*Term.kind_of_term (Term.strip_outer_cast c)*)
+  Term.kind_of_term c (** ? **)
     
 let lapp c v  = Term.mkApp (Lazy.force c, v)
 

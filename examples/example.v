@@ -1,5 +1,4 @@
-Require Import theory.
-Declare ML Module "theplug".
+Require Import AdvancedRewrite.advancedRewrite.
 
 (*
 (* example 1 *)

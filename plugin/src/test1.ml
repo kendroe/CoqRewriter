@@ -522,15 +522,26 @@ print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_10 exp_test) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
-Rtrace.toggle_trace () ;;
-
-let exp_test = Exp.parseExp "ALL(f) ALL(g) ALL(x) ALL(q) ALL(r) implies(nplus(apply(f, x), apply(g, x)) == 0, nplus(nplus(nplus(apply(g, nplus(nplus(x, 2), 1)), q), apply(f, nplus(3, x))), r) == nplus(q, r))" ;;
-print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
-let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
-print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
-
 let exp_test = Exp.parseExp "nplus(ntimes(2,x),1)==nplus(ntimes(4,y),1)" ;;
 print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+Rtrace.toggle_trace () ;;
+
+let exp_test = Exp.parseExp "ALL(f) ALL(g) ALL(x) ALL(q) ALL(r) implies(nplus(apply(f, x), apply(g, x)) == 0, nplus(nplus(nplus(apply(g, nplus(nplus(xx, 2), 1)), q), apply(f, nplus(3, xx))), r) == nplus(q, r))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "ALL(f: True) ALL(g: True) ALL(x: True) implies(0 == nplus(apply(f, x), apply(g, x)), 0 == nplus(apply(f, nplus(x, 3)), apply(g, nplus(x, 3))))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "ALL(f) ALL(g) ALL(q) ALL(r) implies((ALL(x) nplus(apply(f, x), apply(g, x)) == 0), nplus(nplus(nplus(apply(g, nplus(nplus(xx, 2), 1)), q), apply(f, nplus(3, xx))), r) == nplus(q, r))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
 

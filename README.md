@@ -5,7 +5,7 @@ LICENSE for more information.
 
 There are two distinct ways to build.
 
-To build with Coq, make sure you have Coq 8.5pl2 and Ocaml-4.04.0.  This build
+To build with Coq, make sure you have Coq 8.7.0 and Ocaml-4.04.0.  This build
 was tested on a Mac running MacOS 10.12.6.
 
 To compile standalone:
@@ -24,9 +24,7 @@ To compile with Coq integration
 
     cd plugin
     make
+    make install
 
-To run some samples from the paper,
-
-    cd plugin
-    coqtop -q  -R "test-suite" ML_tutorial.Tests -R "src" ML_tutorial -I "src" < test-suite/example.v
+The examples directory contains code demonstrating use of the library.
 

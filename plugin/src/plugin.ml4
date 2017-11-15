@@ -29,6 +29,9 @@
 
 DECLARE PLUGIN "theplug"
 
+open Stdarg
+open Ltac_plugin
+
 module Stuff = struct
 (*
  * Plugin to print an s-expression representing the (possibly expanded) AST for a definition.
@@ -53,9 +56,9 @@ open Exp
 (*
  * Toggles between DeBruijn indexing and names
  *)
-let opt_debruijn = ref (true)
+let opt_debruijn = ref (false)
 let _ = Goptions.declare_bool_option {
-  Goptions.optsync = true;
+  (*Goptions.optsync = true;*)
   Goptions.optdepr = false;
   Goptions.optname = "DeBruijn indexing in PrintAST";
   Goptions.optkey = ["PrintAST"; "Indexing"];
@@ -70,7 +73,7 @@ let is_debruijn () = !opt_debruijn
  *)
 let opt_show_universes = ref (false)
 let _ = Goptions.declare_bool_option {
-  Goptions.optsync = true;
+  (*Goptions.optsync = true;*)
   Goptions.optdepr = false;
   Goptions.optname = "Show universe instances in PrintAST";
   Goptions.optkey = ["PrintAST"; "Show"; "Universes"];
@@ -85,8 +88,8 @@ let show_universes () = !opt_show_universes
 (*
  * Prints a string using the Coq pretty printer
  *)
-let print (s : string) =
-  Pp.pp (Pp.str s)
+let print (s : string) = print_string s
+  (*Pp.pp (Pp.str s)*)
 
 (*
  * Using a supplied pretty printing function, prints directly to a string
@@ -221,7 +224,9 @@ let build_evar_exp (k : existential_key) (c_asts : exp list) =
  * The name may be Anonymous, in which case we print the index
  *)
 let build_rel_named (env : Environ.env) (i : int) =
-  let (name, body, typ) = Environ.lookup_rel i env in
+  let r = Environ.lookup_rel i env in
+  let name = Context.Rel.Declaration.get_name r in
+  (*let (name, body, typ) = Environ.lookup_rel i env in*)
   build_name name
 
 (*
@@ -237,7 +242,9 @@ let build_rel (env : Environ.env) (i : int) =
     build_rel_named env i
 
 let build_rel_exp (env : Environ.env) (i : int) =
-    let (name, body, typ) = Environ.lookup_rel i env in
+    let r = Environ.lookup_rel i env in
+    let name = Context.Rel.Declaration.get_name r in
+    (*let (name, body, typ) = Environ.lookup_rel i env in*)
     let n = (match name with
                  Name id -> string_of_id id
                | Anonymous -> "(Anonymous)") in
@@ -518,7 +525,7 @@ let build_definition_exp (kn : kernel_name) (typ_ast : exp) (u : Instance.t) =
 let bindings_for_fix (names : name array) (typs : constr array) =
   Array.to_list
     (CArray.map2_i
-      (fun i name typ -> (name, None, Vars.lift i typ))
+      (fun i name typ -> (Context.Rel.Declaration.LocalAssum (name, (Vars.lift i typ))))
       names typs)
 
 (*
@@ -578,15 +585,17 @@ let build_inductive_name (ind_body : one_inductive_body) =
  * This function gets those bindings
  *)
 let bindings_for_inductive (env : Environ.env) (mutind_body : mutual_inductive_body) (ind_bodies : one_inductive_body list) =
-  List.map
+  let m = List.map
     (fun ind_body ->
-      let univ_context = mutind_body.mind_universes in
+      let univ_context = match mutind_body.mind_universes with
+                         | Monomorphic_ind x -> x in
       let univ_instance = UContext.instance univ_context in
       let name_id = ind_body.mind_typename in
       let mutind_spec = (mutind_body, ind_body) in
       let typ = Inductive.type_of_inductive env (mutind_spec, univ_instance) in
       (Names.Name name_id, None, typ))
-    ind_bodies
+    ind_bodies in
+  List.fold_left (fun a -> fun (n,_,t) -> Context.Rel.add (LocalAssum (n,t)) a) (Context.Rel.empty) m
 
 (*
  * Build an AST for a mutually inductive type
@@ -720,6 +729,8 @@ let build_proj (p_const_ast : string) (c_ast : string) =
 let build_proj_exp (p_const_ast : exp) (c_ast : exp) =
   APPL ((intern "Proj"),[p_const_ast; c_ast])
 
+let case_infos : (case_info list) ref = ref [] ;;
+
 (* --- Full AST --- *)
 
 let rec build_ast (env : Environ.env) (depth : int) (trm : types) =
@@ -741,16 +752,16 @@ let rec build_ast (env : Environ.env) (depth : int) (trm : types) =
       build_cast c' k t'
   | Prod (n, t, b) ->
       let t' = build_ast env depth t in
-      let b' = build_ast (Environ.push_rel (n, None, t) env) depth b in
+      let b' = build_ast (Environ.push_rel (LocalAssum (n, t)) env) depth b in
       build_product n t' b'
   | Lambda (n, t, b) ->
       let t' = build_ast env depth t in
-      let b' = build_ast (Environ.push_rel (n, None, t) env) depth b in
+      let b' = build_ast (Environ.push_rel (LocalAssum (n, t)) env) depth b in
       build_lambda n t' b'
   | LetIn (n, trm, typ, b) ->
       let trm' = build_ast env depth trm in
       let typ' = build_ast env depth typ in
-      let b' = build_ast (Environ.push_rel (n, Some b, typ) env) depth b in
+      let b' = build_ast (Environ.push_rel (LocalDef (n,trm,typ)) env) depth b in
       build_let_in n trm' typ' b'
   | App (f, xs) ->
       let f' = build_ast env depth f in
@@ -764,6 +775,7 @@ let rec build_ast (env : Environ.env) (depth : int) (trm : types) =
   | Ind ((i, i_index), u) ->
       build_minductive env depth ((i, i_index), u)
   | Case (ci, ct, m, bs) ->
+      let _ = (case_infos := (ci::(!case_infos))) in
       let typ = build_ast env depth ct in
       let match_typ = build_ast env depth m in
       let branches = List.map (build_ast env depth) (Array.to_list bs) in
@@ -879,24 +891,24 @@ let rec build_exp (env : Environ.env) (trm : types) =
   | Prod (n, t, b) ->
       print_string "prod\n" ;
       let t' = build_exp env t in
-      let b' = build_exp (Environ.push_rel (n, None, t) env) b in
+      let b' = build_exp (Environ.push_rel (LocalAssum (n, t)) env) b in
       build_product_exp n t' b'
   | Lambda (n, t, b) ->
       print_string "lambda\n" ;
       let t' = build_exp env t in
-      let b' = build_exp (Environ.push_rel (n, None, t) env) b in
+      let b' = build_exp (Environ.push_rel (LocalAssum (n, t)) env) b in
       build_lambda_exp n t' b'
   | LetIn (n, trm, typ, b) ->
       print_string "letIn\n" ;
       let trm' = build_exp env trm in
       let typ' = build_exp env typ in
-      let b' = build_exp (Environ.push_rel (n, Some b, typ) env) b in
+      let b' = build_exp (Environ.push_rel (LocalDef (n, b, typ)) env) b in
       LET (trm',Rtype.notype,typ',b')
   | App (f, xs) ->
-      print_string "Appxxx\n" ;
+      (*print_string "Appxxx\n" ;*)
       (match natFor trm with
        | Some n -> NUM n
-       | None -> (print "Here a\n";match build_app_constant_term env f xs with
+       | None -> (match build_app_constant_term env f xs with
                   | Some e -> e
                   | None ->
                     (print "Here b\n";match build_app_term env f xs with
@@ -932,6 +944,7 @@ let rec build_exp (env : Environ.env) (trm : types) =
        | None -> build_minductive_exp env ((i, i_index), u))
   | Case (ci, ct, m, bs) ->
       print_string "Case\n";
+      let _ = (case_infos := (ci::(!case_infos))) in
       let typ = build_exp env ct in
       let match_typ = build_exp env m in
       let branches = List.map (build_exp env) (Array.to_list bs) in
@@ -997,7 +1010,7 @@ and build_app_constant_term (env : Environ.env) f xs =
                  else if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=1 then
                      Some (APPL (intern_nil,[]))
                  else
-                     Some (APPL ((intern ((MutInd.to_string x)^(string_of_int c_index))),xs'))
+                     Some (APPL ((intern ("C_" ^ (MutInd.to_string x)^" "^(string_of_int c_index))),xs'))
       | _ -> None)
 and build_const_exp (env : Environ.env) ((c, u) : pconstant) =
   let kn = Constant.canonical c in
@@ -1098,6 +1111,30 @@ let test_term = Term.mkApp (Lazy.force reify_eq, [|(Lazy.force reify_nat);Lib_co
 let rec build_term x = Lib_coq.Nat.of_int 42 ;;
 
 exception NoTypeInfo;;
+
+let root_name sym s =
+    let st = Intern.decode s in
+    if String.length st > 3 then
+        let s1 = String.sub st 2 ((String.length st)-2) in
+        let sl = String.split_on_char ' ' st in
+            if (List.length sl)=2 then
+                List.hd sl
+            else
+                ""
+    else
+        ""
+
+let root_index sym s =
+    let st = Intern.decode s in
+    if String.length st > 3 then
+        let s1 = String.sub st 2 ((String.length st)-2) in
+        let sl = String.split_on_char ' ' st in
+            if (List.length sl)=2 then
+                int_of_string (List.hd (List.tl sl))
+            else
+                -1
+    else
+        -1
 
 let rec build_var v tenv = match tenv with
   | ((vv,t,n)::r) -> if v=vv then mkRel n else build_var v r
@@ -1252,9 +1289,11 @@ and buildMatch e (t : Rtype.etype) cases tenv =
     let constructors = constructorList t in
     let terms = List.map (fun (c,l) -> build_term (buildCase t c cases) tenv) constructors in
     let eterm = build_term e tenv in
-    let tterm = mkLambda (Name (Id.of_string "x"),(build_coq_type t),(get_case_type cases tenv)) in Lazy.force reify_true
-    (*let ci = make_case_info Global.env ind RegularStyle in
-    mkCase (ci, tterm, eterm, Array.of_list terms)*)
+    let ci = List.hd (!case_infos) in
+    let _ = (case_infos := if List.length (!case_infos) > 0 then List.tl (!case_infos) else (!case_infos)) in
+    let tterm = mkLambda (Name (Id.of_string "x"),(build_coq_type t),(get_case_type cases tenv)) in
+    (*let ci = make_case_info Global.env ind RegularStyle in*)
+    mkCase (ci, tterm, eterm, Array.of_list terms)
   ;;
 
 let rec build_predicate e tenv = match e with
@@ -1293,14 +1332,14 @@ and build_or l tenv = match l with
 (* Top-level arewrite functionality *)
 let arewrite : unit Proofview.tactic =
   Proofview.Goal.enter (fun gl ->
-  let concl = Proofview.Goal.raw_concl gl in
+  let concl = Proofview.Goal.concl gl in
   let (evm, env) = Lemmas.get_current_context() in
   (*let (body, _) = Constrintern.interp_constr env evm concl in*)
   let _ = print "******* BEGIN *******" in
-  let ast = apply_to_definition build_ast env 0 concl in
+  let ast = apply_to_definition build_ast env 0 (EConstr.Unsafe.to_constr concl) in
   let _ = print ast in
   let _ = print "******* END *******" in
-  let e = build_exp env concl in
+  let e = build_exp env (EConstr.Unsafe.to_constr concl) in
   let _ = print "Rewriting" in
   let _ = print (prExp e) in
   let e' = List.hd (Inner.rewrite2 Renv.emptyEnv (Renv.flatten Renv.emptyEnv e)) in
@@ -1319,7 +1358,7 @@ let arewrite : unit Proofview.tactic =
                   tactic, that changes the conclusion of the goal to
                   [concl'] if [concl] and [concl'] are convertible.
                   (see [tactics/tactis.mli] for other tactics.)  *)
-              Equality.replace concl (build_predicate e' []) ;
+              Equality.replace concl (EConstr.of_constr (build_predicate e' [])) ;
             ]))
 end
 
@@ -1428,13 +1467,13 @@ module Reif = struct
       Proofview.Goal.enter (fun gl ->
       (** We get the conclusion of the as a goal, which is a constr.
           (see [proofs/proofview.mli].)  *)
-      let concl = Proofview.Goal.raw_concl gl in
+      let concl = Proofview.Goal.concl gl in
       
       (** In our particular setting, the conclusion of the goal must
 	  be a relation applied to at least two arguments (the
 	  left-hand side and the right-hand side) of the
 	  "equation".  *)
-      match Lib_coq.decomp_term concl with
+      match Lib_coq.decomp_term (EConstr.Unsafe.to_constr concl) with
 	| Term.App(c, args) when Array.length args >= 2 ->
           let n = Array.length args in
        	  let left = args.(n-2) in
@@ -1464,7 +1503,7 @@ module Reif = struct
        		  tactic, that changes the conclusion of the goal to
        		  [concl'] if [concl] and [concl'] are convertible. 
 		  (see [tactics/tactis.mli] for other tactics.)  *)
-	      Tactics.change_concl concl' ;
+	      Tactics.change_concl (EConstr.of_constr concl') ;
 	    ]
 	| _ -> 
 	  (** If the goal was not looking like a relation applied to two
@@ -1495,9 +1534,9 @@ end
     can be invoked inside Coq. 
 *)
 
-TACTIC EXTEND _reflect_
-| ["reflect_arith"] -> [Reif.tac]
-END
+open Pcoq
+open Pcoq.Constr
+open Pltac
 
 TACTIC EXTEND AR2
 | ["arewrite"] -> [Stuff.arewrite]

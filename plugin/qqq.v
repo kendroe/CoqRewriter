@@ -95,3 +95,9 @@ Proof.
 Abort.
 
 printExp (cons 1 nil).
+
+Inductive Value : Type :=
+    | NatValue : nat -> Value
+    | ListValue : list Value -> Value
+    | NoValue : Value.
+

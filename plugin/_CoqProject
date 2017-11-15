@@ -1,6 +1,6 @@
 -I ./src
--R ./test-suite ML_tutorial.Tests
--R ./src ML_tutorial
+-R ./test-suite AdvancedRewrite.Tests
+-R ./src AdvancedRewrite
 src/builtin.ml
 src/builtin.mli
 src/cache.ml
@@ -50,6 +50,7 @@ src/rtrie.mli
 src/lib_coq.ml
 src/lib_coq.mli
 src/plugin.ml4
+src/thepack.mlpack
 src/theplug.mllib
-src/Theory.v
-test-suite/example.v
+src/advancedRewrite.v
+

@@ -18,7 +18,7 @@ val init_constant : string list -> string -> Term.constr
 
 (** [decomp_term c] returns a user-view of a term (as defined in the
     module kernel/term.mli). *)
-val decomp_term : Term.constr -> (Term.constr , Term.types) Term.kind_of_term
+val decomp_term : Term.constr -> (Term.constr , Term.types, Sorts.t, Univ.Instance.t) Term.kind_of_term
 
 (** [lapp c args] build the application of the lazy constr [c] to the
     array of arguments [args]. This is a handy shortcut. *)
