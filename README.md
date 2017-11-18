@@ -29,6 +29,7 @@ To compile with Coq integration
 The examples directory contains code demonstrating use of the library.
 
 Acknowledgements:
+
     The interface code in plugin.ml4 used the printAST code developed by Talia
     Ringer as its starting point (Available at https://github.com/uwplse/CoqAST)
     This code is licensed under the MIT license
