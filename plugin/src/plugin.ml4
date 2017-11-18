@@ -1112,7 +1112,7 @@ let rec build_term x = Lib_coq.Nat.of_int 42 ;;
 
 exception NoTypeInfo;;
 
-let root_name sym s =
+let root_name s =
     let st = Intern.decode s in
     if String.length st > 3 then
         let s1 = String.sub st 2 ((String.length st)-2) in
@@ -1124,7 +1124,7 @@ let root_name sym s =
     else
         ""
 
-let root_index sym s =
+let root_index s =
     let st = Intern.decode s in
     if String.length st > 3 then
         let s1 = String.sub st 2 ((String.length st)-2) in
@@ -1135,6 +1135,33 @@ let root_index sym s =
                 -1
     else
         -1
+
+let type_from_name s =
+    let root = root_name s in
+    let index = root_index s in
+    let d = lazy (Lib_coq.init_constant [] root) in
+    let (evm, env) = Lemmas.get_current_context() in
+    (*let (body, _) = Constrintern.interp_constr env evm def in*)
+    let ast = apply_to_definition build_ast env 0 (Lazy.force d) in
+    let _ = print ast in
+        Lazy.force reify_nat
+
+let functor_from_name s =
+    let _ = print_string "functor_from_name\n" in
+    let root = root_name s in
+    let index = root_index s in
+    let rec sl h r = match r with
+                     | [x] -> (h,x)
+                     | [] -> (h,"")
+                     | (f::r) -> sl (List.append h [f]) r
+                     in
+    let (path,name) = sl [] (String.split_on_char '.' root) in
+    let d = lazy (Lib_coq.init_constant path name) in
+    let (evm, env) = Lemmas.get_current_context() in
+    (*let (body, _) = Constrintern.interp_constr env evm def in*)
+    let ast = apply_to_definition build_ast env 0 (Lazy.force d) in
+    let _ = print ast in
+        Lazy.force reify_nat
 
 let rec build_var v tenv = match tenv with
   | ((vv,t,n)::r) -> if v=vv then mkRel n else build_var v r
@@ -1178,6 +1205,7 @@ let rec get_type x tenv = match x with
   | (APPL (80,_)) -> (Lazy.force reify_bool)
   | (APPL (86,_)) -> (Lazy.force reify_bool)
   | (APPL (90,_)) -> (Lazy.force reify_bool)
+  | (APPL (f,_)) -> type_from_name f
   | (VAR x) -> get_var_type tenv (decode x)
   | (CASE (e,t,c)) -> get_case_type c tenv
   | _ -> raise NoTypeInfo
@@ -1246,6 +1274,8 @@ let buildCase t constructor cases =
             [((APPL (intern_true,[])),(List.nth branch_asts 0));((APPL (intern_false,[])),(List.nth branch_asts 1))]
         else bf branch_asts 1*)
 
+exception BadReify of exp
+
 let rec build_term e tenv = match e with
   | (NUM x) -> Lib_coq.Nat.of_int x
   | (APPL (4,[])) -> (Lazy.force reify_true_val)
@@ -1263,11 +1293,13 @@ let rec build_term e tenv = match e with
   | (APPL (79,[l;r])) -> Term.mkApp(Lazy.force reify_div,[|build_term l tenv;build_term r tenv|])
   | (APPL (80,[l;r])) -> Term.mkApp(Lazy.force reify_lt_val,[|build_term l tenv;build_term r tenv|])
   | (APPL (90,[l;r])) -> Term.mkApp(Lazy.force reify_imply_val,[|build_term l tenv;build_term r tenv|])
+  | (APPL (f,l)) -> (functor_from_name f; raise (BadReify(APPL (f,l))))
   | (VAR x) -> build_var (decode x) tenv
   | (QUANT (73,[(v,t)],e,p)) -> 
     let tenv' = push_var (decode v) t tenv in
         Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_term e tenv')
   | (CASE (e,t,c)) -> buildMatch e t c tenv
+  | x -> print_string ("No match for " ^ (prExp x) ^ "\n");raise (BadReify(x))
   (*| _ -> (Lazy.force reify_false_val)*)
 and build_mul_term l tenv = match l with
   | [] -> Lib_coq.Nat.of_int 1

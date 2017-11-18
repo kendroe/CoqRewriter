@@ -1024,7 +1024,7 @@ let isConstructor x =
     ;;
 
 let rec getCType l x = match l with
-  | [] -> print_string "getCType" ; raise (UndefinedSymbol(x))
+  | [] -> print_string "undefined getCType\n" ; raise (UndefinedSymbol(x))
   | ((TypeDefinition (t,td))::r) ->
     (try (Rtype.getConstructoretype (t,td) x)
     with Rtype.UndefinedConstructor -> getCType r x)

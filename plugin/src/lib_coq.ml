@@ -1,5 +1,5 @@
 (* The contrib name is used to locate errors when loading constrs *)
-let contrib_name = "ml_tutorial"
+let contrib_name = "advancedRewrite"
 
 (** Getting constrs (primitive Coq terms) from existing Coq
    libraries. 

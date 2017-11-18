@@ -153,7 +153,8 @@ let rec returns_bool env e = match e with
   | (QUANT (14,_,_,_)) -> true
   | (QUANT (15,_,_,_)) -> true
   | (APPL (s,l)) ->
-    Rtype.getReturnetype (Renv.getType env s) = bool_type
+    print_string "Here1\n";
+    try (Rtype.getReturnetype (Renv.getType env s) = bool_type) with Renv.UndefinedSymbol _ -> false
   | _ -> false
   ;;
 
@@ -451,18 +452,19 @@ let isFiniteTerm env e = try (match e with
     (try let v = Renv.getVarType env x
      in
          Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName v))
-     with Renv.UndefinedSymbol _ -> false)
+     with Renv.UndefinedSymbol(s) -> false)
   | (APPL (f,[])) -> Renv.isFiniteConstructor env f
   | (APPL (f,l)) ->
-    let t = Rtype.getReturnetype (Renv.getType env f)
+    print_string "Here2\n";
+    try let t = Rtype.getReturnetype (Renv.getType env f)
     in
-        Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName t))
+        Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName t)) with Renv.UndefinedSymbol(s) -> false
   | _ -> false) with (Rtype.TypeError(_)) -> false
   ;;
 
 let rec getTermType env e = match e with
-  | (VAR x) -> (try Renv.getVarType env x with Renv.UndefinedSymbol _ -> Rtype.notype)
-  | (APPL (f,l)) -> Rtype.getReturnetype (Renv.getType env f)
+  | (VAR x) -> (try Renv.getVarType env x with Renv.UndefinedSymbol(s) -> Rtype.notype)
+  | (APPL (f,l)) -> print_string "Here3\n";try Rtype.getReturnetype (Renv.getType env f) with Renv.UndefinedSymbol(s) -> Rtype.notype
   | _ -> Rtype.notype ;;
 
 let create_equal_case env l r =
@@ -1532,7 +1534,7 @@ let rec builtin rewrite env e = match e with
                      | _ -> true in
                let (APPL (f,l),_) = List.hd cl in
                let rec full_list cl =
-                       let t = Renv.getTypeDefinition env (Rtype.getetypeName (Rtype.getReturnetype (Renv.getType env f))) in
+                       let t = Renv.getTypeDefinition env (Rtype.getetypeName (try (Rtype.getReturnetype (Renv.getType env f)) with Renv.UndefinedSymbol _ -> Rtype.notype)) in
                        let tc = Rtype.getConstructorList t in
                        let c = Mylist.remove_dups (List.map (fun (APPL (f,x),_) -> f) cl) in
                            (List.length tc)=(List.length c) in
