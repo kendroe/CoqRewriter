@@ -231,7 +231,7 @@ let rec orient_rule env e = match e with
   | x -> [x]
   ;;
 
-let add_rule rewrite env exp rule =
+let add_rule env exp rule =
     (Rtrace.trace "rewrite" (fun (x) -> "Adding " ^ (prExp exp) ^ "\n") ;
      Renv.addContextRules env
      (List.filter
@@ -245,27 +245,27 @@ let add_rule rewrite env exp rule =
 
 let create_rules rewrite env e n = match (e,n) with
   | ((APPL (9,l)),n) ->
-    add_rule rewrite env (List.nth l n) (APPL (intern_oriented_rule,[(APPL (intern_and,List.map Rcontext.markVars (Mylist.delete_nth l n)));
+    add_rule env (List.nth l n) (APPL (intern_oriented_rule,[(APPL (intern_and,List.map Rcontext.markVars (Mylist.delete_nth l n)));
                                       (APPL (intern_true,[]));
                                       (APPL (intern_true,[]))]))
   | ((APPL (10,l)),n) ->
-    add_rule rewrite env (List.nth l n) (APPL (intern_oriented_rule,[(APPL (intern_or,List.map Rcontext.markVars (Mylist.delete_nth l n)));
+    add_rule env (List.nth l n) (APPL (intern_oriented_rule,[(APPL (intern_or,List.map Rcontext.markVars (Mylist.delete_nth l n)));
                               (APPL (intern_false,[]));
                               (APPL (intern_true,[]))]))
   | ((APPL (90,[l;r])),1) ->
-    add_rule rewrite env r (APPL (intern_oriented_rule,[Rcontext.markVars l;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
+    add_rule env r (APPL (intern_oriented_rule,[Rcontext.markVars l;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
   | ((APPL (18,[c;e1;e2])),1) ->
-    add_rule rewrite env e1 (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
+    add_rule env e1 (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
   | ((APPL (18,[c;e1;e2])),2) ->
-    add_rule rewrite env e2 (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_false,[]));(APPL (intern_true,[]))]))
+    add_rule env e2 (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_false,[]));(APPL (intern_true,[]))]))
   | ((APPL (1,[l;r;c])),0) ->
-    add_rule rewrite env l (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
+    add_rule env l (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
   | ((APPL (1,[l;r;c])),1) ->
-    add_rule rewrite env l (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
+    add_rule env l (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
   | ((APPL (2,[l;r;c])),0) ->
-    add_rule rewrite env l (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
+    add_rule env l (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
   | ((APPL (2,[l;r;c])),1) ->
-    add_rule rewrite env r (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
+    add_rule env r (APPL (intern_oriented_rule,[Rcontext.markVars c;(APPL (intern_true,[]));(APPL (intern_true,[]))]))
   | (_,_) -> env
   ;;
 

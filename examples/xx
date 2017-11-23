@@ -1,0 +1,145 @@
+Welcome to Coq 8.7.0 (October 2017)
+
+Coq < [Loading ML file theplug.cmxs ... done]
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall x : nat, x = 3 -> x + 1 = 4
+
+test1 < 1 subgoal
+  
+  ============================
+  forall x : nat, x = 3 -> x + 1 = 4
+
+test1 < ******* BEGIN *******(Coq.Init.Datatypes.nat)(Coq.Init.Logic.eq)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Logic.eq)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Prod (Name x) (Name nat) (Prod (Anonymous) (App (Name eq) (Name nat) (Name x) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))))) (App (Name eq) (Name nat) (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (Name x) (App (Construct (Name nat) 2) (Construct (Name nat) 1))) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))))))))******* END *******prod
+Ind
+prod
+Here b
+Here 0
+Ind
+rel
+Ind s = Coq.Init.Logic.eq
+Here b
+Here 0
+Ind
+Here b
+Here 0
+rel
+Ind s = Coq.Init.Logic.eq
+Convert_exp_to_type Coq.Init.Datatypes.nat
+RewritingALL(x:Natural: True) implies(x == 3, nplus(x, 1) == 4)Here1
+listGetVType
+Here3
+ResultTrue
+2 subgoals
+  
+  ============================
+  True
+
+subgoal 2 is:
+ True = (forall x : nat, x = 3 -> x + 1 = 4)
+
+test1 < 
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall x : nat, x = 3 -> x + 1 = 4
+
+test2 < 1 subgoal
+  
+  ============================
+  forall x : nat, x = 3 -> x + 1 = 4
+
+test2 < 1 subgoal
+  
+  x : nat
+  ============================
+  x = 3 -> x + 1 = 4
+
+test2 < ******* BEGIN *******(Coq.Init.Logic.eq)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Logic.eq)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Prod (Anonymous) (App (Name eq) (Name nat) (Var x) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))))) (App (Name eq) (Name nat) (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (Var x) (App (Construct (Name nat) 2) (Construct (Name nat) 1))) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))))))******* END *******prod
+Here b
+Here 0
+Ind
+var
+Ind s = Coq.Init.Logic.eq
+Here b
+Here 0
+Ind
+Here b
+Here 0
+var
+Ind s = Coq.Init.Logic.eq
+Rewritingimplies(x == 3, nplus(x, 1) == 4)HYP: x
+Ind
+
+
+Coq.Init.Datatypes.nat
+
+Here1
+listGetVType
+Here3
+ResultTrue
+2 subgoals
+  
+  x : nat
+  ============================
+  True
+
+subgoal 2 is:
+ True = (x = 3 -> x + 1 = 4)
+
+test2 < 
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall x : nat, x = 3 -> x + 1 = 4
+
+test3 < 1 subgoal
+  
+  ============================
+  forall x : nat, x = 3 -> x + 1 = 4
+
+test3 < 1 subgoal
+  
+  x : nat
+  H : x = 3
+  ============================
+  x + 1 = 4
+
+test3 < ******* BEGIN *******(Coq.Init.Logic.eq)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(Coq.Init.Datatypes.nat)(App (Name eq) (Name nat) (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (Var x) (App (Construct (Name nat) 2) (Construct (Name nat) 1))) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))))))******* END *******Here b
+Here 0
+Ind
+Here b
+Here 0
+var
+Ind s = Coq.Init.Logic.eq
+Rewritingnplus(x, 1) == 4HYP: x
+Ind
+
+
+Coq.Init.Datatypes.nat
+
+HYP: H
+Here b
+Here 0
+Ind
+var
+Ind s = Coq.Init.Logic.eq
+
+
+x == 3
+
+ResultTrue
+2 subgoals
+  
+  x : nat
+  H : x = 3
+  ============================
+  True
+
+subgoal 2 is:
+ True = (x + 1 = 4)
+
+test3 < 
+Coq < Coq < 

@@ -34,6 +34,9 @@ Proof.
     arewrite.
 Abort.
 
+printAST (Const 4).
+printAST x.
+
 Theorem test7: forall x, x=Const 4.
 Proof.
     intros.

@@ -28,7 +28,7 @@
 (* require "exp.sml" ;  *)
 (* require "env.sml" ;  *)
 
-(*val orient_rule: env -> Exp -> Exp*)
+val add_rule: Renv.env -> Exp.exp -> Exp.exp -> Renv.env
 val create_rules: (Exp.exp -> Exp.exp list) -> Renv.env -> Exp.exp -> int -> Renv.env
 val relevant_rule: Renv.env -> Exp.exp -> Exp.exp -> bool
 val filter_rule_list: Renv.env -> Exp.exp -> (int list) -> (int list)

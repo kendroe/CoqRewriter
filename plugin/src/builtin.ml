@@ -449,17 +449,17 @@ let rec is_finite_clause_list env l = match l with
 
 let isFiniteTerm env e = try (match e with
   | (VAR x) ->
-    (try let v = Renv.getVarType env x
+    (print_string "Here1\n";try let v = Renv.getVarType env x
      in
          Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName v))
      with Renv.UndefinedSymbol(s) -> false)
   | (APPL (f,[])) -> Renv.isFiniteConstructor env f
   | (APPL (f,l)) ->
-    print_string "Here2\n";
+    (print_string "Here2\n";
     try let t = Rtype.getReturnetype (Renv.getType env f)
     in
-        Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName t)) with Renv.UndefinedSymbol(s) -> false
-  | _ -> false) with (Rtype.TypeError(_)) -> false
+        Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName t)) with Renv.UndefinedSymbol(s) -> false)
+  | _ -> (print_string "Here3\n";false)) with (Rtype.TypeError(_)) -> false
   ;;
 
 let rec getTermType env e = match e with

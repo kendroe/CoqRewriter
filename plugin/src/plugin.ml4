@@ -48,8 +48,47 @@ open Univ
 open Term
 open Names
 
+open Pp
+open CErrors
+open Util
+open Names
+open Nameops
+open Term
+open Termops
+open Declarations
+open Environ
+open Impargs
+open Libobject
+open Libnames
+open Globnames
+open Recordops
+open Misctypes
+open Printer
+open Printmod
+open Context.Rel.Declaration
+
+
 open Intern
 open Exp
+
+module StringConstr =
+       struct
+         type t = string
+         let compare s t = String.compare s t
+       end
+
+module StringMap = Map.Make(StringConstr)
+
+let constr_cache : Constr.t StringMap.t ref = ref (StringMap.empty) ;;
+
+exception NoEntry;;
+
+let get_constr s =
+    try (StringMap.find s (!constr_cache)) with
+    Not_found -> raise NoEntry ;;
+
+let add_constr s c =
+    constr_cache := StringMap.add s c (!constr_cache) ;;
 
 (* --- Options --- *)
 
@@ -571,7 +610,8 @@ let build_cofix_exp (funs : exp list) (index : int) =
  * Get the body of a mutually inductive type
  *)
 let lookup_mutind_body (i : mutual_inductive) (env : Environ.env) =
-  Environ.lookup_mind i env
+  (print_string (MutInd.debug_to_string i);
+   Environ.lookup_mind i env)
 
 (*
  * Given an inductive type, the AST just for its name without recursing further
@@ -935,7 +975,7 @@ let rec build_exp (env : Environ.env) (trm : types) =
           else if s="Coq.Init.Datatypes.list" && c_index=1 then
               (APPL (intern_nil,[]))
           else
-              (APPL ((intern ((s^(string_of_int c_index)))),[]))
+              (APPL ((intern (("C_"^s^" "^(string_of_int c_index)))),[]))
               (*build_constructor_exp i' c_index u*)
   | Ind ((i, i_index), u) ->
       print_string "Ind\n" ;
@@ -1005,6 +1045,7 @@ and build_app_constant_term (env : Environ.env) f xs =
       | Construct ((i, c_index),u) ->
              let (x,_) = i in
              let xs' = List.map (build_exp env) (Array.to_list xs) in
+             let _ = (add_constr ("C_" ^ (MutInd.to_string x) ^ " " ^ (string_of_int c_index)) f) in
                  if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=2 then
                      Some (APPL (intern_cons,[build_exp env (Array.get xs 1);build_exp env (Array.get xs 2)]))
                  else if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=1 then
@@ -1116,7 +1157,7 @@ let root_name s =
     let st = Intern.decode s in
     if String.length st > 3 then
         let s1 = String.sub st 2 ((String.length st)-2) in
-        let sl = String.split_on_char ' ' st in
+        let sl = String.split_on_char ' ' s1 in
             if (List.length sl)=2 then
                 List.hd sl
             else
@@ -1128,7 +1169,7 @@ let root_index s =
     let st = Intern.decode s in
     if String.length st > 3 then
         let s1 = String.sub st 2 ((String.length st)-2) in
-        let sl = String.split_on_char ' ' st in
+        let sl = String.split_on_char ' ' s1 in
             if (List.length sl)=2 then
                 int_of_string (List.hd (List.tl sl))
             else
@@ -1136,13 +1177,81 @@ let root_index s =
     else
         -1
 
+let print_basename sp = pr_global (ConstRef sp)
+
+let ungeneralized_type_of_constant_type t =
+  Typeops.type_of_constant_type (Global.env ()) t
+
+let print_full_pure_context () =
+  let rec prec = function
+  | ((_,kn),Lib.Leaf lobj)::rest ->
+      let pp = match object_tag lobj with
+      | "CONSTANT" ->
+          let con = Global.constant_of_delta_kn kn in
+          let cb = Global.lookup_constant con in
+          let typ = ungeneralized_type_of_constant_type cb.const_type in
+          hov 0 (
+            match cb.const_body with
+              | Undef _ ->
+                str "Parameter " ++
+                print_basename con ++ str " : " ++ cut () ++ pr_ltype typ
+              | OpaqueDef lc ->
+                str "Theorem " ++ print_basename con ++ cut () ++
+                str " : " ++ pr_ltype typ ++ str "." ++ fnl () ++
+                str "Proof " ++ pr_lconstr (Opaqueproof.force_proof (Global.opaque_tables ()) lc)
+              | Def c ->
+                str "Definition " ++ print_basename con ++ cut () ++
+                str "  : " ++ pr_ltype typ ++ cut () ++ str " := " ++
+                pr_lconstr (Mod_subst.force_constr c))
+          ++ str "." ++ fnl () ++ fnl ()
+      | "INDUCTIVE" ->
+          let mind = Global.mind_of_delta_kn kn in
+          let mib = Global.lookup_mind mind in
+          pr_mutual_inductive_body (Global.env()) mind mib ++
+            str "." ++ fnl () ++ fnl ()
+      | "MODULE" ->
+          (* TODO: make it reparsable *)
+          let (mp,_,l) = repr_kn kn in
+          print_module true (MPdot (mp,l)) ++ str "." ++ fnl () ++ fnl ()
+      | "MODULE TYPE" ->
+          (* TODO: make it reparsable *)
+          (* TODO: make it reparsable *)
+          let (mp,_,l) = repr_kn kn in
+          print_modtype (MPdot (mp,l)) ++ str "." ++ fnl () ++ fnl ()
+      | _ -> mt () in
+      prec rest ++ pp
+  | _::rest -> prec rest
+  | _ -> mt () in
+  prec (Lib.contents ())
+
 let type_from_name s =
+    let _ = print_string "Here 1\n" in
+    (*let _ = print_string (print_full_pure_context ()) in*)
+    let Construct (m,u) = kind_of_term (get_constr (decode s)) in
+    (*let xx = Global.lookup_mind (Construct (m,u)) in*)
     let root = root_name s in
     let index = root_index s in
-    let d = lazy (Lib_coq.init_constant [] root) in
+    let rec sl h r = match r with
+                     | [x] -> (h,x)
+                     | [] -> (h,"")
+                     | (f::r) -> sl (List.append h [f]) r
+                     in
+    let _ = print_string ("root " ^ root ^ "\n") in
+    let (path,name) = sl [] (String.split_on_char '.' root) in
+    let _ = print_string "Here 2\n" in
+    let dirpath = DirPath.make (List.map Id.of_string path) in
+    let modpath = ModPath.MPfile dirpath in
     let (evm, env) = Lemmas.get_current_context() in
+    let d = Environ.lookup_mind (MutInd.make2 modpath (Names.Label.make name)) env in
+    let _ = print_string "Here 3\n" in
     (*let (body, _) = Constrintern.interp_constr env evm def in*)
-    let ast = apply_to_definition build_ast env 0 (Lazy.force d) in
+    let ind_bodies = d.mind_packets in
+    let ind_bodies_list = Array.to_list ind_bodies in
+    let env_ind = Environ.push_rel_context (bindings_for_inductive env d ind_bodies_list) env in
+    let cs = List.map (build_oinductive env_ind 0) ind_bodies_list in
+    let ind_or_coind = d.mind_finite in
+    let ast = build_inductive ind_or_coind cs u in
+    let _ = print_string "Here 4\n" in
     let _ = print ast in
         Lazy.force reify_nat
 
@@ -1156,12 +1265,12 @@ let functor_from_name s =
                      | (f::r) -> sl (List.append h [f]) r
                      in
     let (path,name) = sl [] (String.split_on_char '.' root) in
-    let d = lazy (Lib_coq.init_constant path name) in
+    let d = (get_constr (decode s)) in
     let (evm, env) = Lemmas.get_current_context() in
     (*let (body, _) = Constrintern.interp_constr env evm def in*)
-    let ast = apply_to_definition build_ast env 0 (Lazy.force d) in
+    let ast = apply_to_definition build_ast env 0 d in
     let _ = print ast in
-        Lazy.force reify_nat
+        d
 
 let rec build_var v tenv = match tenv with
   | ((vv,t,n)::r) -> if v=vv then mkRel n else build_var v r
@@ -1293,7 +1402,8 @@ let rec build_term e tenv = match e with
   | (APPL (79,[l;r])) -> Term.mkApp(Lazy.force reify_div,[|build_term l tenv;build_term r tenv|])
   | (APPL (80,[l;r])) -> Term.mkApp(Lazy.force reify_lt_val,[|build_term l tenv;build_term r tenv|])
   | (APPL (90,[l;r])) -> Term.mkApp(Lazy.force reify_imply_val,[|build_term l tenv;build_term r tenv|])
-  | (APPL (f,l)) -> (functor_from_name f; raise (BadReify(APPL (f,l))))
+  | (APPL (f,l)) -> let x = List.map (fun x -> build_term x tenv) l in
+                        Term.mkApp(functor_from_name f,Array.of_list x)
   | (VAR x) -> build_var (decode x) tenv
   | (QUANT (73,[(v,t)],e,p)) -> 
     let tenv' = push_var (decode v) t tenv in
@@ -1374,7 +1484,13 @@ let arewrite : unit Proofview.tactic =
   let e = build_exp env (EConstr.Unsafe.to_constr concl) in
   let _ = print "Rewriting" in
   let _ = print (prExp e) in
-  let e' = List.hd (Inner.rewrite2 Renv.emptyEnv (Renv.flatten Renv.emptyEnv e)) in
+  let renv = Context.Named.fold_outside (fun d re -> (print_string ("HYP: " ^ (Names.Id.to_string (Context.Named.Declaration.get_id d)) ^ "\n"));
+             let t = Context.Named.Declaration.get_type d in
+             let ee = build_exp env (EConstr.Unsafe.to_constr t) in
+             let re2 = Crewrite.add_rule re e (APPL (intern_oriented_rule,[ee;(APPL (intern_true,[]));(APPL (intern_true,[]))])) in
+             let _ = print_string ("\n\n" ^ (prExp ee) ^ "\n\n") in
+                 re2) (Proofview.Goal.hyps gl) ~init:(Renv.emptyEnv) in
+  let e' = List.hd (Inner.rewrite2 renv (Renv.flatten Renv.emptyEnv e)) in
   let _ = print "Result" in
   let _ = print (prExp e') in
   (*let ast = apply_to_definition build_ast env 0 (build_predicate e' []) in
