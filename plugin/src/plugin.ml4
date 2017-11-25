@@ -1472,7 +1472,7 @@ and build_or l tenv = match l with
   ;;
 
 (* Top-level arewrite functionality *)
-let arewrite : unit Proofview.tactic =
+let arewrite cl : unit Proofview.tactic =
   Proofview.Goal.enter (fun gl ->
   let concl = Proofview.Goal.concl gl in
   let (evm, env) = Lemmas.get_current_context() in
@@ -1484,30 +1484,49 @@ let arewrite : unit Proofview.tactic =
   let e = build_exp env (EConstr.Unsafe.to_constr concl) in
   let _ = print "Rewriting" in
   let _ = print (prExp e) in
-  let renv = Context.Named.fold_outside (fun d re -> (print_string ("HYP: " ^ (Names.Id.to_string (Context.Named.Declaration.get_id d)) ^ "\n"));
+  let names = Context.Named.fold_outside (fun d l -> (Context.Named.Declaration.get_id d)::l) (Proofview.Goal.hyps gl) ~init:[] in
+  let operands = Locusops.concrete_clause_of (fun () -> names) cl in
+  let _ = List.map (fun x -> match x with
+                | Locus.OnConcl _ -> print_string "Simplifying CONCLUSION\n"
+                | Locus.OnHyp (id,_,_) -> print_string ("Simplifying hyp "^(Names.Id.to_string id)^"\n")
+              ) operands in
+  let (renv,tl) = Context.Named.fold_outside (fun d (re,l) -> (print_string ("HYP: " ^ (Names.Id.to_string (Context.Named.Declaration.get_id d)) ^ "\n"));
              let t = Context.Named.Declaration.get_type d in
+             let i = Context.Named.Declaration.get_id d in
+             let (oc,hf) = Locusops.occurrences_of_hyp i cl in
+             let ot = match oc with
+                      | Locus.NoOccurrences -> "No occurences"
+                      | Locus.AllOccurrences -> "All occurences"
+                      | Locus.AllOccurrencesBut _ -> "All occurences but"
+                      | Locus.OnlyOccurrences _ -> "Only occurences" in
+             let _ = print_string ("hn " ^ (Names.Id.to_string i) ^ " " ^ ot ^"\n") in
              let ee = build_exp env (EConstr.Unsafe.to_constr t) in
              let re2 = Crewrite.add_rule re e (APPL (intern_oriented_rule,[ee;(APPL (intern_true,[]));(APPL (intern_true,[]))])) in
+             let l2 = if oc=Locus.NoOccurrences then l else
+                 let ee2 = List.hd (Inner.rewrite2 Renv.emptyEnv (Renv.flatten Renv.emptyEnv ee)) in
+                 (Equality.replace_in_clause_maybe_by t (EConstr.of_constr (build_predicate ee2 [])) cl None)::l in
              let _ = print_string ("\n\n" ^ (prExp ee) ^ "\n\n") in
-                 re2) (Proofview.Goal.hyps gl) ~init:(Renv.emptyEnv) in
-  let e' = List.hd (Inner.rewrite2 renv (Renv.flatten Renv.emptyEnv e)) in
-  let _ = print "Result" in
-  let _ = print (prExp e') in
-  (*let ast = apply_to_definition build_ast env 0 (build_predicate e' []) in
-  let _ = print ast in
-  let ast' = apply_to_definition build_ast env 0 (build_predicate e []) in
-  let _ = print ast' in*)
+                 (re2,l2)) (Proofview.Goal.hyps gl) ~init:(Renv.emptyEnv,[]) in
+             let tl2 = if Locusops.occurrences_of_goal cl=Locus.NoOccurrences then tl else 
+               let e' = List.hd (Inner.rewrite2 renv (Renv.flatten renv e)) in
+               let _ = print "Result" in
+               let _ = print (prExp e') in
+               (*let ast = apply_to_definition build_ast env 0 (build_predicate e' []) in
+               let _ = print ast in
+               let ast' = apply_to_definition build_ast env 0 (build_predicate e []) in
+               let _ = print ast' in*)
+                   (Equality.replace_in_clause_maybe_by concl (EConstr.of_constr (build_predicate e' [])) cl None)::tl in
   (
    (*Tacticals.New.tclFAIL 1
     (Pp.str "The tactic is not imlplemented.")*)
-          Tacticals.New.tclTHENLIST
-            [
+          Tacticals.New.tclTHENLIST tl2
+            (*[
               (** Our list of tactics consists in the following single
                   tactic, that changes the conclusion of the goal to
                   [concl'] if [concl] and [concl'] are convertible.
                   (see [tactics/tactis.mli] for other tactics.)  *)
-              Equality.replace concl (EConstr.of_constr (build_predicate e' [])) ;
-            ]))
+              Equality.replace_in_clause_maybe_by concl (EConstr.of_constr (build_predicate e' [])) cl None;
+            ]*)))
 end
 
 (** We reify the structure of coq expressions as an ocaml
@@ -1687,7 +1706,7 @@ open Pcoq.Constr
 open Pltac
 
 TACTIC EXTEND AR2
-| ["arewrite"] -> [Stuff.arewrite]
+| ["arewrite" clause(cl)] -> [Stuff.arewrite cl]
 END
 
 (* PrintAST command

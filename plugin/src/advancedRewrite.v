@@ -100,3 +100,4 @@ Definition PREC_LESS {t1} {t2} (s1: t1) (s2 : t2) := True.
 
 Definition PREC_EQUAL {t1} {t2} (s1: t1) (s2 : t2) := True.
 
+Definition REWRITE_RULE {t} (l : t) (r : t) (c: Prop) := (c -> (l=r)).

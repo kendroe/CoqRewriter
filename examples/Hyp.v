@@ -17,3 +17,9 @@ Proof.
     arewrite.
 Abort.
 
+Theorem test4: forall x, x+1=4 -> x=3.
+Proof.
+    intros.
+    arewrite in H.
+Abort.
+
