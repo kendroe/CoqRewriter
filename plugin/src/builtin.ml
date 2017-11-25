@@ -153,7 +153,7 @@ let rec returns_bool env e = match e with
   | (QUANT (14,_,_,_)) -> true
   | (QUANT (15,_,_,_)) -> true
   | (APPL (s,l)) ->
-    print_string "Here1\n";
+    (*print_string "Here1\n";*)
     try (Rtype.getReturnetype (Renv.getType env s) = bool_type) with Renv.UndefinedSymbol _ -> false
   | _ -> false
   ;;
@@ -449,7 +449,7 @@ let rec is_finite_clause_list env l = match l with
 
 let isFiniteTerm env e = try (match e with
   | (VAR x) ->
-    (print_string "Here1\n";try let v = Renv.getVarType env x
+    ((*print_string "Here1\n";*)try let v = Renv.getVarType env x
      in
          Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName v))
      with Renv.UndefinedSymbol(s) -> false)
@@ -459,12 +459,12 @@ let isFiniteTerm env e = try (match e with
     try let t = Rtype.getReturnetype (Renv.getType env f)
     in
         Rtype.isFiniteetype (Renv.getTypeDefinition env (Rtype.getetypeName t)) with Renv.UndefinedSymbol(s) -> false)
-  | _ -> (print_string "Here3\n";false)) with (Rtype.TypeError(_)) -> false
+  | _ -> ((*print_string "Here3\n";*)false)) with (Rtype.TypeError(_)) -> false
   ;;
 
 let rec getTermType env e = match e with
   | (VAR x) -> (try Renv.getVarType env x with Renv.UndefinedSymbol(s) -> Rtype.notype)
-  | (APPL (f,l)) -> print_string "Here3\n";try Rtype.getReturnetype (Renv.getType env f) with Renv.UndefinedSymbol(s) -> Rtype.notype
+  | (APPL (f,l)) -> (*print_string "Here3\n";*)try Rtype.getReturnetype (Renv.getType env f) with Renv.UndefinedSymbol(s) -> Rtype.notype
   | _ -> Rtype.notype ;;
 
 let create_equal_case env l r =
