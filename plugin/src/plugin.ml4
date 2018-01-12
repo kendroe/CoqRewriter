@@ -583,7 +583,7 @@ let build_fix (funs : string list) (index : int) =
   build "Fix" [build "Functions" funs; string_of_int index]
 
 let build_fix_exp (funs : exp list) (index : int) =
-  APPL ((intern "Fix"),[APPL ((intern "Functions"),funs); NUM index])
+  APPL ((intern_fix),[APPL ((intern "Functions"),funs); NUM index])
 
 (*
  * Build the AST for a cofixpoint
@@ -728,6 +728,10 @@ let getConstructors (t : Rtype.etype) (branch_asts : exp list) =
                      | (QUANT (intern_lambda,([(v,t)]),ex,te)) ->
                        bc ex n (l@[v])
                      | e -> ((APPL (intern (name ^ (string_of_int n)),List.map (fun x -> VAR x) l)),e) in
+    let rec bcons e l = match e with
+                        | (QUANT (intern_lambda,([(v,t)]),ex,te)) ->
+                          bcons ex (l@[v])
+                        | e -> ((APPL (intern_cons,List.map (fun x -> VAR x) l)),e) in
     let rec ge e = match e with
                    | (QUANT (intern_lambda,([(v,t)]),ex,te)) ->
                      ge ex
@@ -735,11 +739,15 @@ let getConstructors (t : Rtype.etype) (branch_asts : exp list) =
     let rec bf bl n = match bl with
                     | [] -> []
                     | (f::r) -> (bc f n [])::(bf r (n+1)) in
+        (*let _ = print_string ("CASE TYPE " ^ name ^ "\n") in*)
         if name="Natural" then
             let (QUANT (intern_lambda,([(v,t)]),ex,te)) = List.nth branch_asts 1 in
                 [((NUM 0),(List.nth branch_asts 0));((APPL (intern "S",[VAR (intern "n")])),ex)]
         else if name="Bool" then
             [((APPL (intern_true,[])),(List.nth branch_asts 0));((APPL (intern_false,[])),(List.nth branch_asts 1))]
+        else if name="C_Coq.Init.Datatypes.list" then
+             let (cv,cc) = bcons (List.nth branch_asts 1) [] in
+            [((APPL (intern_nil,[])),(List.nth branch_asts 0));(cv,cc)]
         else bf branch_asts 1
 
 let build_case_exp (info : case_info) (case_typ_ast : exp) (match_ast : exp) (branch_asts : exp list) =
@@ -924,7 +932,7 @@ let rec build_exp (env : Environ.env) (trm : types) =
       (*print_string "sort\n" ;*)
       build_sort_exp s
   | Cast (c, k, t) ->
-      (*print_string "cast\n" ;*)
+      (*print_string "cast\n";*)
       let c' = build_exp env c in
       let t' = build_exp env t in
       build_cast_exp c' k t'
@@ -947,12 +955,12 @@ let rec build_exp (env : Environ.env) (trm : types) =
   | App (f, xs) ->
       (*print_string "Appxxx\n" ;*)
       (match natFor trm with
-       | Some n -> NUM n
+       | Some n -> (*(print_string "Here1\n");*)NUM n
        | None -> (match build_app_constant_term env f xs with
-                  | Some e -> e
+                  | Some e -> (*(print_string "Here2\n");*)e
                   | None ->
-                    ((*print "Here b\n";*)match build_app_term env f xs with
-                     | Some e -> e
+                    ((*print "Here 3\n";*)match build_app_term env f xs with
+                     | Some e -> (*(print "Here 3a\n");*)e
                      | None ->
                         let f' = build_exp env f in
                         let xs' = List.map (build_exp env) (Array.to_list xs) in
@@ -962,10 +970,11 @@ let rec build_exp (env : Environ.env) (trm : types) =
       build_const_exp env (c, u)
   | Construct ((i, c_index), u) ->
       (*print_string "Construct\n" ;*)
-      let i' = build_exp env (Term.mkInd i) in
+      (*let i' = build_exp env (Term.mkInd i) in*)
+      (*let _ = print_string ("Constr result " ^ (prExp i') ^ "\n") in*)
       let (x,_) = i in
       let s = (MutInd.to_string x) in
-      (*let _ = print ("s = "^s^" i = "^(string_of_int c_index)^"\n") in*)
+      let _ = print ("s = "^s^" i = "^(string_of_int c_index)^"\n") in
           if s="Coq.Init.Datatypes.nat" && c_index=1 then
               NUM 0
           else if s="Coq.Init.Datatypes.bool" && c_index=1 then
@@ -975,7 +984,7 @@ let rec build_exp (env : Environ.env) (trm : types) =
           else if s="Coq.Init.Datatypes.list" && c_index=1 then
               (APPL (intern_nil,[]))
           else
-              (APPL ((intern (("C_"^s^" "^(string_of_int c_index)))),[]))
+              (APPL ((intern (("C_"^s^(string_of_int c_index)))),[]))
               (*build_constructor_exp i' c_index u*)
   | Ind ((i, i_index), u) ->
       (*print_string "Ind\n" ;*)
@@ -1004,7 +1013,7 @@ and build_inductive_term (env : Environ.env) i i_index =
     Some (match ((MutInd.to_string i),i_index) with
           | ("Coq.Init.Logic.True",_) -> (APPL (intern_true,[]))
           | ("Coq.Init.Logic.False",_) -> (APPL (intern_false,[]))
-          | (x,_) -> (APPL (intern x,[])))
+          | (x,_) -> (APPL (intern ("C_" ^ x),[])))
 and build_app_term (env : Environ.env) f xs =
       ((*print "Here 0\n";*)
        match kind_of_term f with
@@ -1020,7 +1029,7 @@ and build_app_term (env : Environ.env) f xs =
                                     (QUANT (intern_exists,[(v1,t2)],b,(APPL (intern_true,[]))))
                               | _ -> (APPL ((intern "Coq.Init.Logic.ex"),xs')))
                        | "Coq.Init.Logic.eq" -> (APPL (intern_equal,[(List.nth xs' 1);(List.nth xs' 2)]))
-                       | x -> (APPL ((intern x ),xs')))
+                       | x -> (APPL ((intern ("C_" ^ x),xs'))))
       | Const (c, u) ->
             let kn = Constant.canonical c in
             let kn' = build_kername kn in
@@ -1031,7 +1040,7 @@ and build_app_term (env : Environ.env) f xs =
                        | "Coq.Init.Nat.mul" -> (APPL (intern_nat_times,xs'))
                        | "Coq.Init.Peano.lt" -> (APPL (intern_nat_less,xs'))
                        | "Coq.Init.Logic.eq" -> (APPL (intern_equal,xs'))
-                       | x -> (APPL ((intern x),xs')))
+                       | x -> (APPL (intern ("f_" ^ x),xs')))
       | Construct ((i, c_index),u) ->
              let (x,_) = i in
              (*let _ = print ("s = "^(MutInd.to_string x)^" i = "^(string_of_int c_index)^"\n") in*)
@@ -1045,13 +1054,13 @@ and build_app_constant_term (env : Environ.env) f xs =
       | Construct ((i, c_index),u) ->
              let (x,_) = i in
              let xs' = List.map (build_exp env) (Array.to_list xs) in
-             let _ = (add_constr ("C_" ^ (MutInd.to_string x) ^ " " ^ (string_of_int c_index)) f) in
+             let _ = (add_constr ("C_" ^ (MutInd.to_string x) ^ (string_of_int c_index)) f) in
                  if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=2 then
                      Some (APPL (intern_cons,[build_exp env (Array.get xs 1);build_exp env (Array.get xs 2)]))
                  else if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=1 then
                      Some (APPL (intern_nil,[]))
                  else
-                     Some (APPL ((intern ("C_" ^ (MutInd.to_string x)^" "^(string_of_int c_index))),xs'))
+                     Some (APPL ((intern ("C_" ^ (MutInd.to_string x)^(string_of_int c_index))),xs'))
       | _ -> None)
 and build_const_exp (env : Environ.env) ((c, u) : pconstant) =
   let kn = Constant.canonical c in
@@ -1182,6 +1191,197 @@ let print_basename sp = pr_global (ConstRef sp)
 let ungeneralized_type_of_constant_type t =
   Typeops.type_of_constant_type (Global.env ()) t
 
+let ac = intern "AdvancedRewrite.advancedRewrite.AC"
+
+let process_property env p =
+    match p with
+    | (APPL (f,[_;t])) -> if f=ac then
+                              match t with
+                              | APPL (_,((APPL (f,_))::_)) ->
+                                  let d = decode f in
+                                      if (String.length d)>4 then
+                                          let r = intern (String.sub d 4 ((String.length d)-4)) in
+                                          let _ = print_string ("Adding ac " ^ (decode r) ^ "\n") in
+                                              Renv.addAttrib env intern_ac [Renv.S(r)]
+                                          else env
+                              | _ -> env
+                          else env
+    | _ -> env ;;
+
+let build_terms f =
+    let sf = String.split_on_char '.' (decode f) in
+        if List.length sf==2 && (List.hd sf)="f_Top" then
+            [(intern (List.hd (List.tl sf)))]
+        else []
+
+let rec get_syms e =
+    match e with
+    | (APPL (f,l)) -> (List.fold_left List.append (build_terms f) (List.map get_syms l))
+    | (CASE (v,t,c)) -> (List.fold_left List.append (get_syms v) (List.map (fun (p,e) -> (List.append (get_syms p) (get_syms e))) c))
+    | (QUANT (n,v,e,p)) -> List.append (get_syms e) (get_syms p)
+    | _ -> [] ;;
+
+
+let name_away_from_vars v (p,e) =
+    let fv = Rcontext.getFreeVars p in
+    let rec build_sub v fv = match fv with
+                             | [] -> Rsubst.empty
+                             | (vv::r) ->
+                               let nv = (Rcontext.name_away_from_list v vv) in
+                                   Rsubst.addPair
+                                   (build_sub (nv::v) r) vv (VAR nv) in
+    let sub = build_sub v fv in
+        (Rsubst.subst sub p,Rsubst.subst sub e)
+
+let rec sub_vars_list vars v pat =
+    match vars with
+    | [] -> []
+    | (f::r) -> let u = Rsubst.addPair Rsubst.empty v pat in
+                    (Rsubst.subst u f)::(sub_vars_list r v pat)
+
+let rec remove_case (vars : Exp.exp list) (cond : Exp.exp) (core : Exp.exp) locals =
+    match core with
+    | (CASE ((VAR v),ttt,c)) ->
+        if List.mem v locals then
+            let rec sub_remove_case h rest =
+                match rest with
+                | [] -> None
+                | ((c,t)::r) -> match (remove_case vars cond t (List.append (Rcontext.getFreeVars c) locals)) with
+                            | Some l -> Some (List.map (fun x ->
+                                                match x with
+                                                | (vv,cc,e) ->
+                                                  (vv,cc,(CASE ((VAR v),ttt,(List.append h ((c,e)::r)))))
+                                                | z -> z) l)
+                            | None -> sub_remove_case (List.append h [(c,t)]) r in
+            sub_remove_case [] c
+        else
+            let rec fv_list vl = match vl with
+                                 | [] -> []
+                                 | (a::b) -> List.append
+                                             (Rcontext.getFreeVars a)
+                                             (fv_list b) in
+            let fv = List.append locals (fv_list vars) in
+            let cl = List.map (fun (p,e) ->
+                                let (p',e') = name_away_from_vars fv (p,e) in
+                                let vars' = sub_vars_list vars v p' in
+                                    (vars',cond,e')
+                              ) c in Some cl
+    | (CASE (v,ttt,c)) ->
+       (match remove_case vars cond v locals with
+        | Some l -> Some (List.map (fun (v,cc,e) -> (v,cc,(CASE (e,ttt,c)))) l)
+        | None ->
+            let rec sub_remove_case h rest =
+                match rest with
+                | [] -> None
+                | ((c,t)::r) -> match (remove_case vars cond t (List.append (Rcontext.getFreeVars c) locals)) with
+                            | Some l -> Some (List.map (fun x ->
+                                                match x with
+                                                | (vv,cc,e) ->
+                                                  (vv,cc,(CASE (v,ttt,(List.append h ((c,e)::r)))))
+                                                | z -> z) l)
+                            | None -> sub_remove_case (List.append h [(c,t)]) r in
+            sub_remove_case [] c)
+    | (APPL (18,[c;l;r])) ->
+      Some [(vars,(APPL (intern_and,[c;cond])),l);
+            (vars,(APPL (intern_and,[(APPL (intern_not,[c]));cond])),r)]
+    | (APPL (ff,l)) ->
+      let rec sub_remove_case h rest =
+              match rest with
+              | [] -> None
+              | (f::r) -> match (remove_case vars cond f locals) with
+                          | Some l -> Some (List.map (fun x ->
+                                                match x with
+                                                | (v,c,e) ->
+                                                  (v,c,(APPL (ff,(List.append h (e::r)))))
+                                                | z -> z) l)
+                          | None -> sub_remove_case (List.append h [f]) r in
+          sub_remove_case [] l
+    | _ -> None ;;
+
+let rec build_rules dname vars cond core =
+    let l = remove_case vars cond core [] in
+        match l with
+        | None -> [(APPL (intern_oriented_rule,[APPL (dname,vars);core;cond]))]
+        | Some l -> List.fold_left List.append []
+                        (List.map (fun (vars,cond,core) ->
+                                        build_rules dname vars cond core) l)
+
+let process_var_core env dname vars core =
+    let syms = get_syms core in
+    let d = intern ("f_Top." ^ dname) in
+    let _ = print_string ("The syms of " ^ dname ^ " " ^ (prExp core) ^ "\n") in
+    let _ = List.map (fun x -> print_string ("Sym: " ^ (decode x) ^ "\n")) syms in
+    let env1 = List.fold_left (fun e -> fun s ->
+                   let c = intern ("f_Top." ^ (decode s)) in
+                       Renv.addPrecedence e (d,c)) env syms in
+    let rules = build_rules (intern dname) (List.map (fun x -> (VAR x)) vars) (APPL (intern_true,[])) core in
+    let _ = List.map (fun x -> print_string ("Rule: " ^ (prExp x) ^ "\n")) rules in
+        env1
+
+let rec fun_break l x = match x with
+  | (QUANT (73,[(v,t)],e,c)) -> fun_break (List.append l [v]) e
+  | x -> (l,x) ;;
+
+
+let rec core_fix core dname full_name =
+    match core with
+    | (APPL (75,(VAR v::r))) ->
+          let r1 = List.map (fun x -> core_fix x dname full_name) r in
+              if v=dname then
+                  (APPL (full_name,r1))
+              else
+                  (APPL (75,(VAR v::r1)))
+    | (APPL (f,l)) -> (APPL (f,(List.map (fun x -> core_fix x dname full_name) l)))
+    | (CASE (v,t,c)) -> (CASE ((core_fix v dname full_name),t,
+                               (List.map (fun (p,e) -> (p,core_fix e dname full_name)) c)))
+    | x -> x
+    ;;
+
+let process_def env d =
+    (print_string ("process_def " ^ (prExp d) ^ "\n"));match d with
+    | (APPL (91,[(APPL (fns,[APPL (fname,[n;t;dd])]));nn])) ->
+      (print_string ("**DEF** " ^ (decode fname) ^ " " ^ (prExp dd) ^ "\n");
+      let ff = String.split_on_char ' ' (decode fname) in
+          if List.length ff = 2 then
+              let q = List.hd (List.tl ff) in
+              let name = String.sub q 0 ((String.length q)-1) in
+              let (vars,core) = fun_break [] dd in
+              let core = core_fix core (intern name) (intern ("f_Top."^name)) in
+                 (print_string ("Name: " ^ name ^ "\nCore: " ^ (prExp core) ^ "\n"));process_var_core env ("f_Top."^name) vars core
+          else env)
+    | _ -> env ;;
+
+let build_rewrite_env env =
+  let rec prec = function
+  | (env,((_,kn),Lib.Leaf lobj)::rest) ->
+      let env = match object_tag lobj with
+      | "CONSTANT" ->
+          (*let _ = print_string "HERE build_rewrite_env\n" in*)
+          let con = Global.constant_of_delta_kn kn in
+          let cb = Global.lookup_constant con in
+          let typ = ungeneralized_type_of_constant_type cb.const_type in
+          (*hov 0*) (
+            match cb.const_body with
+              | Undef _ -> (print_string ("Parsed " ^ prExp (build_exp (Global.env ()) typ) ^ "\n");process_property env (build_exp (Global.env ()) typ))
+                (*str "Parameter " ++
+                print_basename con ++ str " : " ++ cut () ++ pr_ltype typ*)
+              | OpaqueDef lc ->
+                (*str "Theorem " ++ print_basename con ++ cut () ++
+                str " : " ++ pr_ltype typ ++ str "." ++ fnl () ++
+                str "Proof " ++ pr_lconstr (Opaqueproof.force_proof (Global.opaque_tables ()) lc)*) env
+              | Def c ->
+                (*str "Definition " ++ print_basename con ++ cut () ++
+                str "  : " ++ pr_ltype typ ++ cut () ++ str " := " ++
+                pr_lconstr (Mod_subst.force_constr c)*) (print_string ("DEF " ^ (prExp (build_exp (Global.env ()) (Mod_subst.force_constr c))) ^ "\n");
+(*((print_string "AST: ");print (build_ast (Global.env ()) 0 (Mod_subst.force_constr c)));(print_string "\n");*)
+(process_def env (build_exp (Global.env ()) (Mod_subst.force_constr c)))
+))
+      | x -> ((*print_string ("build_rewrite_env UNKNOWN " ^ x ^ "\n");*)env) in
+      prec (env,rest)
+  | (env,(f::r)) -> prec (env,r)
+  | (env,_) -> env in
+  prec (env,(Lib.contents ()))
+
 let print_full_pure_context () =
   let rec prec = function
   | ((_,kn),Lib.Leaf lobj)::rest ->
@@ -1218,15 +1418,18 @@ let print_full_pure_context () =
           (* TODO: make it reparsable *)
           let (mp,_,l) = repr_kn kn in
           print_modtype (MPdot (mp,l)) ++ str "." ++ fnl () ++ fnl ()
-      | _ -> mt () in
+      | x -> (str "Unknown ") ++ (str x) ++ str " " ++ str (KerName.debug_to_string kn) ++ str "\n" ++ cut () ++ (mt ()) in
       prec rest ++ pp
-  | _::rest -> prec rest
+  | ((_,kn),(Lib.CompilingLibrary (d,(m,d2))))::rest -> (str "Compiling Library ") ++ (str (DirPath.to_string d)) ++ (str " ") ++ (str (ModPath.to_string m)) ++ (str " ") ++ (str (DirPath.to_string d2)) ++ (str "\n") ++ prec rest
+  | ((_,kn),(Lib.OpenedModule (a,b,c,d)))::rest -> (str "Opened module\n") ++ prec rest
+  | ((_,kn),(Lib.ClosedModule ls))::rest -> (str "Closed module\n") ++ prec rest
+  | ((_,kn),(Lib.OpenedSection (a,b)))::rest -> (str "Opened section\n") ++ prec rest
+  | ((_,kn),(Lib.ClosedSection ls))::rest -> (str "Closed section\n") ++ prec rest
   | _ -> mt () in
   prec (Lib.contents ())
 
 let type_from_name s =
     (*let _ = print_string "Here 1\n" in*)
-    (*let _ = print_string (print_full_pure_context ()) in*)
     let Construct (m,u) = kind_of_term (get_constr (decode s)) in
     (*let xx = Global.lookup_mind (Construct (m,u)) in*)
     let root = root_name s in
@@ -1474,6 +1677,8 @@ and build_or l tenv = match l with
 (* Top-level arewrite functionality *)
 let arewrite cl : unit Proofview.tactic =
   Proofview.Goal.enter (fun gl ->
+  let _ = print_string (*("Environment:\n\n" ^ string_of_ppcmds (print_full_pure_context ()) ^ "\nEND\n\n")*) in
+  let rewriteEnv = build_rewrite_env Renv.emptyEnv in
   let concl = Proofview.Goal.concl gl in
   let (evm, env) = Lemmas.get_current_context() in
   (*let (body, _) = Constrintern.interp_constr env evm concl in*)
@@ -1503,10 +1708,10 @@ let arewrite cl : unit Proofview.tactic =
              let ee = build_exp env (EConstr.Unsafe.to_constr t) in
              let re2 = Crewrite.add_rule re e (APPL (intern_oriented_rule,[ee;(APPL (intern_true,[]));(APPL (intern_true,[]))])) in
              let l2 = if oc=Locus.NoOccurrences then l else
-                 let ee2 = List.hd (Inner.rewrite2 Renv.emptyEnv (Renv.flatten Renv.emptyEnv ee)) in
+                 let ee2 = List.hd (Inner.rewrite2 rewriteEnv (Renv.flatten rewriteEnv ee)) in
                      (Equality.replace_in_clause_maybe_by t (EConstr.of_constr (build_predicate ee2 [])) cl None)::l in
              (*let _ = print_string ("\n\n" ^ (prExp ee) ^ "\n\n") in*)
-                 (re2,l2)) (Proofview.Goal.hyps gl) ~init:(Renv.emptyEnv,[]) in
+                 (re2,l2)) (Proofview.Goal.hyps gl) ~init:(rewriteEnv,[]) in
              let tl2 = if Locusops.occurrences_of_goal cl=Locus.NoOccurrences then tl else 
                let e' = List.hd (Inner.rewrite2 renv (Renv.flatten renv e)) in
                (*let _ = print "Result" in

@@ -854,44 +854,44 @@ let rec build_type (env : Environ.env) (trm : types) =
 let rec build_exp (env : Environ.env) (trm : types) =
   match kind_of_term trm with
     Rel i ->
-      print_string "rel\n" ;
+      (*print_string "rel\n" ;*)
       build_rel_exp env i
   | Var v ->
-      print_string "var\n" ;
+      (*print_string "var\n" ;*)
       build_var_exp v
   | Meta mv ->
-      print_string "meta\n" ;
+      (*print_string "meta\n" ;*)
       build_exp_meta mv
   | Evar (k, cs) ->
-      print_string "evar\n" ;
+      (*print_string "evar\n" ;*)
       let cs' = List.map (build_exp env) (Array.to_list cs) in
       build_evar_exp k cs'
   | Sort s ->
-      print_string "sort\n" ;
+      (*print_string "sort\n" ;*)
       build_sort_exp s
   | Cast (c, k, t) ->
-      print_string "cast\n" ;
+      (*print_string "cast\n" ;*)
       let c' = build_exp env c in
       let t' = build_exp env t in
       build_cast_exp c' k t'
   | Prod (n, t, b) ->
-      print_string "prod\n" ;
+      (*print_string "prod\n" ;*)
       let t' = build_exp env t in
       let b' = build_exp (Environ.push_rel (n, None, t) env) b in
       build_product_exp n t' b'
   | Lambda (n, t, b) ->
-      print_string "lambda\n" ;
+      (*print_string "lambda\n" ;*)
       let t' = build_exp env t in
       let b' = build_exp (Environ.push_rel (n, None, t) env) b in
       build_lambda_exp n t' b'
   | LetIn (n, trm, typ, b) ->
-      print_string "letIn\n" ;
+      (*print_string "letIn\n" ;*)
       let trm' = build_exp env trm in
       let typ' = build_exp env typ in
       let b' = build_exp (Environ.push_rel (n, Some b, typ) env) b in
       LET (trm',Rtype.notype,typ',b')
   | App (f, xs) ->
-      print_string "App\n" ;
+      (*print_string "App\n" ;*)
       (match natFor trm with
        | Some n -> NUM n
        | None -> (match build_app_constant_term env f xs with
@@ -904,10 +904,10 @@ let rec build_exp (env : Environ.env) (trm : types) =
                         let xs' = List.map (build_exp env) (Array.to_list xs) in
                             (APPL (intern_apply,(f'::xs'))))))
   | Const (c, u) ->
-      print_string "Const\n" ;
+      (*print_string "Const\n" ;*)
       build_const_exp env (c, u)
   | Construct ((i, c_index), u) ->
-      print_string "Construct\n" ;
+      (*print_string "Construct\n" ;*)
       let i' = build_exp env (Term.mkInd i) in
       let (x,_) = i in
       let s = (MutInd.to_string x) in
@@ -923,24 +923,24 @@ let rec build_exp (env : Environ.env) (trm : types) =
               (APPL ((intern ((s^(string_of_int c_index)))),[]))
               (*build_constructor_exp i' c_index u*)
   | Ind ((i, i_index), u) ->
-      print_string "Ind\n" ;
+      (*print_string "Ind\n" ;*)
       (match build_inductive_term env i i_index with
        | Some x -> x
        | None -> build_minductive_exp env ((i, i_index), u))
   | Case (ci, ct, m, bs) ->
-      print_string "Case\n";
+      (*print_string "Case\n";*)
       let typ = build_exp env ct in
       let match_typ = build_exp env m in
       let branches = List.map (build_exp env) (Array.to_list bs) in
       build_case_exp ci typ match_typ branches
   | Fix ((is, i), (ns, ts, ds)) ->
-      print_string "Fix\n";
+      (*print_string "Fix\n";*)
       build_fix_exp (build_fixpoint_functions_exp env ns ts ds) i
   | CoFix (i, (ns, ts, ds)) ->
-      print_string "CoFix\n";
+      (*print_string "CoFix\n";*)
       build_cofix_exp (build_fixpoint_functions_exp env ns ts ds) i
   | Proj (p, c) ->
-      print_string "Proj\n";
+      (*print_string "Proj\n";*)
       let p' = build_exp env (Term.mkConst (Projection.constant p)) in
       let c' = build_exp env c in
       build_proj_exp p' c'
@@ -1278,15 +1278,15 @@ let arewrite : unit Proofview.tactic =
   let concl = Proofview.Goal.raw_concl gl in
   let (evm, env) = Lemmas.get_current_context() in
   (*let (body, _) = Constrintern.interp_constr env evm concl in*)
-  let _ = print "******* BEGIN *******" in
+  (*let _ = print "******* BEGIN *******" in*)
   let ast = apply_to_definition build_ast env 0 concl in
-  let _ = print ast in
-  let _ = print "******* END *******" in
+  (*let _ = print ast in
+  let _ = print "******* END *******" in*)
   let e = build_exp env concl in
-  let _ = "Rewriting" in
-  let _ = print (prExp e) in
+  (*let _ = "Rewriting" in
+  let _ = print (prExp e) in*)
   let e' = List.hd (Inner.rewrite2 Renv.emptyEnv e) in
-  let _ = print (prExp e') in
+  (*let _ = print (prExp e') in*)
   (*let ast = apply_to_definition build_ast env 0 (build_predicate e' []) in
   let _ = print ast in
   let ast' = apply_to_definition build_ast env 0 (build_predicate e []) in

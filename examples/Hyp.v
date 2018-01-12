@@ -1,4 +1,5 @@
 Require Import AdvancedRewrite.advancedRewrite.
+Require Import List.
 
 Theorem test1: forall x, x=3 -> x+1=4.
 Proof.
