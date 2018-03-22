@@ -40,6 +40,11 @@ Proof.
     admit.
 Admitted.
 
+Theorem trAC_Zero: forall x, REWRITE_RULE (triAdd x (TriZero::nil)) x True.
+Proof.
+    admit.
+Admitted.
+
 Theorem x: 1+1=3.
 Proof.
     arewrite.

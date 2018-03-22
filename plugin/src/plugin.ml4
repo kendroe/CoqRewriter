@@ -71,6 +71,14 @@ open Context.Rel.Declaration
 open Intern
 open Exp
 
+let debug_ids = []
+
+let debug_print c s =
+    if (List.mem "ALL" debug_ids) || (List.mem c debug_ids) then
+        print_string (c ^ ": " ^ s ^ "\n")
+    else
+        ()
+
 module StringConstr =
        struct
          type t = string
@@ -84,10 +92,12 @@ let constr_cache : Constr.t StringMap.t ref = ref (StringMap.empty) ;;
 exception NoEntry;;
 
 let get_constr s =
+    debug_print "get_constr" ("Finding " ^ s);
     try (StringMap.find s (!constr_cache)) with
-    Not_found -> raise NoEntry ;;
+    Not_found -> (debug_print "get_constr" "Failed";raise NoEntry) ;;
 
 let add_constr s c =
+    debug_print "add_constr" ("Adding " ^ s);
     constr_cache := StringMap.add s c (!constr_cache) ;;
 
 (* --- Options --- *)
@@ -263,10 +273,10 @@ let build_evar_exp (k : existential_key) (c_asts : exp list) =
  * The name may be Anonymous, in which case we print the index
  *)
 let build_rel_named (env : Environ.env) (i : int) =
-  let r = Environ.lookup_rel i env in
-  let name = Context.Rel.Declaration.get_name r in
-  (*let (name, body, typ) = Environ.lookup_rel i env in*)
-  build_name name
+  try let r = Environ.lookup_rel i env in
+      let name = Context.Rel.Declaration.get_name r in
+      (*let (name, body, typ) = Environ.lookup_rel i env in*)
+      build_name name with Not_found -> build "NFRel" [string_of_int i]
 
 (*
  * Build an AST for a Rel
@@ -435,7 +445,7 @@ let map_type t = match (decode t) with
   | _ -> t ;;
 
 let rec convert_exp_to_type e =
-  (*print_string ("Convert_exp_to_type " ^ (prExp e) ^ "\n") ;*)
+  debug_print "convert_exp_to_type" ("Convert_exp_to_type " ^ (prExp e)) ;
   match e with
   | (APPL (f,l)) -> Rtype.mkProduct (map_type f) (List.map convert_exp_to_type l)
   | (QUANT (14,[(v,t)],e,p)) -> Rtype.mkTfun t (convert_exp_to_type e)
@@ -610,7 +620,7 @@ let build_cofix_exp (funs : exp list) (index : int) =
  * Get the body of a mutually inductive type
  *)
 let lookup_mutind_body (i : mutual_inductive) (env : Environ.env) =
-  ((*print_string (MutInd.debug_to_string i);*)
+  (debug_print "lookup_mutind_body" (MutInd.debug_to_string i);
    Environ.lookup_mind i env)
 
 (*
@@ -739,7 +749,7 @@ let getConstructors (t : Rtype.etype) (branch_asts : exp list) =
     let rec bf bl n = match bl with
                     | [] -> []
                     | (f::r) -> (bc f n [])::(bf r (n+1)) in
-        (*let _ = print_string ("CASE TYPE " ^ name ^ "\n") in*)
+        let _ = debug_print "build_case" ("CASE TYPE " ^ name) in
         if name="Natural" then
             let (QUANT (intern_lambda,([(v,t)]),ex,te)) = List.nth branch_asts 1 in
                 [((NUM 0),(List.nth branch_asts 0));((APPL (intern "S",[VAR (intern "n")])),ex)]
@@ -754,7 +764,7 @@ let build_case_exp (info : case_info) (case_typ_ast : exp) (match_ast : exp) (br
   let num_args = info.ci_npar in
   let match_typ = APPL ((intern "CaseMatch"),[match_ast]) in
   let (QUANT (l,[(v,t)],_,_)) = case_typ_ast in
-  (*let _ = print_string ((Rtype.pretype t)^"\n") in*)
+  let _ = debug_print "build_case_exp" ((Rtype.pretype t)) in
   let branches = APPL ((intern "CaseBranches"),branch_asts) in
   CASE (match_ast,convert_exp_to_type case_typ_ast,(getConstructors t branch_asts))
   (*APPL ((intern "Case"),[NUM num_args; t; match_typ; branches])*)
@@ -784,62 +794,80 @@ let case_infos : (case_info list) ref = ref [] ;;
 let rec build_ast (env : Environ.env) (depth : int) (trm : types) =
   match kind_of_term trm with
     Rel i ->
-      build_rel env i
+      (debug_print "build_ast" "Rel";
+      build_rel env i)
   | Var v ->
-      build_var v
+      (debug_print "build_ast" "Var";
+       build_var v)
   | Meta mv ->
-      build_meta mv
+      (debug_print "build_ast" "Meta";
+       build_meta mv)
   | Evar (k, cs) ->
+      let _ = debug_print "build_ast" "Evar" in
       let cs' = List.map (build_ast env depth) (Array.to_list cs) in
       build_evar k cs'
   | Sort s ->
-      build_sort s
+      (debug_print "build_ast" "Sort";build_sort s)
   | Cast (c, k, t) ->
+      let _ = debug_print "build_ast" "Cast" in
       let c' = build_ast env depth c in
       let t' = build_ast env depth t in
       build_cast c' k t'
   | Prod (n, t, b) ->
+      let _ = debug_print "build_ast" "Prod" in
       let t' = build_ast env depth t in
       let b' = build_ast (Environ.push_rel (LocalAssum (n, t)) env) depth b in
       build_product n t' b'
   | Lambda (n, t, b) ->
+      let _ = debug_print "build_ast" "Lambda" in
       let t' = build_ast env depth t in
       let b' = build_ast (Environ.push_rel (LocalAssum (n, t)) env) depth b in
       build_lambda n t' b'
   | LetIn (n, trm, typ, b) ->
+      let _ = debug_print "build_ast" "LetIn" in
       let trm' = build_ast env depth trm in
       let typ' = build_ast env depth typ in
       let b' = build_ast (Environ.push_rel (LocalDef (n,trm,typ)) env) depth b in
       build_let_in n trm' typ' b'
   | App (f, xs) ->
+      let _ = debug_print "build_ast" "App" in
       let f' = build_ast env depth f in
       let xs' = List.map (build_ast env depth) (Array.to_list xs) in
       build_app f' xs'
   | Const (c, u) ->
+      let _ = debug_print "build_ast" "Const" in
       build_const env depth (c, u)
   | Construct ((i, c_index), u) ->
+      let _ = debug_print "build_ast" "Construct" in
       let i' = build_ast env depth (Term.mkInd i) in
       build_constructor i' c_index u
   | Ind ((i, i_index), u) ->
-      build_minductive env depth ((i, i_index), u)
+      (debug_print "build_ast" "Ind";
+       build_minductive env depth ((i, i_index), u))
   | Case (ci, ct, m, bs) ->
+      let _ = debug_print "build_ast" "Case" in
       let _ = (case_infos := (ci::(!case_infos))) in
       let typ = build_ast env depth ct in
       let match_typ = build_ast env depth m in
       let branches = List.map (build_ast env depth) (Array.to_list bs) in
       build_case ci typ match_typ branches
   | Fix ((is, i), (ns, ts, ds)) ->
-      build_fix (build_fixpoint_functions env depth ns ts ds) i
+      (debug_print "build_ast" "Fix";
+      build_fix (build_fixpoint_functions env depth ns ts ds) i)
   | CoFix (i, (ns, ts, ds)) ->
-      build_cofix (build_fixpoint_functions env depth ns ts ds) i
+      (debug_print "build_ast" "CoFix";
+       build_cofix (build_fixpoint_functions env depth ns ts ds) i)
   | Proj (p, c) ->
+      let _ = debug_print "build_ast" "Proj" in
       let p' = build_ast env depth (Term.mkConst (Projection.constant p)) in
       let c' = build_ast env depth c in
       build_proj p' c'
 
 and build_const (env : Environ.env) (depth : int) ((c, u) : pconstant) =
   let kn = Constant.canonical c in
+  let _ = debug_print "build_const" "Lookup 1" in
   let cd = Environ.lookup_constant c env in
+  let _ = debug_print "build_const" "Lookup 2" in
   let global_env = Global.env () in
   match get_definition cd with
     None ->
@@ -916,60 +944,60 @@ let rec build_type (env : Environ.env) (trm : types) =
 let rec build_exp (env : Environ.env) (trm : types) =
   match kind_of_term trm with
     Rel i ->
-      (*print_string "rel\n" ;*)
+      debug_print "build_exp" "rel" ;
       build_rel_exp env i
   | Var v ->
-      (*print_string "var\n" ;*)
+      debug_print "build_exp" "var" ;
       build_var_exp v
   | Meta mv ->
-      (*print_string "meta\n" ;*)
+      debug_print "build_exp" "meta" ;
       build_exp_meta mv
   | Evar (k, cs) ->
-      (*print_string "evar\n" ;*)
+      debug_print "build_exp" "evar" ;
       let cs' = List.map (build_exp env) (Array.to_list cs) in
       build_evar_exp k cs'
   | Sort s ->
-      (*print_string "sort\n" ;*)
+      debug_print "build_exp" "sort" ;
       build_sort_exp s
   | Cast (c, k, t) ->
-      (*print_string "cast\n";*)
+      debug_print "build_exp" "cast";
       let c' = build_exp env c in
       let t' = build_exp env t in
       build_cast_exp c' k t'
   | Prod (n, t, b) ->
-      (*print_string "prod\n" ;*)
+      debug_print "build_exp" "prod" ;
       let t' = build_exp env t in
       let b' = build_exp (Environ.push_rel (LocalAssum (n, t)) env) b in
       build_product_exp n t' b'
   | Lambda (n, t, b) ->
-      (*print_string "lambda\n" ;*)
+      debug_print "build_exp" "lambda" ;
       let t' = build_exp env t in
       let b' = build_exp (Environ.push_rel (LocalAssum (n, t)) env) b in
       build_lambda_exp n t' b'
   | LetIn (n, trm, typ, b) ->
-      (*print_string "letIn\n" ;*)
+      debug_print "build_exp" "letIn" ;
       let trm' = build_exp env trm in
       let typ' = build_exp env typ in
       let b' = build_exp (Environ.push_rel (LocalDef (n, b, typ)) env) b in
       LET (trm',Rtype.notype,typ',b')
   | App (f, xs) ->
-      (*print_string "Appxxx\n" ;*)
+      debug_print "build_exp" "App" ;
       (match natFor trm with
-       | Some n -> (*(print_string "Here1\n");*)NUM n
+       | Some n -> (debug_print "build_exp" "Here1");NUM n
        | None -> (match build_app_constant_term env f xs with
-                  | Some e -> (*(print_string "Here2\n");*)e
+                  | Some e -> (debug_print "build_exp" "Here2\n");e
                   | None ->
-                    ((*print "Here 3\n";*)match build_app_term env f xs with
-                     | Some e -> (*(print "Here 3a\n");*)e
+                    (debug_print "build_exp" "Here 3";match build_app_term env f xs with
+                     | Some e -> (debug_print "build_exp" "Here 3a\n");e
                      | None ->
                         let f' = build_exp env f in
                         let xs' = List.map (build_exp env) (Array.to_list xs) in
                             (APPL (intern_apply,(f'::xs'))))))
   | Const (c, u) ->
-      (*print_string "Const\n" ;*)
+      debug_print "build_exp" "Const" ;
       build_const_exp env (c, u)
   | Construct ((i, c_index), u) ->
-      (*print_string "Construct\n" ;*)
+      debug_print "build_exp" "Construct" ;
       (*let i' = build_exp env (Term.mkInd i) in*)
       (*let _ = print_string ("Constr result " ^ (prExp i') ^ "\n") in*)
       let (x,_) = i in
@@ -985,27 +1013,26 @@ let rec build_exp (env : Environ.env) (trm : types) =
               (APPL (intern_nil,[]))
           else
               (APPL ((intern (("C_"^s^(string_of_int c_index)))),[]))
-              (*build_constructor_exp i' c_index u*)
   | Ind ((i, i_index), u) ->
-      (*print_string "Ind\n" ;*)
+      debug_print "build_exp" "Ind\n" ;
       (match build_inductive_term env i i_index with
        | Some x -> x
        | None -> build_minductive_exp env ((i, i_index), u))
   | Case (ci, ct, m, bs) ->
-      (*print_string "Case\n";*)
+      debug_print "build_exp" "Case";
       let _ = (case_infos := (ci::(!case_infos))) in
       let typ = build_exp env ct in
       let match_typ = build_exp env m in
       let branches = List.map (build_exp env) (Array.to_list bs) in
       build_case_exp ci typ match_typ branches
   | Fix ((is, i), (ns, ts, ds)) ->
-      (*print_string "Fix\n";*)
+      debug_print "build_exp" "Fix";
       build_fix_exp (build_fixpoint_functions_exp env ns ts ds) i
   | CoFix (i, (ns, ts, ds)) ->
-      (*print_string "CoFix\n";*)
+      debug_print "build_exp" "CoFix";
       build_cofix_exp (build_fixpoint_functions_exp env ns ts ds) i
   | Proj (p, c) ->
-      (*print_string "Proj\n";*)
+      debug_print "build_exp" "Proj";
       let p' = build_exp env (Term.mkConst (Projection.constant p)) in
       let c' = build_exp env c in
       build_proj_exp p' c'
@@ -1019,7 +1046,7 @@ and build_app_term (env : Environ.env) f xs =
        match kind_of_term f with
       | Ind ((i, c_index),u) ->
              let xs' = List.map (build_exp env) (Array.to_list xs) in
-             (*let _ = print ("Ind s = "^(MutInd.to_string i)^"\n") in*)
+             let _ = debug_print "arewrite" ("Ind s = "^(MutInd.to_string i)) in
                  Some (match MutInd.to_string i with
                        | "Coq.Init.Logic.or" -> (APPL (intern_or,xs'))
                        | "Coq.Init.Logic.and" -> (APPL (intern_and,xs'))
@@ -1064,7 +1091,9 @@ and build_app_constant_term (env : Environ.env) f xs =
       | _ -> None)
 and build_const_exp (env : Environ.env) ((c, u) : pconstant) =
   let kn = Constant.canonical c in
-  let cd = Environ.lookup_constant c env in
+  let kn' = build_kername kn in
+      (APPL (intern ("f_" ^ kn'),[]))
+  (*let cd = Environ.lookup_constant c env in
   let global_env = Global.env () in
   match get_definition cd with
     None ->
@@ -1074,7 +1103,7 @@ and build_const_exp (env : Environ.env) ((c, u) : pconstant) =
         | TemplateArity _ -> assert false (* pre-8.5 universe polymorphism *)
       end
   | Some c ->
-      build_definition_exp kn (build_exp global_env c) u
+      build_definition_exp kn (build_exp global_env c) u*)
 
 and build_fixpoint_functions_exp (env : Environ.env) (names : name array) (typs : constr array) (defs : constr array)  =
   let env_fix = Environ.push_rel_context (bindings_for_fix names typs) env in
@@ -1167,7 +1196,7 @@ let root_name s =
     if String.length st > 3 then
         let s1 = String.sub st 2 ((String.length st)-2) in
         let sl = String.split_on_char ' ' s1 in
-            if (List.length sl)=2 then
+            if (List.length sl)>0 then
                 List.hd sl
             else
                 ""
@@ -1191,22 +1220,34 @@ let print_basename sp = pr_global (ConstRef sp)
 let ungeneralized_type_of_constant_type t =
   Typeops.type_of_constant_type (Global.env ()) t
 
-let ac = intern "AdvancedRewrite.advancedRewrite.AC"
+let ac = intern "f_AdvancedRewrite.advancedRewrite.AC"
+let rewrite_rule = intern "f_AdvancedRewrite.advancedRewrite.REWRITE_RULE"
+
+let rec root_prop p = match p with
+    | (QUANT (q,v,e,p)) -> root_prop e
+    | x -> x
+    ;;
 
 let process_property env p =
-    match p with
+    (debug_print "process_property" ("Property " ^ (prExp p));
+     debug_print "process_property" ("Root Property " ^ (prExp (root_prop p)));
+    match (root_prop p) with
     | (APPL (f,[_;t])) -> if f=ac then
                               match t with
                               | APPL (_,((APPL (f,_))::_)) ->
                                   let d = decode f in
                                       if (String.length d)>4 then
                                           let r = intern (String.sub d 4 ((String.length d)-4)) in
-                                          let _ = print_string ("Adding ac " ^ (decode r) ^ "\n") in
+                                          let _ = debug_print "process_property" ("Adding ac " ^ (decode r)) in
                                               Renv.addAttrib env intern_ac [Renv.S(r)]
                                           else env
                               | _ -> env
                           else env
-    | _ -> env ;;
+    | (APPL (f,[_;l;r;c])) -> if f=rewrite_rule then
+                                  (debug_print "process_property" ("Adding rule "^(prExp (APPL (intern_oriented_rule,[l;r;c]))));
+                                  Renv.addProperty env (APPL (intern_oriented_rule,[l;r;c])))
+                              else env
+    | _ -> env) ;;
 
 let build_terms f =
     let sf = String.split_on_char '.' (decode f) in
@@ -1309,13 +1350,13 @@ let rec build_rules dname vars cond core =
 let process_var_core env dname vars core =
     let syms = get_syms core in
     let d = intern ("f_Top." ^ dname) in
-    let _ = print_string ("The syms of " ^ dname ^ " " ^ (prExp core) ^ "\n") in
-    let _ = List.map (fun x -> print_string ("Sym: " ^ (decode x) ^ "\n")) syms in
+    let _ = debug_print "process_var_core" ("The syms of " ^ dname ^ " " ^ (prExp core)) in
+    let _ = List.map (fun x -> debug_print "process_var_core" ("Sym: " ^ (decode x) ^ "\n")) syms in
     let env1 = List.fold_left (fun e -> fun s ->
                    let c = intern ("f_Top." ^ (decode s)) in
                        Renv.addPrecedence e (d,c)) env syms in
     let rules = build_rules (intern dname) (List.map (fun x -> (VAR x)) vars) (APPL (intern_true,[])) core in
-    let _ = List.map (fun x -> print_string ("Rule: " ^ (prExp x) ^ "\n")) rules in
+    let _ = List.map (fun x -> debug_print "process_var_core" ("Rule: " ^ (prExp x))) rules in
         env1
 
 let rec fun_break l x = match x with
@@ -1338,16 +1379,16 @@ let rec core_fix core dname full_name =
     ;;
 
 let process_def env d =
-    (print_string ("process_def " ^ (prExp d) ^ "\n"));match d with
+    (debug_print "process_def" ("process_def " ^ (prExp d)));match d with
     | (APPL (91,[(APPL (fns,[APPL (fname,[n;t;dd])]));nn])) ->
-      (print_string ("**DEF** " ^ (decode fname) ^ " " ^ (prExp dd) ^ "\n");
+      (debug_print ("**DEF** " ^ (decode fname) ^ " " ^ (prExp dd));
       let ff = String.split_on_char ' ' (decode fname) in
           if List.length ff = 2 then
               let q = List.hd (List.tl ff) in
               let name = String.sub q 0 ((String.length q)-1) in
               let (vars,core) = fun_break [] dd in
               let core = core_fix core (intern name) (intern ("f_Top."^name)) in
-                 (print_string ("Name: " ^ name ^ "\nCore: " ^ (prExp core) ^ "\n"));process_var_core env ("f_Top."^name) vars core
+                 (debug_print "process_def" ("Name: " ^ name ^ "\nCore: " ^ (prExp core)));process_var_core env ("f_Top."^name) vars core
           else env)
     | _ -> env ;;
 
@@ -1356,13 +1397,13 @@ let build_rewrite_env env =
   | (env,((_,kn),Lib.Leaf lobj)::rest) ->
       let env = match object_tag lobj with
       | "CONSTANT" ->
-          (*let _ = print_string "HERE build_rewrite_env\n" in*)
+          let _ = debug_print "build_rewrite_env" "HERE build_rewrite_env" in
           let con = Global.constant_of_delta_kn kn in
           let cb = Global.lookup_constant con in
           let typ = ungeneralized_type_of_constant_type cb.const_type in
           (*hov 0*) (
             match cb.const_body with
-              | Undef _ -> (print_string ("Parsed " ^ prExp (build_exp (Global.env ()) typ) ^ "\n");process_property env (build_exp (Global.env ()) typ))
+              | Undef _ -> (debug_print "build_rewrite_env" ("Parsed " ^ prExp (build_exp (Global.env ()) typ));process_property env (build_exp (Global.env ()) typ))
                 (*str "Parameter " ++
                 print_basename con ++ str " : " ++ cut () ++ pr_ltype typ*)
               | OpaqueDef lc ->
@@ -1372,11 +1413,11 @@ let build_rewrite_env env =
               | Def c ->
                 (*str "Definition " ++ print_basename con ++ cut () ++
                 str "  : " ++ pr_ltype typ ++ cut () ++ str " := " ++
-                pr_lconstr (Mod_subst.force_constr c)*) (print_string ("DEF " ^ (prExp (build_exp (Global.env ()) (Mod_subst.force_constr c))) ^ "\n");
-(*((print_string "AST: ");print (build_ast (Global.env ()) 0 (Mod_subst.force_constr c)));(print_string "\n");*)
+                pr_lconstr (Mod_subst.force_constr c)*) (debug_print "build_rewrite_env" ("DEF " ^ (prExp (build_exp (Global.env ()) (Mod_subst.force_constr c))));
+((debug_print "build_rewrite_env" "AST: ");debug_print "build_rewrite_env" (build_ast (Global.env ()) 0 (Mod_subst.force_constr c)));
 (process_def env (build_exp (Global.env ()) (Mod_subst.force_constr c)))
 ))
-      | x -> ((*print_string ("build_rewrite_env UNKNOWN " ^ x ^ "\n");*)env) in
+      | x -> (debug_print "build_rewrite_env" ("build_rewrite_env UNKNOWN " ^ x);env) in
       prec (env,rest)
   | (env,(f::r)) -> prec (env,r)
   | (env,_) -> env in
@@ -1388,7 +1429,9 @@ let print_full_pure_context () =
       let pp = match object_tag lobj with
       | "CONSTANT" ->
           let con = Global.constant_of_delta_kn kn in
+          let _ = debug_print "print_full_pure_context" "Lookup 3" in
           let cb = Global.lookup_constant con in
+          let _ = debug_print "print_full_pure_context" "Lookup 4" in
           let typ = ungeneralized_type_of_constant_type cb.const_type in
           hov 0 (
             match cb.const_body with
@@ -1429,7 +1472,6 @@ let print_full_pure_context () =
   prec (Lib.contents ())
 
 let type_from_name s =
-    (*let _ = print_string "Here 1\n" in*)
     let Construct (m,u) = kind_of_term (get_constr (decode s)) in
     (*let xx = Global.lookup_mind (Construct (m,u)) in*)
     let root = root_name s in
@@ -1439,14 +1481,13 @@ let type_from_name s =
                      | [] -> (h,"")
                      | (f::r) -> sl (List.append h [f]) r
                      in
-    (*let _ = print_string ("root " ^ root ^ "\n") in*)
+    let _ = debug_print "type_from_name" ("root " ^ root) in
     let (path,name) = sl [] (String.split_on_char '.' root) in
-    (*let _ = print_string "Here 2\n" in*)
     let dirpath = DirPath.make (List.map Id.of_string path) in
     let modpath = ModPath.MPfile dirpath in
     let (evm, env) = Lemmas.get_current_context() in
     let d = Environ.lookup_mind (MutInd.make2 modpath (Names.Label.make name)) env in
-    (*let _ = print_string "Here 3\n" in*)
+    let _ = debug_print "type_from_name" "Here 3" in
     (*let (body, _) = Constrintern.interp_constr env evm def in*)
     let ind_bodies = d.mind_packets in
     let ind_bodies_list = Array.to_list ind_bodies in
@@ -1454,13 +1495,14 @@ let type_from_name s =
     let cs = List.map (build_oinductive env_ind 0) ind_bodies_list in
     let ind_or_coind = d.mind_finite in
     let ast = build_inductive ind_or_coind cs u in
-    (*let _ = print_string "Here 4\n" in*)
-    (*let _ = print ast in*)
+    let _ = debug_print "type_from_name" "Here 4" in
+    let _ = debug_print "type_from_name" ast in
         Lazy.force reify_nat
 
 let functor_from_name s =
-    (*let _ = print_string "functor_from_name\n" in*)
+    let _ = debug_print "functor_from_name" ("functor_from_name " ^ (decode s)) in
     let root = root_name s in
+    let _ = debug_print "functor_from_name" ("root " ^ root) in
     let index = root_index s in
     let rec sl h r = match r with
                      | [x] -> (h,x)
@@ -1468,35 +1510,46 @@ let functor_from_name s =
                      | (f::r) -> sl (List.append h [f]) r
                      in
     let (path,name) = sl [] (String.split_on_char '.' root) in
-    let d = (get_constr (decode s)) in
-    let (evm, env) = Lemmas.get_current_context() in
-    (*let (body, _) = Constrintern.interp_constr env evm def in*)
-    let ast = apply_to_definition build_ast env 0 d in
-    let _ = print ast in
-        d
+    try
+        let d = (get_constr (decode s)) in
+        let (evm, env) = Lemmas.get_current_context() in
+        (*let (body, _) = Constrintern.interp_constr env evm def in*)
+        let ast = apply_to_definition build_ast env 0 d in
+        let _ = print ast in
+            d
+    with NoEntry ->
+        (debug_print "functor_from_name" ("initing " ^ name);let x = Lib_coq.init_constant path name in let _ = debug_print "functor_from_name" "DONE\n" in x)
 
 let rec build_var v tenv = match tenv with
   | ((vv,t,n)::r) -> if v=vv then mkRel n else build_var v r
   | _ -> mkVar (Id.of_string v)
 
-let rec push_var v t tenv = ((v,t,(List.length tenv)+1)::tenv)
-  (*match tenv with
-  | ((vv,t,n)::r) -> ((vv,t,n+1)::(push_var v r))
-  | _ -> [(v,1)]*)
+let rec push_var v t tenv = (*((v,t,(List.length tenv)+1)::tenv)*)
+  match tenv with
+  | ((vv,tp,n)::r) -> ((vv,tp,n+1)::(push_var v t r))
+  | _ -> [(v,t,1)]
 
-let build_leaf_type t = match (decode t) with
+let build_leaf_type t = ((debug_print "build_leaf_type" ("build leaf " ^ (decode t)));match (decode t) with
   | "Natural" -> Lazy.force reify_nat
+  | "C_Coq.Init.Datatypes.nat" -> Lazy.force reify_nat
   | "Bool" -> Lazy.force reify_bool
-  | x -> Lib_coq.init_constant [] x
+  | x -> (debug_print "build_leaf_type" ("Initing22 "^x^"\n");
+         (if (String.length x) > 2 && (((String.sub x 0 2)="C_") || ((String.sub x 0 2)="f_")) then
+             functor_from_name (Intern.intern x)
+         else
+             functor_from_name (Intern.intern ("f_"^x)))))
 
 let rec build_coq_type t =
-  try ((*print_string "HEREprod\n";*)let tl = Rtype.paramProduct t in
+  try (debug_print "build_coq_type" ("HEREprod "^(Rtype.unparse t));let tl = Rtype.paramProduct t in
   match tl with
   | [] -> build_leaf_type (Rtype.nameProduct t)
-  | l -> Term.mkApp((build_leaf_type (Rtype.nameProduct t)),Array.of_list (List.map build_coq_type l))) with (Rtype.TypeError(_)) ->
-    let _ = print "CAUGHT\n" in
+  | l -> let tl = List.map build_coq_type l in
+         let r = Term.mkApp((build_leaf_type (Rtype.nameProduct t)),Array.of_list tl) in r) with (Rtype.TypeError(_)) ->
+    let _ = debug_print "build_coq_type" ("CAUGHT "^(Rtype.unparse t)^"\n") in
     let (t1,t2) = Rtype.untypeTfun t in
-    Term.mkProd(Anonymous,build_coq_type t1,build_coq_type t2)
+    let tt1 = build_coq_type t1 in
+    let tt2 = build_coq_type t2 in
+    let r = Term.mkProd(Anonymous,tt1,tt2) in r
 
 let rec get_var_type tenv v = match tenv with
   | ((vv,t,n)::r) -> if v=vv then (build_coq_type t) else get_var_type r v
@@ -1531,7 +1584,7 @@ let constructorList t =
     match name with
     | "Natural" -> [(intern "Z",[]);(intern "S",[t])]
     | "Bool" -> [(intern_true,[]);(intern_false,[])]
-    | "List" -> ((*print_string "param product 2";*)[(intern "Nil",[]);(intern_cons,[List.hd (Rtype.paramProduct t);t])])
+    | "List" -> ([(intern "Nil",[]);(intern_cons,[List.hd (Rtype.paramProduct t);t])])
     | _ -> []
 
 let buildCase t constructor cases =
@@ -1586,6 +1639,7 @@ let buildCase t constructor cases =
             [((APPL (intern_true,[])),(List.nth branch_asts 0));((APPL (intern_false,[])),(List.nth branch_asts 1))]
         else bf branch_asts 1*)
 
+
 exception BadReify of exp
 
 let rec build_term e tenv = match e with
@@ -1598,7 +1652,7 @@ let rec build_term e tenv = match e with
   | (APPL (17,[a])) -> Term.mkApp (Lazy.force reify_not_val, [| build_term a tenv |])
   (*| (APPL (21,[])) -> (Lazy.force reify_nil)*)
   (*| (APPL (22,[f;e])) -> Term.mkApp(Lazy.force reify_cons,[|build_term f tenv;build_termn e tenv|])*)
-  | (APPL (75,[f;e])) -> Term.mkApp(build_term f tenv,[|build_term e tenv|])
+  | (APPL (75,[f;e])) -> Term.mkApp(build_term f tenv,[| build_term e tenv|])
   | (APPL (76,l)) -> build_add_term l tenv
   | (APPL (77,[l;r])) -> Term.mkApp((Lazy.force reify_sub),[|build_term l tenv;build_term r tenv|])
   | (APPL (78,l)) -> build_mul_term l tenv
@@ -1612,7 +1666,7 @@ let rec build_term e tenv = match e with
     let tenv' = push_var (decode v) t tenv in
         Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_term e tenv')
   | (CASE (e,t,c)) -> buildMatch e t c tenv
-  | x -> print_string ("No match for " ^ (prExp x) ^ "\n");raise (BadReify(x))
+  | x -> debug_print "build_term" (" No  match  for " ^ (prExp x) ^ "\n"); raise (BadReify(x))
   (*| _ -> (Lazy.force reify_false_val)*)
 and build_mul_term l tenv = match l with
   | [] -> Lib_coq.Nat.of_int 1
@@ -1641,6 +1695,8 @@ and buildMatch e (t : Rtype.etype) cases tenv =
     mkCase (ci, tterm, eterm, Array.of_list terms)
   ;;
 
+exception BadBuild;;
+
 let rec build_predicate e tenv = match e with
   | (APPL (4,[])) -> (Lazy.force reify_true)
   | (APPL (5,[])) -> (Lazy.force reify_false)
@@ -1649,16 +1705,35 @@ let rec build_predicate e tenv = match e with
   | (APPL (11,[a;b])) -> Term.mkApp (Lazy.force reify_eq, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
   | (APPL (17,[x])) -> Term.mkProd(Anonymous,build_predicate x tenv,(Lazy.force reify_false))
   | (APPL (80,[a;b])) -> Term.mkApp (Lazy.force reify_lt, [| build_term a tenv;build_term b tenv|])
-  | (APPL (75,[f;e])) -> Term.mkApp(build_term f tenv,[|build_term e tenv|])
+  | (APPL (75,[f;e])) -> let t = get_type e tenv in
+                         let te = build_term e tenv in
+                         let _ = debug_print "build_predicate" ("building1 "^(prExp f)^" "^(prExp(APPL (75,[f;e])))) in
+                         let r = Term.mkApp(build_term f tenv,[|te|]) in
+                         let ast = apply_to_definition build_ast (Global.env()) 0 r in
+                         let _ = debug_print "build_predicate" ("AST " ^ ast) in
+                         let _ = debug_print "build_predicate" "Done building" in r
   | (APPL (90,[l;r])) -> Term.mkProd(Anonymous,build_predicate l tenv,build_predicate r tenv)
   | (QUANT (14,vtl,e,p)) -> push_uvars tenv vtl e
   | (QUANT (15,vtl,e,p)) -> push_evars tenv vtl e
   | (QUANT (73,[(v,t)],e,p)) -> 
     let tenv' = push_var (decode v) t tenv in
         Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_predicate e tenv')
+  | (APPL (f,l)) -> let x = List.map (fun x -> build_term x tenv) l in
+                        Term.mkApp(functor_from_name f,Array.of_list x)
+  | _ -> debug_print "build_predicate" ("buildPredicate " ^ (prExp e));raise BadBuild
 and push_uvars tenv vtl e = match vtl with
   | ((v,t)::r) -> let tenv' = push_var (decode v) t tenv in
-                  Term.mkProd ((Name (Id.of_string (decode v))),(build_coq_type t),(push_uvars tenv' r e))
+                  let _ = debug_print "push_uvars" ("Building uvar type for "^(decode v)) in
+                  let ct = build_coq_type t in
+                  let _ = debug_print "push_uvars" "Done coq type (now push uvars)" in
+                  let pr = push_uvars tenv' r e in
+                  let ast = apply_to_definition build_ast (Global.env()) 0 ct in
+                  let _ = debug_print "push_uvars" ("AST " ^ ast) in
+                  let ast2 = apply_to_definition build_ast (Global.env()) 0 pr in
+                  let _ = debug_print "push_uvars" ("AST2 " ^ ast2) in
+                  let _ = debug_print "push_uvars" ("Done push_uvars "^(Rtype.unparse t)) in
+                  let r = Term.mkProd ((Name (Id.of_string (decode v))),ct,pr) in
+                  let _ = debug_print "push_uvars" "Done making r" in r
   | _ -> build_predicate e tenv
 and push_evars tenv vtl e = match vtl with
   | ((v,t)::r) -> let tenv' = push_var (decode v) t tenv in
@@ -1677,50 +1752,52 @@ and build_or l tenv = match l with
 (* Top-level arewrite functionality *)
 let arewrite cl : unit Proofview.tactic =
   Proofview.Goal.enter (fun gl ->
-  let _ = print_string (*("Environment:\n\n" ^ string_of_ppcmds (print_full_pure_context ()) ^ "\nEND\n\n")*) in
+  let _ = debug_print "arewrite" ("Environment:\n\n" ^ string_of_ppcmds (print_full_pure_context ()) ^ "\nEND\n\n") in
   let rewriteEnv = build_rewrite_env Renv.emptyEnv in
   let concl = Proofview.Goal.concl gl in
   let (evm, env) = Lemmas.get_current_context() in
   (*let (body, _) = Constrintern.interp_constr env evm concl in*)
-  (*let _ = print "******* BEGIN *******" in*)
+  let _ = debug_print "arewrite" "******* BEGIN *******" in
   let ast = apply_to_definition build_ast env 0 (EConstr.Unsafe.to_constr concl) in
-  (*let _ = print ast in
-  let _ = print "******* END *******" in*)
+  let _ = debug_print "arewrite" ast in
+  let _ = debug_print "arewrite" "******* END *******" in
   let e = build_exp env (EConstr.Unsafe.to_constr concl) in
-  (*let _ = print "Rewriting" in
-  let _ = print (prExp e) in*)
+  let _ = debug_print "arewrite" "Rewriting " in
+  let _ = debug_print "arewrite" (prExp e) in
   let names = Context.Named.fold_outside (fun d l -> (Context.Named.Declaration.get_id d)::l) (Proofview.Goal.hyps gl) ~init:[] in
   let operands = Locusops.concrete_clause_of (fun () -> names) cl in
-  (*let _ = List.map (fun x -> match x with
-                | Locus.OnConcl _ -> print_string "Simplifying CONCLUSION\n"
-                | Locus.OnHyp (id,_,_) -> print_string ("Simplifying hyp "^(Names.Id.to_string id)^"\n")
-              ) operands in*)
-  let (renv,tl) = Context.Named.fold_outside (fun d (re,l) -> (*(print_string ("HYP: " ^ (Names.Id.to_string (Context.Named.Declaration.get_id d)) ^ "\n"));*)
+  let _ = List.map (fun x -> match x with
+                | Locus.OnConcl _ -> debug_print "arewrite" "Simplifying CONCLUSION"
+                | Locus.OnHyp (id,_,_) -> debug_print "arewrite" ("Simplifying hyp "^(Names.Id.to_string id))
+              ) operands in
+  let (renv,tl) = Context.Named.fold_outside (fun d (re,l) -> (debug_print "arewrite" ("HYP: " ^ (Names.Id.to_string (Context.Named.Declaration.get_id d))));
              let t = Context.Named.Declaration.get_type d in
              let i = Context.Named.Declaration.get_id d in
              let (oc,hf) = Locusops.occurrences_of_hyp i cl in
-             (*let ot = match oc with
+             let ot = match oc with
                       | Locus.NoOccurrences -> "No occurences"
                       | Locus.AllOccurrences -> "All occurences"
                       | Locus.AllOccurrencesBut _ -> "All occurences but"
                       | Locus.OnlyOccurrences _ -> "Only occurences" in
-             let _ = print_string ("hn " ^ (Names.Id.to_string i) ^ " " ^ ot ^"\n") in*)
+             let _ = debug_print "arewrite" ("hn " ^ (Names.Id.to_string i) ^ " " ^ ot) in
              let ee = build_exp env (EConstr.Unsafe.to_constr t) in
              let re2 = Crewrite.add_rule re e (APPL (intern_oriented_rule,[ee;(APPL (intern_true,[]));(APPL (intern_true,[]))])) in
              let l2 = if oc=Locus.NoOccurrences then l else
                  let ee2 = List.hd (Inner.rewrite2 rewriteEnv (Renv.flatten rewriteEnv ee)) in
+                 let _ = debug_print "arewrite" ("ee2 = " ^ (prExp ee2)) in
                      (Equality.replace_in_clause_maybe_by t (EConstr.of_constr (build_predicate ee2 [])) cl None)::l in
-             (*let _ = print_string ("\n\n" ^ (prExp ee) ^ "\n\n") in*)
+             let _ = debug_print "arewrite" ("\n\n" ^ (prExp ee) ^ "\n") in
                  (re2,l2)) (Proofview.Goal.hyps gl) ~init:(rewriteEnv,[]) in
              let tl2 = if Locusops.occurrences_of_goal cl=Locus.NoOccurrences then tl else 
                let e' = List.hd (Inner.rewrite2 renv (Renv.flatten renv e)) in
-               (*let _ = print "Result" in
-               let _ = print (prExp e') in
-               let ast = apply_to_definition build_ast env 0 (build_predicate e' []) in
-               let _ = print ast in
-               let ast' = apply_to_definition build_ast env 0 (build_predicate e []) in
-               let _ = print ast' in*)
-                   (Equality.replace_in_clause_maybe_by concl (EConstr.of_constr (build_predicate e' [])) cl None)::tl in
+               let _ = debug_print "arewrite" "Result\n" in
+               let _ = debug_print "arewrite" (prExp e') in
+               let pr = build_predicate e' [] in
+               let _ = debug_print "arewrite" "Built predicate\n" in
+               let pr_ast = apply_to_definition build_ast env 0 pr in
+               let _ = debug_print "arewrite" (pr_ast ^ "\n") in
+               let _ = debug_print "arewrite" "End\n" in
+                   (Equality.replace_in_clause_maybe_by concl (EConstr.of_constr pr) cl None)::tl in
   (
    (*Tacticals.New.tclFAIL 1
     (Pp.str "The tactic is not imlplemented.")*)

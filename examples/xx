@@ -3,373 +3,191 @@ Welcome to Coq 8.7.0 (October 2017)
 Coq < 
 Coq < [Loading ML file theplug.cmxs ... done]
 
-Coq < Coq < Coq < Coq < Coq < TriDigit is defined
-TriDigit_rect is defined
-TriDigit_ind is defined
-TriDigit_rec is defined
+Coq < Coq < heap is defined
 
-Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < triIncrement is defined
-triIncrement is recursively defined (decreasing on 1st argument)
+Coq < Coq < state is defined
 
-Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < triAdd is defined
-triAdd is recursively defined (decreasing on 1st argument)
+Coq < Coq < pointsTo is defined
+
+Coq < Coq < Coq < Coq < Coq < Coq < Coq < star is defined
+
+Coq < Coq < Coq < Coq < Coq < Coq < Coq < magicWand is defined
+
+Coq < Coq < empty is defined
+
+Coq < Coq < dd is defined
+dd is recursively defined (decreasing on 1st argument)
 
 Coq < Coq < 1 subgoal
   
   ============================
-  AC triAdd
+  AC star
 
-trAdd_ac < 1 subgoal
+starAC < 1 subgoal
   
   ============================
-  AC triAdd
+  AC star
 
-trAdd_ac < No more subgoals, but there are some goals you gave up:
+starAC < No more subgoals, but there are some goals you gave up:
 
 1 subgoal
 
 subgoal 1 is:
- AC triAdd
+ AC star
 You need to go back and solve them.
 
-trAdd_ac < trAdd_ac is declared
+starAC < starAC is declared
 
 Coq < Coq < 1 subgoal
   
   ============================
-  1 + 1 = 3
+  forall x : state, REWRITE_RULE (star x empty) x True
 
-x < 1 subgoal
+rewriteEmpty < 1 subgoal
   
   ============================
-  1 + 1 = 3
+  forall x : state, REWRITE_RULE (star x empty) x True
 
-x < Environment:
+rewriteEmpty < No more subgoals, but there are some goals you gave up:
 
-Compiling Library Top Top <>
-Unknown REQUIRE Top._2
-Unknown TOKEN Top._4
+1 subgoal
 
-Unknown TOKEN Top._5
-Unknown REQUIRE Top._3
-Unknown REQUIRE Top._6
+subgoal 1 is:
+ forall x : state, REWRITE_RULE (star x empty) x True
+You need to go back and solve them.
 
-Unknown REQUIRE Top._7
-Unknown REQUIRE Top._8
+rewriteEmpty < rewriteEmpty is declared
 
-Inductive TriDigit : Set :=
-    TriZero : TriDigit | TriOne : TriDigit | TriTwo : TriDigit.
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (x : state) (h : nat -> option nat),
+  REWRITE_RULE (star x empty h) (x h) True
 
-Unknown IMPLICITS Top._9
-Unknown ARGUMENTS-SCOPE Top._10
+rewriteEmpty_h < 1 subgoal
+  
+  ============================
+  forall (x : state) (h : nat -> option nat),
+  REWRITE_RULE (star x empty h) (x h) True
 
-Unknown ARGUMENTS-SCOPE Top._11
-Unknown ARGUMENTS-SCOPE Top._12
+rewriteEmpty_h < No more subgoals, but there are some goals you gave up:
 
-Unknown ARGUMENTS-SCOPE Top._13
+1 subgoal
 
-Definition TriDigit_rect
-  : forall P : TriDigit -> Type,
-    P TriZero -> P TriOne -> P TriTwo -> forall t : TriDigit, P t
- := fun (P : TriDigit -> Type) (f : P TriZero) (f0 : P TriOne)
-      (f1 : P TriTwo) (t : TriDigit) =>
-    match t as t0 return (P t0) with
-    | TriZero => f
-    | TriOne => f0
-    | TriTwo => f1
-    end.
+subgoal 1 is:
+ forall (x : state) (h : nat -> option nat),
+ REWRITE_RULE (star x empty h) (x h) True
+You need to go back and solve them.
 
-Unknown IMPLICITS Top._14
-Unknown HEAD Top._15
+rewriteEmpty_h < rewriteEmpty_h is declared
 
-Unknown ARGUMENTS-SCOPE Top._16
-Unknown SCHEME Top._17
+Coq < Coq < Coq < 1 subgoal
+  
+  ============================
+  forall l r x : state,
+  REWRITE_RULE (magicWand (star l x) (star r x)) (magicWand l r) True
 
-Definition TriDigit_ind
-  : forall P : TriDigit -> Prop,
-    P TriZero -> P TriOne -> P TriTwo -> forall t : TriDigit, P t
- := fun (P : TriDigit -> Prop) (f : P TriZero) (f0 : P TriOne)
-      (f1 : P TriTwo) (t : TriDigit) =>
-    match t as t0 return (P t0) with
-    | TriZero => f
-    | TriOne => f0
-    | TriTwo => f1
-    end.
+wandTermElim1 < 1 subgoal
+  
+  ============================
+  forall l r x : state,
+  REWRITE_RULE (magicWand (star l x) (star r x)) (magicWand l r) True
 
-Unknown IMPLICITS Top._18
-Unknown HEAD Top._19
+wandTermElim1 < No more subgoals, but there are some goals you gave up:
 
-Unknown ARGUMENTS-SCOPE Top._20
-Unknown SCHEME Top._21
+1 subgoal
 
-Definition TriDigit_rec
-  : forall P : TriDigit -> Set,
-    P TriZero -> P TriOne -> P TriTwo -> forall t : TriDigit, P t
- := fun P : TriDigit -> Set => TriDigit_rect P.
+subgoal 1 is:
+ forall l r x : state,
+ REWRITE_RULE (magicWand (star l x) (star r x)) (magicWand l r) True
+You need to go back and solve them.
 
-Unknown IMPLICITS Top._22
-Unknown HEAD Top._23
+wandTermElim1 < wandTermElim1 is declared
 
-Unknown ARGUMENTS-SCOPE Top._24
-Unknown SCHEME Top._25
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall l x : state, REWRITE_RULE (magicWand (star l x) x) l True
 
-Definition triIncrement  : list TriDigit -> list TriDigit
- := fix triIncrement (x : list TriDigit) : list TriDigit :=
-      match x with
-      | nil => TriOne :: nil
-      | TriZero :: r => TriOne :: r
-      | TriOne :: r => TriTwo :: r
-      | TriTwo :: r => TriZero :: triIncrement r
-      end.
+wandElim1 < 1 subgoal
+  
+  ============================
+  forall l x : state, REWRITE_RULE (magicWand (star l x) x) l True
 
-Unknown IMPLICITS Top._26
-Unknown HEAD Top._27
+wandElim1 < No more subgoals, but there are some goals you gave up:
 
-Unknown ARGUMENTS-SCOPE Top._28
+1 subgoal
 
-Definition triAdd  : list TriDigit -> list TriDigit -> list TriDigit
- := fix triAdd (x y : list TriDigit) {struct x} : 
-    list TriDigit :=
-      match x with
-      | nil => y
-      | TriZero :: r1 =>
-          match y with
-          | nil => TriZero :: r1
-          | f :: r2 => f :: triAdd r1 r2
-          end
-      | TriOne :: r1 =>
-          match y with
-          | nil => TriOne :: r1
-          | TriZero :: r2 => TriOne :: triAdd r1 r2
-          | TriOne :: r2 => TriTwo :: triAdd r1 r2
-          | TriTwo :: r2 => triIncrement (TriZero :: triAdd r1 r2)
-          end
-      | TriTwo :: r1 =>
-          match y with
-          | nil => TriTwo :: r1
-          | TriZero :: r2 => TriTwo :: triAdd r1 r2
-          | TriOne :: r2 => triIncrement (TriZero :: triAdd r1 r2)
-          | TriTwo :: r2 => triIncrement (TriOne :: triAdd r1 r2)
-          end
-      end.
+subgoal 1 is:
+ forall l x : state, REWRITE_RULE (magicWand (star l x) x) l True
+You need to go back and solve them.
 
-Unknown IMPLICITS Top._29
-Unknown HEAD Top._30
+wandElim1 < wandElim1 is declared
 
-Unknown ARGUMENTS-SCOPE Top._31
+Coq < Coq < Coq < 1 subgoal
+  
+  ============================
+  forall x : state, REWRITE_RULE (magicWand x x) empty True
 
-Parameter trAdd_ac : AC triAdd.
+wandElim2 < 1 subgoal
+  
+  ============================
+  forall x : state, REWRITE_RULE (magicWand x x) empty True
 
-Unknown IMPLICITS Top._32
-Unknown HEAD Top._33
+wandElim2 < No more subgoals, but there are some goals you gave up:
 
-Unknown ARGUMENTS-SCOPE Top._34
+1 subgoal
 
-END
+subgoal 1 is:
+ forall x : state, REWRITE_RULE (magicWand x x) empty True
+You need to go back and solve them.
 
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN HEAD
-build_rewrite_env UNKNOWN IMPLICITS
-HERE build_rewrite_env
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-Parsed f_AdvancedRewrite.advancedRewrite.AC(C_Coq.Init.Datatypes.list(C_Top.TriDigit), Definition(Top.triAdd(fix(Functions((Name triAdd)(0, ALL(x:C_Coq.Init.Datatypes.list(C_Top.TriDigit): True) ALL(y:C_Coq.Init.Datatypes.list(C_Top.TriDigit): True) C_Coq.Init.Datatypes.list(C_Top.TriDigit), (fn x => (fn y => (CASE x OF Nil => y ||| Cons(t, r1) => (CASE t OF C_Top.TriDigit1 => (CASE y OF Nil => Cons(C_Top.TriDigit1, r1) ||| Cons(f, r2) => Cons(f, apply(triAdd, r1, r2))) ||| C_Top.TriDigit2 => (CASE y OF Nil => Cons(C_Top.TriDigit2, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, apply(triAdd, r1, r2)) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, apply(triAdd, r1, r2)) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit1, apply(triAdd, r1, r2))))) ||| C_Top.TriDigit3 => (CASE y OF Nil => Cons(C_Top.TriDigit3, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit3, apply(triAdd, r1, r2)) ||| C_Top.TriDigit2 => f_Top.triIncrement(Cons(C_Top.TriDigit1, apply(triAdd, r1, r2))) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit2, apply(triAdd, r1, r2))))))))))), 0))))
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN HEAD
-build_rewrite_env UNKNOWN IMPLICITS
-HERE build_rewrite_env
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-DEF fix(Functions((Name triAdd)(0, ALL(x:C_Coq.Init.Datatypes.list(C_Top.TriDigit): True) ALL(y:C_Coq.Init.Datatypes.list(C_Top.TriDigit): True) C_Coq.Init.Datatypes.list(C_Top.TriDigit), (fn x => (fn y => (CASE x OF Nil => y ||| Cons(t, r1) => (CASE t OF C_Top.TriDigit1 => (CASE y OF Nil => Cons(C_Top.TriDigit1, r1) ||| Cons(f, r2) => Cons(f, apply(triAdd, r1, r2))) ||| C_Top.TriDigit2 => (CASE y OF Nil => Cons(C_Top.TriDigit2, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, apply(triAdd, r1, r2)) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, apply(triAdd, r1, r2)) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit1, apply(triAdd, r1, r2))))) ||| C_Top.TriDigit3 => (CASE y OF Nil => Cons(C_Top.TriDigit3, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit3, apply(triAdd, r1, r2)) ||| C_Top.TriDigit2 => f_Top.triIncrement(Cons(C_Top.TriDigit1, apply(triAdd, r1, r2))) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit2, apply(triAdd, r1, r2))))))))))), 0)
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-process_def fix(Functions((Name triAdd)(0, ALL(x:C_Coq.Init.Datatypes.list(C_Top.TriDigit): True) ALL(y:C_Coq.Init.Datatypes.list(C_Top.TriDigit): True) C_Coq.Init.Datatypes.list(C_Top.TriDigit), (fn x => (fn y => (CASE x OF Nil => y ||| Cons(t, r1) => (CASE t OF C_Top.TriDigit1 => (CASE y OF Nil => Cons(C_Top.TriDigit1, r1) ||| Cons(f, r2) => Cons(f, apply(triAdd, r1, r2))) ||| C_Top.TriDigit2 => (CASE y OF Nil => Cons(C_Top.TriDigit2, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, apply(triAdd, r1, r2)) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, apply(triAdd, r1, r2)) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit1, apply(triAdd, r1, r2))))) ||| C_Top.TriDigit3 => (CASE y OF Nil => Cons(C_Top.TriDigit3, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit3, apply(triAdd, r1, r2)) ||| C_Top.TriDigit2 => f_Top.triIncrement(Cons(C_Top.TriDigit1, apply(triAdd, r1, r2))) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit2, apply(triAdd, r1, r2))))))))))), 0)
-**DEF** (Name triAdd) (fn x => (fn y => (CASE x OF Nil => y ||| Cons(t, r1) => (CASE t OF C_Top.TriDigit1 => (CASE y OF Nil => Cons(C_Top.TriDigit1, r1) ||| Cons(f, r2) => Cons(f, apply(triAdd, r1, r2))) ||| C_Top.TriDigit2 => (CASE y OF Nil => Cons(C_Top.TriDigit2, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, apply(triAdd, r1, r2)) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, apply(triAdd, r1, r2)) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit1, apply(triAdd, r1, r2))))) ||| C_Top.TriDigit3 => (CASE y OF Nil => Cons(C_Top.TriDigit3, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit3, apply(triAdd, r1, r2)) ||| C_Top.TriDigit2 => f_Top.triIncrement(Cons(C_Top.TriDigit1, apply(triAdd, r1, r2))) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit2, apply(triAdd, r1, r2)))))))))
-Name: triAdd
-Core: (CASE x OF Nil => y ||| Cons(t, r1) => (CASE t OF C_Top.TriDigit1 => (CASE y OF Nil => Cons(C_Top.TriDigit1, r1) ||| Cons(f, r2) => Cons(f, f_Top.triAdd(r1, r2))) ||| C_Top.TriDigit2 => (CASE y OF Nil => Cons(C_Top.TriDigit2, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, f_Top.triAdd(r1, r2)) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, f_Top.triAdd(r1, r2)) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit1, f_Top.triAdd(r1, r2))))) ||| C_Top.TriDigit3 => (CASE y OF Nil => Cons(C_Top.TriDigit3, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit3, f_Top.triAdd(r1, r2)) ||| C_Top.TriDigit2 => f_Top.triIncrement(Cons(C_Top.TriDigit1, f_Top.triAdd(r1, r2))) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit2, f_Top.triAdd(r1, r2)))))))
-The syms of f_Top.triAdd (CASE x OF Nil => y ||| Cons(t, r1) => (CASE t OF C_Top.TriDigit1 => (CASE y OF Nil => Cons(C_Top.TriDigit1, r1) ||| Cons(f, r2) => Cons(f, f_Top.triAdd(r1, r2))) ||| C_Top.TriDigit2 => (CASE y OF Nil => Cons(C_Top.TriDigit2, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, f_Top.triAdd(r1, r2)) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, f_Top.triAdd(r1, r2)) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit1, f_Top.triAdd(r1, r2))))) ||| C_Top.TriDigit3 => (CASE y OF Nil => Cons(C_Top.TriDigit3, r1) ||| Cons(t, r2) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit3, f_Top.triAdd(r1, r2)) ||| C_Top.TriDigit2 => f_Top.triIncrement(Cons(C_Top.TriDigit1, f_Top.triAdd(r1, r2))) ||| C_Top.TriDigit3 => f_Top.triIncrement(Cons(C_Top.TriDigit2, f_Top.triAdd(r1, r2)))))))
-Sym: triAdd
-Sym: triAdd
-Sym: triAdd
-Sym: triIncrement
-Sym: triAdd
-Sym: triAdd
-Sym: triIncrement
-Sym: triAdd
-Sym: triIncrement
-Sym: triAdd
-Rule: f_Top.triAdd(Nil, y) { True } -> y
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit1, r1), Nil) { True } -> Cons(C_Top.TriDigit1, r1)
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit1, r1), Cons(f, r2)) { True } -> Cons(f, f_Top.triAdd(r1, r2))
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit2, r1), Nil) { True } -> Cons(C_Top.TriDigit2, r1)
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit2, r1), Cons(C_Top.TriDigit1, r2)) { True } -> Cons(C_Top.TriDigit2, f_Top.triAdd(r1, r2))
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit2, r1), Cons(C_Top.TriDigit2, r2)) { True } -> Cons(C_Top.TriDigit3, f_Top.triAdd(r1, r2))
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit2, r1), Cons(C_Top.TriDigit3, r2)) { True } -> f_Top.triIncrement(Cons(C_Top.TriDigit1, f_Top.triAdd(r1, r2)))
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit3, r1), Nil) { True } -> Cons(C_Top.TriDigit3, r1)
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit3, r1), Cons(C_Top.TriDigit1, r2)) { True } -> Cons(C_Top.TriDigit3, f_Top.triAdd(r1, r2))
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit3, r1), Cons(C_Top.TriDigit2, r2)) { True } -> f_Top.triIncrement(Cons(C_Top.TriDigit1, f_Top.triAdd(r1, r2)))
-Rule: f_Top.triAdd(Cons(C_Top.TriDigit3, r1), Cons(C_Top.TriDigit3, r2)) { True } -> f_Top.triIncrement(Cons(C_Top.TriDigit2, f_Top.triAdd(r1, r2)))
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN HEAD
-build_rewrite_env UNKNOWN IMPLICITS
-HERE build_rewrite_env
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-DEF fix(Functions((Name triIncrement)(0, ALL(x:C_Coq.Init.Datatypes.list(C_Top.TriDigit): True) C_Coq.Init.Datatypes.list(C_Top.TriDigit), (fn x => (CASE x OF Nil => [C_Top.TriDigit2] ||| Cons(t, r) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, r) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, r) ||| C_Top.TriDigit3 => Cons(C_Top.TriDigit1, apply(triIncrement, r))))))), 0)
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 3
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 1
-process_def fix(Functions((Name triIncrement)(0, ALL(x:C_Coq.Init.Datatypes.list(C_Top.TriDigit): True) C_Coq.Init.Datatypes.list(C_Top.TriDigit), (fn x => (CASE x OF Nil => [C_Top.TriDigit2] ||| Cons(t, r) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, r) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, r) ||| C_Top.TriDigit3 => Cons(C_Top.TriDigit1, apply(triIncrement, r))))))), 0)
-**DEF** (Name triIncrement) (fn x => (CASE x OF Nil => [C_Top.TriDigit2] ||| Cons(t, r) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, r) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, r) ||| C_Top.TriDigit3 => Cons(C_Top.TriDigit1, apply(triIncrement, r)))))
-Name: triIncrement
-Core: (CASE x OF Nil => [C_Top.TriDigit2] ||| Cons(t, r) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, r) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, r) ||| C_Top.TriDigit3 => Cons(C_Top.TriDigit1, f_Top.triIncrement(r))))
-The syms of f_Top.triIncrement (CASE x OF Nil => [C_Top.TriDigit2] ||| Cons(t, r) => (CASE t OF C_Top.TriDigit1 => Cons(C_Top.TriDigit2, r) ||| C_Top.TriDigit2 => Cons(C_Top.TriDigit3, r) ||| C_Top.TriDigit3 => Cons(C_Top.TriDigit1, f_Top.triIncrement(r))))
-Sym: triIncrement
-Rule: f_Top.triIncrement(Nil) { True } -> [C_Top.TriDigit2]
-Rule: f_Top.triIncrement(Cons(C_Top.TriDigit1, r)) { True } -> Cons(C_Top.TriDigit2, r)
-Rule: f_Top.triIncrement(Cons(C_Top.TriDigit2, r)) { True } -> Cons(C_Top.TriDigit3, r)
-Rule: f_Top.triIncrement(Cons(C_Top.TriDigit3, r)) { True } -> Cons(C_Top.TriDigit1, f_Top.triIncrement(r))
-build_rewrite_env UNKNOWN SCHEME
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN HEAD
-build_rewrite_env UNKNOWN IMPLICITS
-HERE build_rewrite_env
-DEF (fn P => f_Top.TriDigit_rect(P))
-process_def (fn P => f_Top.TriDigit_rect(P))
-build_rewrite_env UNKNOWN SCHEME
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN HEAD
-build_rewrite_env UNKNOWN IMPLICITS
-HERE build_rewrite_env
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-DEF (fn P => (fn f => (fn f => (fn f => (fn t => (CASE t OF C_Top.TriDigit1 => f ||| C_Top.TriDigit2 => f ||| C_Top.TriDigit3 => f))))))
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-process_def (fn P => (fn f => (fn f => (fn f => (fn t => (CASE t OF C_Top.TriDigit1 => f ||| C_Top.TriDigit2 => f ||| C_Top.TriDigit3 => f))))))
-build_rewrite_env UNKNOWN SCHEME
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN HEAD
-build_rewrite_env UNKNOWN IMPLICITS
-HERE build_rewrite_env
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-DEF (fn P => (fn f => (fn f => (fn f => (fn t => (CASE t OF C_Top.TriDigit1 => f ||| C_Top.TriDigit2 => f ||| C_Top.TriDigit3 => f))))))
-s = Top.TriDigit i = 1
-s = Top.TriDigit i = 2
-s = Top.TriDigit i = 3
-process_def (fn P => (fn f => (fn f => (fn f => (fn t => (CASE t OF C_Top.TriDigit1 => f ||| C_Top.TriDigit2 => f ||| C_Top.TriDigit3 => f))))))
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
-build_rewrite_env UNKNOWN IMPLICITS
-build_rewrite_env UNKNOWN INDUCTIVE
-build_rewrite_env UNKNOWN REQUIRE
-build_rewrite_env UNKNOWN REQUIRE
-build_rewrite_env UNKNOWN REQUIRE
-build_rewrite_env UNKNOWN REQUIRE
-build_rewrite_env UNKNOWN TOKEN
-build_rewrite_env UNKNOWN TOKEN
-build_rewrite_env UNKNOWN REQUIRE
+wandElim2 < wandElim2 is declared
+
+Coq < Coq < Coq < 1 subgoal
+  
+  ============================
+  forall x : state, REWRITE_RULE (magicWand x empty) x True
+
+wandElim3 < 1 subgoal
+  
+  ============================
+  forall x : state, REWRITE_RULE (magicWand x empty) x True
+
+wandElim3 < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ forall x : state, REWRITE_RULE (magicWand x empty) x True
+You need to go back and solve them.
+
+wandElim3 < wandElim3 is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (a : state) (h : nat -> option nat), star a empty h
+
+test1 < 1 subgoal
+  
+  ============================
+  forall (a : state) (h : nat -> option nat), star a empty h
+
+test1 < HERE4
+HERE4
+s = Coq.Init.Datatypes.nat i = 1
+s = Coq.Init.Datatypes.nat i = 1
 
 2 subgoals
   
   ============================
-  False
+  forall (a : state) (h : nat -> option nat), a h
 
 subgoal 2 is:
- False = (1 + 1 = 3)
+ (forall (a : state) (h : nat -> option nat), a h) =
+ (forall (a : state) (h : nat -> option nat), star a empty h)
 
-x < 
-Coq < Coq < (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (App (Construct (Name nat) 2) (Construct (Name nat) 1)) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))))
-Coq < ntimes(1, 2)
-Coq < (App (Name eq) (Name nat) (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (App (Construct (Name nat) 2) (Construct (Name nat) 1)) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))))
-Coq < nplus(1, 2) == 3
-Coq < (App (Name eq) (Name nat) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))))
-Coq < 2 == 3
-Coq < (App (Name eq) (Name nat) (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (App (Construct (Name nat) 2) (Construct (Name nat) 1)) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))) (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))) (App (Construct (Name nat) 2) (Construct (Name nat) 1))))
-Coq < nplus(1, 2) == nplus(2, 1)
-Coq < (App (Definition Coq.Init.Peano.lt (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (App (Name le) (App (Construct (Name nat) 2) (Name n)) (Name m))))) (App (Construct (Name nat) 2) (Construct (Name nat) 1)) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))
-Coq < nless(1, 1)
-Coq < Coq < 
+test1 < test1 is declared
+
+Coq < Coq < Coq < Coq < Coq < Coq < Coq < 
