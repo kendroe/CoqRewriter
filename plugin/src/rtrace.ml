@@ -50,7 +50,7 @@
           trace_on := true) ; ());;
 
 (*val blocks = ref ["rewriteRule","rewriteRuleDisc","Disc","match","rewrite","derive"] ;*)
-let blocks = ref ["match";"rewriteRule";"kbrewrite";"rewrite";"derive";"kbrewrite"] ;;
+let blocks = ref ["match";"rewriteRuleDisc";"rewriteRule";"kbrewrite";"rewrite";"derive";"kbrewrite"] ;;
 (*val blocks = ref ["env"] ;*)
 
 let setBlocks bl = ((blocks := bl) ; ()) ;;

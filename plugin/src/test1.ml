@@ -527,8 +527,6 @@ print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
-Rtrace.toggle_trace () ;;
-
 let exp_test = Exp.parseExp "ALL(f) ALL(g) ALL(x) ALL(q) ALL(r) implies(nplus(apply(f, x), apply(g, x)) == 0, nplus(nplus(nplus(apply(g, nplus(nplus(xx, 2), 1)), q), apply(f, nplus(3, xx))), r) == nplus(q, r))" ;;
 print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
@@ -544,4 +542,53 @@ print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
 let exp_res = List.hd (Inner.rewrite2 env_10 (Renv.flatten env_10 exp_test)) ;;
 print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 
+print_string "Here0\n";;
+let env_a = Renv.addTypeDefinition Renv.emptyEnv (Rtype.parseWholeDef "State(x) = St(List(Nat),List(Nat))");;
+
+print_string "Here1\n";;
+
+let env_b = Renv.addFunction env_a ((Exp.parseExp "star(a,b)"),
+            (Rtype.parse "State() * State() -> State()"),
+            (Exp.parseExp "True"),
+    [
+    ]) [] ;;
+
+print_string "Here2\n";;
+
+let env_c = Renv.addFunction env_b ((Exp.parseExp "magicWand(a,b)"),
+            (Rtype.parse "State() * State() -> State()"),
+            (Exp.parseExp "True"),
+    [
+    ]) [] ;;
+
+let env_d = Renv.addAttrib env_c Intern.intern_ac [S(Intern.intern "star")] ;;
+
+print_string "Here3\n";;
+
+let env_e = Renv.addProperty env_d (Exp.parseRule "magicWand(star(a,b),b) -> a") ;;
+let exp_test = Exp.parseExp "magicWand(star(a,b,c),a)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_e (Renv.flatten env_10 exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let exp_test = Exp.parseExp "magicWand(star(a,b,c),b)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_e (Renv.flatten env_10 exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let env_f = Renv.addProperty env_e (Exp.parseRule "magicWand(star(a,b),star(a,c)) -> magicWand(a,c)") ;;
+
+let exp_test = Exp.parseExp "magicWand(star(a,b,c),star(c,b))" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_f (Renv.flatten env_10 exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
+
+let env_g = Renv.addProperty env_f (Exp.parseRule "magicWand(a,a,h) -> apply(St(Nil,Nil),h)") ;;
+
+Rtrace.toggle_trace () ;;
+
+let exp_test = Exp.parseExp "magicWand(x,x,h)" ;;
+print_string ("exp_test: " ^ Exp.prExp exp_test ^ "\n") ;;
+let exp_res = List.hd (Inner.rewrite2 env_g (Renv.flatten env_g exp_test)) ;;
+print_string ("exp_res: " ^ Exp.prExp exp_res ^ "\n") ;;
 

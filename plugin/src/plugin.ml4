@@ -1234,12 +1234,11 @@ let process_property env p =
     match (root_prop p) with
     | (APPL (f,[_;t])) -> if f=ac then
                               match t with
-                              | APPL (_,((APPL (f,_))::_)) ->
+                              | (APPL (f,_)) ->
                                   let d = decode f in
                                       if (String.length d)>4 then
-                                          let r = intern (String.sub d 4 ((String.length d)-4)) in
-                                          let _ = debug_print "process_property" ("Adding ac " ^ (decode r)) in
-                                              Renv.addAttrib env intern_ac [Renv.S(r)]
+                                          let _ = debug_print "process_property" ("Adding ac " ^ d) in
+                                              Renv.addAttrib env intern_ac [Renv.S(f)]
                                           else env
                               | _ -> env
                           else env

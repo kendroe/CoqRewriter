@@ -46,7 +46,18 @@ Proof.
     admit.
 Admitted.
 
+Theorem wandTermElim1_h: forall l r x h, REWRITE_RULE (magicWand (star l x) (star r x) h)
+                                   (magicWand l r h) True.
+Proof.
+    admit.
+Admitted.
+
 Theorem wandElim1: forall l x, REWRITE_RULE (magicWand (star l x) x) l True.
+Proof.
+    admit.
+Admitted.
+
+Theorem wandElim1_h: forall l x h, REWRITE_RULE (magicWand (star l x) x h) (l h) True.
 Proof.
     admit.
 Admitted.
@@ -57,8 +68,20 @@ Proof.
     admit.
 Admitted.
 
+Theorem wandElim2_h: forall x h, REWRITE_RULE (magicWand x x h)
+                               (empty h) True.
+Proof.
+    admit.
+Admitted.
+
 Theorem wandElim3: forall x, REWRITE_RULE (magicWand x empty)
 	x True.
+Proof.
+    admit.
+Admitted.
+
+Theorem wandElim3_h: forall x h, REWRITE_RULE (magicWand x empty h)
+	(x h) True.
 Proof.
     admit.
 Admitted.
@@ -67,9 +90,30 @@ Theorem test1: forall a h, (star a empty) h.
 Proof.
     arewrite.
 Admitted.
-(*Theorem test1: forall a b c h, (magicWand (star a (star b c)) b) h.
+
+Theorem test2: forall a b c h, (magicWand (star a (star b c)) b) h.
 Proof.
     arewrite.
-Admitted.*)
+Admitted.
+
+Theorem test3: forall a b c h, (magicWand (star a (star b c)) (star a b)) h.
+Proof.
+    arewrite.
+Admitted.
+
+Theorem test4: forall a b h, (magicWand (star b a) a) h.
+Proof.
+    arewrite.
+Admitted.
+
+Theorem test5: forall a h, (magicWand a a) h.
+Proof.
+    arewrite.
+Admitted.
+
+Theorem test6: forall a h, (magicWand (star a empty) a) h.
+Proof.
+    arewrite.
+Admitted.
 
 

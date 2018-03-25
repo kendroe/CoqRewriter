@@ -183,7 +183,7 @@ let rec maketlstring l = match l with
 let rec makedstring d = match d with
   | (D(t,l)) -> "D" ^ (maketstring t) ^ "[" ^
                (foldstring makedstring l) ^ "]"
-  | (E(l)) -> "E(" ^ foldstring prExp l ^ ")"
+  | (E(l)) -> "E(" ^ foldstring (fun (x) -> (prExp (ExpIntern.decode_exp x))) l ^ ")"
   ;;
 
 let rec makedcstring l = match l with

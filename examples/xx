@@ -104,6 +104,29 @@ You need to go back and solve them.
 
 wandTermElim1 < wandTermElim1 is declared
 
+Coq < Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (l r x : state) (h : nat -> option nat),
+  REWRITE_RULE (magicWand (star l x) (star r x) h) (magicWand l r h) True
+
+wandTermElim1_h < 1 subgoal
+  
+  ============================
+  forall (l r x : state) (h : nat -> option nat),
+  REWRITE_RULE (magicWand (star l x) (star r x) h) (magicWand l r h) True
+
+wandTermElim1_h < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ forall (l r x : state) (h : nat -> option nat),
+ REWRITE_RULE (magicWand (star l x) (star r x) h) (magicWand l r h) True
+You need to go back and solve them.
+
+wandTermElim1_h < wandTermElim1_h is declared
+
 Coq < Coq < 1 subgoal
   
   ============================
@@ -123,6 +146,29 @@ subgoal 1 is:
 You need to go back and solve them.
 
 wandElim1 < wandElim1 is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (l x : state) (h : nat -> option nat),
+  REWRITE_RULE (magicWand (star l x) x h) (l h) True
+
+wandElim1_h < 1 subgoal
+  
+  ============================
+  forall (l x : state) (h : nat -> option nat),
+  REWRITE_RULE (magicWand (star l x) x h) (l h) True
+
+wandElim1_h < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ forall (l x : state) (h : nat -> option nat),
+ REWRITE_RULE (magicWand (star l x) x h) (l h) True
+You need to go back and solve them.
+
+wandElim1_h < wandElim1_h is declared
 
 Coq < Coq < Coq < 1 subgoal
   
@@ -147,6 +193,29 @@ wandElim2 < wandElim2 is declared
 Coq < Coq < Coq < 1 subgoal
   
   ============================
+  forall (x : state) (h : nat -> option nat),
+  REWRITE_RULE (magicWand x x h) (empty h) True
+
+wandElim2_h < 1 subgoal
+  
+  ============================
+  forall (x : state) (h : nat -> option nat),
+  REWRITE_RULE (magicWand x x h) (empty h) True
+
+wandElim2_h < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ forall (x : state) (h : nat -> option nat),
+ REWRITE_RULE (magicWand x x h) (empty h) True
+You need to go back and solve them.
+
+wandElim2_h < wandElim2_h is declared
+
+Coq < Coq < Coq < 1 subgoal
+  
+  ============================
   forall x : state, REWRITE_RULE (magicWand x empty) x True
 
 wandElim3 < 1 subgoal
@@ -163,6 +232,29 @@ subgoal 1 is:
 You need to go back and solve them.
 
 wandElim3 < wandElim3 is declared
+
+Coq < Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (x : state) (h : nat -> option nat),
+  REWRITE_RULE (magicWand x empty h) (x h) True
+
+wandElim3_h < 1 subgoal
+  
+  ============================
+  forall (x : state) (h : nat -> option nat),
+  REWRITE_RULE (magicWand x empty h) (x h) True
+
+wandElim3_h < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ forall (x : state) (h : nat -> option nat),
+ REWRITE_RULE (magicWand x empty h) (x h) True
+You need to go back and solve them.
+
+wandElim3_h < wandElim3_h is declared
 
 Coq < Coq < 1 subgoal
   
@@ -190,4 +282,138 @@ subgoal 2 is:
 
 test1 < test1 is declared
 
-Coq < Coq < Coq < Coq < Coq < Coq < Coq < 
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (a b c : state) (h : nat -> option nat),
+  magicWand (star a (star b c)) b h
+
+test2 < 1 subgoal
+  
+  ============================
+  forall (a b c : state) (h : nat -> option nat),
+  magicWand (star a (star b c)) b h
+
+test2 < HERE4
+HERE4
+s = Coq.Init.Datatypes.nat i = 1
+s = Coq.Init.Datatypes.nat i = 1
+
+2 subgoals
+  
+  ============================
+  forall (a c : state) (h : nat -> option nat), star a c h
+
+subgoal 2 is:
+ (forall (a c : state) (h : nat -> option nat), star a c h) =
+ (forall (a b c : state) (h : nat -> option nat),
+  magicWand (star a (star b c)) b h)
+
+test2 < test2 is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (a b c : state) (h : nat -> option nat),
+  magicWand (star a (star b c)) (star a b) h
+
+test3 < 1 subgoal
+  
+  ============================
+  forall (a b c : state) (h : nat -> option nat),
+  magicWand (star a (star b c)) (star a b) h
+
+test3 < HERE4
+HERE4
+s = Coq.Init.Datatypes.nat i = 1
+s = Coq.Init.Datatypes.nat i = 1
+
+2 subgoals
+  
+  ============================
+  forall (c : state) (h : nat -> option nat), c h
+
+subgoal 2 is:
+ (forall (c : state) (h : nat -> option nat), c h) =
+ (forall (a b c : state) (h : nat -> option nat),
+  magicWand (star a (star b c)) (star a b) h)
+
+test3 < test3 is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (a b : state) (h : nat -> option nat), magicWand (star b a) a h
+
+test4 < 1 subgoal
+  
+  ============================
+  forall (a b : state) (h : nat -> option nat), magicWand (star b a) a h
+
+test4 < HERE4
+HERE4
+s = Coq.Init.Datatypes.nat i = 1
+s = Coq.Init.Datatypes.nat i = 1
+
+2 subgoals
+  
+  ============================
+  forall (b : state) (h : nat -> option nat), b h
+
+subgoal 2 is:
+ (forall (b : state) (h : nat -> option nat), b h) =
+ (forall (a b : state) (h : nat -> option nat), magicWand (star b a) a h)
+
+test4 < test4 is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (a : state) (h : nat -> option nat), magicWand a a h
+
+test5 < 1 subgoal
+  
+  ============================
+  forall (a : state) (h : nat -> option nat), magicWand a a h
+
+test5 < HERE4
+s = Coq.Init.Datatypes.nat i = 1
+s = Coq.Init.Datatypes.nat i = 1
+
+2 subgoals
+  
+  ============================
+  forall h : nat -> option nat, empty h
+
+subgoal 2 is:
+ (forall h : nat -> option nat, empty h) =
+ (forall (a : state) (h : nat -> option nat), magicWand a a h)
+
+test5 < test5 is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall (a : state) (h : nat -> option nat), magicWand (star a empty) a h
+
+test6 < 1 subgoal
+  
+  ============================
+  forall (a : state) (h : nat -> option nat), magicWand (star a empty) a h
+
+test6 < HERE4
+s = Coq.Init.Datatypes.nat i = 1
+s = Coq.Init.Datatypes.nat i = 1
+
+2 subgoals
+  
+  ============================
+  forall h : nat -> option nat, empty h
+
+subgoal 2 is:
+ (forall h : nat -> option nat, empty h) =
+ (forall (a : state) (h : nat -> option nat), magicWand (star a empty) a h)
+
+test6 < test6 is declared
+
+Coq < Coq < Coq < 
