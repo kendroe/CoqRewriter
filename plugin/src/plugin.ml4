@@ -71,7 +71,7 @@ open Context.Rel.Declaration
 open Intern
 open Exp
 
-let debug_ids = []
+let debug_ids = ["typeclasses"]
 
 let debug_print c s =
     if (List.mem "ALL" debug_ids) || (List.mem c debug_ids) then
@@ -638,7 +638,8 @@ let bindings_for_inductive (env : Environ.env) (mutind_body : mutual_inductive_b
   let m = List.map
     (fun ind_body ->
       let univ_context = match mutind_body.mind_universes with
-                         | Monomorphic_ind x -> x in
+                         | Monomorphic_ind x -> x
+                         | _ -> Univ.UContext.empty in
       let univ_instance = UContext.instance univ_context in
       let name_id = ind_body.mind_typename in
       let mutind_spec = (mutind_body, ind_body) in
@@ -1002,7 +1003,7 @@ let rec build_exp (env : Environ.env) (trm : types) =
       (*let _ = print_string ("Constr result " ^ (prExp i') ^ "\n") in*)
       let (x,_) = i in
       let s = (MutInd.to_string x) in
-      let _ = print ("s = "^s^" i = "^(string_of_int c_index)^"\n") in
+      let _ = debug_print "build_exp" ("s = "^s^" i = "^(string_of_int c_index)^"\n") in
           if s="Coq.Init.Datatypes.nat" && c_index=1 then
               NUM 0
           else if s="Coq.Init.Datatypes.bool" && c_index=1 then
@@ -1748,11 +1749,87 @@ and build_or l tenv = match l with
   | (f::r) -> Term.mkApp(Lazy.force reify_or,[|build_predicate f tenv;build_or r tenv|])
   ;;
 
+
+let rec print_type_class (c : Typeclasses.instance) =
+    let impl = Typeclasses.instance_impl c in
+    let c = printable_constr_of_global impl in
+    let n = match kind_of_term c with
+            | Const (c, u) ->
+                  let kn = Constant.canonical c in
+                  let kn' = build_kername kn in kn'
+            | _ -> "" in
+    (*let ast = apply_to_definition build_ast (Global.env ()) 1 c in*)
+        debug_print "typeclasses" n;
+        if String.length n > 3 && String.sub n 0 3 ="tri" then
+            let ast = apply_to_definition build_ast (Global.env ()) 1 c in
+            let se = match kind_of_term c with
+                    | Const (c, u) ->
+                      let kn = Constant.canonical c in
+                      let cd = (Environ.lookup_constant c (Global.env ())) in
+                          match get_definition cd with
+                          | None -> NOEXP
+                          | Some c ->
+                          build_definition_exp kn (build_exp (Global.env ()) c) u
+                    | _ -> NOEXP in
+                debug_print "typeclasses" (prExp se) ;
+                debug_print "typeclasses" ast
+        else ()
+  ;;
+
+let rec print_type_classes cl =
+  match cl with
+  | (f::r) -> ((print_type_class f);(print_type_classes r))
+  | _ -> ()
+  ;;
+
+let typeclass_ac = intern "C_AdvancedRewrite.advancedRewrite.AC_PROP1" ;;
+
+let rec add_type_class_decl env se =
+  (debug_print "typeclasses" (prExp se));
+  match se with
+  | (APPL (d,[(APPL (_,[(APPL (ac,[_;(APPL (f,[]));_]))]))])) ->
+    if ac=typeclass_ac then
+        ((debug_print "typeclasses" ("AC " ^ (decode f)));(Renv.addAttrib env intern_ac [Renv.S(f)]))
+    else
+        env
+  | _ -> env
+
+let rec build_type_class_env env (c : Typeclasses.instance) =
+    let impl = Typeclasses.instance_impl c in
+    let c = printable_constr_of_global impl in
+    let n = match kind_of_term c with
+            | Const (c, u) ->
+                  let kn = Constant.canonical c in
+                  let kn' = build_kername kn in kn'
+            | _ -> "" in
+        debug_print "typeclasses" n;
+        if String.length n > 3 && not(String.sub n 0 3="Coq") then
+            let se = match kind_of_term c with
+                    | Const (c, u) ->
+                      let kn = Constant.canonical c in
+                      let cd = (Environ.lookup_constant c (Global.env ())) in
+                          match get_definition cd with
+                          | None -> NOEXP
+                          | Some c ->
+                          build_definition_exp kn (build_exp (Global.env ()) c) u
+                    | _ -> NOEXP in
+             add_type_class_decl env se
+        else env
+
+let rec build_typeclasses_env env cl =
+  match cl with
+  | (f::r) -> build_typeclasses_env (build_type_class_env env f) r
+  | _ -> env
+  ;;
+
 (* Top-level arewrite functionality *)
 let arewrite cl : unit Proofview.tactic =
   Proofview.Goal.enter (fun gl ->
+  let _ = debug_print "typeclasses" "Test\n" in
+  let _ = print_type_classes (Typeclasses.all_instances ()) in
   let _ = debug_print "arewrite" ("Environment:\n\n" ^ string_of_ppcmds (print_full_pure_context ()) ^ "\nEND\n\n") in
-  let rewriteEnv = build_rewrite_env Renv.emptyEnv in
+  let rewriteEnv1 = build_rewrite_env Renv.emptyEnv in
+  let rewriteEnv = build_typeclasses_env rewriteEnv1 (Typeclasses.all_instances ()) in
   let concl = Proofview.Goal.concl gl in
   let (evm, env) = Lemmas.get_current_context() in
   (*let (body, _) = Constrintern.interp_constr env evm concl in*)

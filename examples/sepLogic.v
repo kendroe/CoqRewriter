@@ -116,4 +116,9 @@ Proof.
     arewrite.
 Admitted.
 
+Theorem test7: forall a b h, (star (star a empty) b) h.
+Proof.
+    arewrite.
+Admitted.
+
 
