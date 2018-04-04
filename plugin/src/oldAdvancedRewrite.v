@@ -38,7 +38,7 @@ Definition AC {t} (f: t -> t -> t) :=
 
 Class AC_PROP {T} (f : T -> T -> T) : Prop :=
 {
-     acProp : @AC T f
+     acProp : forall a b c, (f a (f b c))=f (f a b) c /\ f a b=f b a
 }.
 
 Definition A {t} (f: t -> t -> t) :=
@@ -46,7 +46,7 @@ Definition A {t} (f: t -> t -> t) :=
 
 Class A_PROP {T} (f : T -> T -> T) : Prop :=
 {
-     aProp : @A T f
+     aProp : (forall x y z, (f x (f y z))=(f (f x y) z))
 }.
 
 Definition C {t} (f: t -> t -> t) :=
@@ -54,7 +54,7 @@ Definition C {t} (f: t -> t -> t) :=
 
 Class C_PROP {T} (f : T -> T -> T) : Prop :=
 {
-     cProp : @C T f
+     cProp : (forall x y z, (f x (f y z))=(f (f x y) z))
 }.
 
 Definition EQ {t} (eq: t -> t -> bool) :=
@@ -64,7 +64,10 @@ Definition EQ {t} (eq: t -> t -> bool) :=
 
 Class EQ_PROP {T} (eq : T -> T -> bool) : Prop :=
 {
-     eqProp : @EQ T eq
+     eqProp :
+         (forall x y, (eq x y)=(eq y x)) /\
+          (forall x, (eq x x)=true) /\
+          (forall x y z,((eq x y)=false \/ (eq y z)=false \/ (eq x z)=true))
 }.
 
 Definition PO {t} (eq: t -> t -> bool) (po: t -> t -> bool) :=
@@ -74,7 +77,10 @@ Definition PO {t} (eq: t -> t -> bool) (po: t -> t -> bool) :=
 
 Class PO_PROP {T} (eq : T -> T -> bool) (po: T -> T -> bool) : Prop :=
 {
-     poProp : @PO T eq po
+     poProp :
+         (forall x y, ((po x y)=false \/ (po y x)=false)) /\
+          (forall x y, (eq x y)=true -> (po x y)=false) /\
+          (forall x y z,((po x y)=false \/ (po y z)=false \/ (po x z)=true))
 }.
 
 Definition TO {t} (eq: t -> t -> bool) (to: t -> t -> bool) :=
@@ -85,7 +91,11 @@ Definition TO {t} (eq: t -> t -> bool) (to: t -> t -> bool) :=
 
 Class TO_PROP {T} (eq : T -> T -> bool) (to: T -> T -> bool) : Prop :=
 {
-     toProp : @TO T eq to
+     toProp :
+   (forall x y, ((to x y)=false \/ (to y x)=false)) /\
+   (forall x y, (eq x y)=true -> (to x y)=false) /\
+   (forall x y, ((eq x y)=true \/ (to x y)=true \/ (to y x)=true)) /\
+   (forall x y z,((to x y)=false \/ (to y z)=false \/ (to x z)=true))
 }.
 
 Definition EPO {t} (eq: t -> t -> bool) (po: t -> t -> bool) :=
@@ -95,7 +105,10 @@ Definition EPO {t} (eq: t -> t -> bool) (po: t -> t -> bool) :=
 
 Class EPO_PROP {t} (eq: t -> t -> bool) (po: t -> t -> bool) : Prop :=
 {
-   epoProp: @EPO t eq po
+   epoProp:
+       (forall x y, ((po x y)=false \/ (po y x)=false)) /\
+       (forall x y, (eq x y)=true -> (po x y)=true) /\
+       (forall x y z,((po x y)=false \/ (po y z)=false \/ (po x z)=true))
 }.
 
 Definition ETO {t} (eq: t -> t -> bool) (to: t -> t -> bool) :=
@@ -106,7 +119,11 @@ Definition ETO {t} (eq: t -> t -> bool) (to: t -> t -> bool) :=
 
 Class ETO_PROP {t} (eq: t -> t -> bool) (to: t -> t -> bool) : Prop :=
 {
-   etoProp: @ETO t eq to
+   etoProp:
+       (forall x y, ((to x y)=false \/ (to y x)=false)) /\
+       (forall x y, (eq x y)=true -> (to x y)=true) /\
+       (forall x y, ((eq x y)=true \/ (to x y)=true \/ (to y x)=true)) /\
+       (forall x y z,((to x y)=false \/ (to y z)=false \/ (to x z)=true))
 }.
 
 Definition EQP {t} (eq: t -> t -> Prop) :=
@@ -116,7 +133,10 @@ Definition EQP {t} (eq: t -> t -> Prop) :=
 
 Class EQP_PROP {t} (eq: t -> t -> Prop) : Prop :=
 {
-   eqpProp: @EQP t eq
+   eqpProp:
+       (forall x y, (eq x y)=(eq y x)) /\
+       (forall x, (eq x x)) /\
+       (forall x y z, (eq x y) -> (eq y z) -> (eq x z))
 }.
 
 Definition POP {t} (eq: t -> t -> Prop) (po: t -> t -> Prop) :=
@@ -126,7 +146,10 @@ Definition POP {t} (eq: t -> t -> Prop) (po: t -> t -> Prop) :=
 
 Class POP_PROP {t} (eq: t -> t -> Prop) (po: t -> t -> Prop) : Prop :=
 {
-   popProp: @POP t eq po
+   popProp:
+       (forall x y, ~(po x y) \/ ~(po y x)) /\
+       (forall x y, (eq x y) -> ~(po x y)) /\
+       (forall x y z,(~(po x y) \/ ~(po y z) \/ ~(po x z)))
 }.
 
 Definition TOP {t} (eq: t -> t -> Prop) (to: t -> t -> Prop) :=
@@ -137,17 +160,24 @@ Definition TOP {t} (eq: t -> t -> Prop) (to: t -> t -> Prop) :=
 
 Class TOP_PROP {t} (eq: t -> t -> Prop) (to: t -> t -> Prop) : Prop :=
 {
-   topProp: @TOP t eq to
+   topProp:
+       (forall x y, (~(to x y) \/ ~(to y x))) /\
+       (forall x y, (eq x y) -> ~(to x y)) /\
+       (forall x y, ((eq x y) \/ (to x y) \/ (to y x))) /\
+       (forall x y z,(~(to x y) \/ ~(to y z) \/ (to x z)))
 }.
 
-Definition EPOP {t} (eq: t -> t -> Prop) (po: t -> t -> Prop) :=
+Definition EPOT {t} (eq: t -> t -> Prop) (po: t -> t -> Prop) :=
    (forall x y, (~(po x y) \/ ~(po y x))) /\
    (forall x y, (eq x y) -> (po x y)) /\
    (forall x y z,(~(po x y) \/ ~(po y z) \/ (po x z))).
 
-Class EPOP_PROP {t} (eq: t -> t -> Prop) (po: t -> t -> Prop) : Prop :=
+Class EPOT_PROP {t} (eq: t -> t -> Prop) (po: t -> t -> Prop) : Prop :=
 {
-   epopProp: @EPOP t eq po
+   epotProp:
+       (forall x y, (~(po x y) \/ ~(po y x))) /\
+       (forall x y, (eq x y) -> (po x y)) /\
+       (forall x y z,(~(po x y) \/ ~(po y z) \/ (po x z)))
 }.
 
 Definition ETOP {t} (eq: t -> t -> Prop) (to: t -> t -> Prop) :=
@@ -158,7 +188,11 @@ Definition ETOP {t} (eq: t -> t -> Prop) (to: t -> t -> Prop) :=
 
 Class ETOP_PROP {t} (eq: t -> t -> Prop) (to: t -> t -> Prop) : Prop :=
 {
-   etopProp: @ETOP t eq to
+   etopProp:
+       (forall x y, (~(to x y) \/ ~(to y x))) /\
+       (forall x y, (eq x y) -> (to x y)) /\
+       (forall x y, ((eq x y) \/ (to x y) \/ (to y x))) /\
+       (forall x y z,(~(to x y) \/ ~(to y z) \/ ~(to x z)))
 }.
 
 Definition PREC_LESS {t1} {t2} (s1: t1) (s2 : t2) := True.

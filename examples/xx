@@ -6,27 +6,300 @@ Coq <
 Coq < Coq < 1 subgoal
   
   ============================
-  forall a b c : list TriDigit,
-  triAdd a (triAdd b c) = triAdd (triAdd a b) c /\ triAdd a b = triAdd b a
+  AC triAdd
 
 trAC_Class < 1 subgoal
   
   ============================
-  forall a b c : list TriDigit,
-  triAdd a (triAdd b c) = triAdd (triAdd a b) c /\ triAdd a b = triAdd b a
+  AC triAdd
 
 trAC_Class < No more subgoals, but there are some goals you gave up:
 
 1 subgoal
 
 subgoal 1 is:
- forall a b c : list TriDigit,
- triAdd a (triAdd b c) = triAdd (triAdd a b) c /\ triAdd a b = triAdd b a
+ AC triAdd
 You need to go back and solve them.
 
 trAC_Class < trAC_Class is declared
 
+Coq < Coq < 1 subgoal
+  
+  ============================
+  A triAdd
+
+trA_Class < 1 subgoal
+  
+  ============================
+  A triAdd
+
+trA_Class < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ A triAdd
+You need to go back and solve them.
+
+trA_Class < trA_Class is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  C triAdd
+
+trC_Class < 1 subgoal
+  
+  ============================
+  C triAdd
+
+trC_Class < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ C triAdd
+You need to go back and solve them.
+
+trC_Class < trC_Class is declared
+
 Coq < Coq < Coq < Coq < Coq < tac2 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac3 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac4 is defined
+
+Coq < Coq < eq_fun is defined
+
+Coq < lt_fun is defined
+
+Coq < le_fun is defined
+
+Coq < Coq < eqp_fun is defined
+
+Coq < ltp_fun is defined
+
+Coq < lep_fun is defined
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  EQ eq_fun
+
+dd_eq < 1 subgoal
+  
+  ============================
+  EQ eq_fun
+
+dd_eq < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ EQ eq_fun
+You need to go back and solve them.
+
+dd_eq < dd_eq is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  PO eq_fun lt_fun
+
+dd_lp < 1 subgoal
+  
+  ============================
+  PO eq_fun lt_fun
+
+dd_lp < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ PO eq_fun lt_fun
+You need to go back and solve them.
+
+dd_lp < dd_lp is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  TO eq_fun lt_fun
+
+dd_lt < 1 subgoal
+  
+  ============================
+  TO eq_fun lt_fun
+
+dd_lt < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ TO eq_fun lt_fun
+You need to go back and solve them.
+
+dd_lt < dd_lt is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  EPO eq_fun lt_fun
+
+dd_elp < 1 subgoal
+  
+  ============================
+  EPO eq_fun lt_fun
+
+dd_elp < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ EPO eq_fun lt_fun
+You need to go back and solve them.
+
+dd_elp < dd_elp is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  ETO eq_fun lt_fun
+
+dd_elt < 1 subgoal
+  
+  ============================
+  ETO eq_fun lt_fun
+
+dd_elt < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ ETO eq_fun lt_fun
+You need to go back and solve them.
+
+dd_elt < dd_elt is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  EQP eqp_fun
+
+dd_eqp < 1 subgoal
+  
+  ============================
+  EQP eqp_fun
+
+dd_eqp < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ EQP eqp_fun
+You need to go back and solve them.
+
+dd_eqp < dd_eqp is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  POP eqp_fun ltp_fun
+
+dd_lpp < 1 subgoal
+  
+  ============================
+  POP eqp_fun ltp_fun
+
+dd_lpp < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ POP eqp_fun ltp_fun
+You need to go back and solve them.
+
+dd_lpp < dd_lpp is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  TOP eqp_fun ltp_fun
+
+dd_ltp < 1 subgoal
+  
+  ============================
+  TOP eqp_fun ltp_fun
+
+dd_ltp < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ TOP eqp_fun ltp_fun
+You need to go back and solve them.
+
+dd_ltp < dd_ltp is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  EPOP eqp_fun ltp_fun
+
+dd_elpp < 1 subgoal
+  
+  ============================
+  EPOP eqp_fun ltp_fun
+
+dd_elpp < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ EPOP eqp_fun ltp_fun
+You need to go back and solve them.
+
+dd_elpp < dd_elpp is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  ETOP eqp_fun ltp_fun
+
+dd_eltp < 1 subgoal
+  
+  ============================
+  ETOP eqp_fun ltp_fun
+
+dd_eltp < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ ETOP eqp_fun ltp_fun
+You need to go back and solve them.
+
+dd_eltp < dd_eltp is declared
+
+Coq < Coq < Coq < Coq < Coq < tac5 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac6 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac7 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac8 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac9 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac10 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac11 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac12 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac13 is defined
+
+Coq < Coq < Coq < Coq < Coq < tac14 is defined
 
 Coq < Coq < 1 subgoal
   
@@ -40,6 +313,7 @@ x < 1 subgoal
 
 x < typeclasses: Test
 
+typeclasses: Top.tac13
 typeclasses: Coq.Classes.RelationClasses.equivalence_rewrite_relation
 typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_2
 typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_1
@@ -49,27 +323,38 @@ typeclasses: Coq.Classes.CRelationClasses.equivalence_rewrite_crelation
 typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_2
 typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_1
 typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_0
+typeclasses: Top.tac9
+typeclasses: Top.tac11
+typeclasses: Top.tac5
+typeclasses: Top.tac10
+typeclasses: Top.tac4
+typeclasses: Top.tac3
+typeclasses: Top.tac7
 typeclasses: Coq.Classes.RelationClasses.Equivalence_PER
 typeclasses: Top.tac2
 typeclasses: triclass.tac
 typeclasses: Definition(triclass.tac(C_AdvancedRewrite.advancedRewrite.AC_PROP1(C_Coq.Init.Datatypes.list(C_triclass.TriDigit), f_triclass.triAdd(), f_triclass.trAC_Class())))
-typeclasses: (Definition triclass.tac (App (Construct (Record ((Name AC_PROP) (inductive_body (Build_AC_PROP 1 (Prod (Name T) (Sort (Type (Universe (Level AdvancedRewrite.advancedRewrite.9)))) (Prod (Name f) (Prod (Anonymous) (Name T) (Prod (Anonymous) (Name T) (Name T))) (Prod (Name acProp) (Prod (Name a) (Name T) (Prod (Name b) (Name T) (Prod (Name c) (Name T) (App (Name and) (App (Name eq) (Name T) (App (Name f) (Name a) (App (Name f) (Name b) (Name c))) (App (Name f) (App (Name f) (Name a) (Name b)) (Name c))) (App (Name eq) (Name T) (App (Name f) (Name a) (Name b)) (App (Name f) (Name b) (Name a))))))) (App (Name AC_PROP) (Name T) (Name f))))))))) 1) (App (Inductive ((Name list) (inductive_body (nil 1 (Prod (Name A) (Sort (Type (Universe (Level Coq.Init.Datatypes.44)))) (App (Name list) (Name A)))) (cons 2 (Prod (Name A) (Sort (Type (Universe (Level Coq.Init.Datatypes.44)))) (Prod (Anonymous) (Name A) (Prod (Anonymous) (App (Name list) (Name A)) (App (Name list) (Name A))))))))) (Inductive ((Name TriDigit) (inductive_body (TriZero 1 (Name TriDigit)) (TriOne 2 (Name TriDigit)) (TriTwo 3 (Name TriDigit)))))) (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0)) (Axiom triclass.trAC_Class (Prod (Name a) (App (Name list) (Name TriDigit)) (Prod (Name b) (App (Name list) (Name TriDigit)) (Prod (Name c) (App (Name list) (Name TriDigit)) (App (Name and) (App (Name eq) (App (Name list) (Name TriDigit)) (App (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0)) (Name a) (App (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0)) (Name b) (Name c))) (App (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0)) (App (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0)) (Name a) (Name b)) (Name c))) (App (Name eq) (App (Name list) (Name TriDigit)) (App (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0)) (Name a) (Name b)) (App (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0)) (Name b) (Name a))))))))))
+typeclasses: (Definition triclass.tac (App (Construct (Record ((Name AC_PROP) (inductive_body (Build_AC_PROP 1 (Prod (Name T) (Sort (Type (Universe (Level AdvancedRewrite.advancedRewrite.9)))) (Prod (Name f) (Prod (Anonymous) (Name T) (Prod (Anonymous) (Name T) (Name T))) (Prod (Name acProp) (App (Definition AdvancedRewrite.advancedRewrite.AC (Lambda (Name t) (Sort (Type (Universe (Level AdvancedRewrite.advancedRewrite.2)))) (Lambda (Name f) (Prod (Anonymous) (Name t) (Prod (Anonymous) (Name t) (Name t))) (App (Name and) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (App (Name eq) (Name t) (App (Name f) (Name x) (Name y)) (App (Name f) (Name y) (Name x))))) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (Prod (Name z) (Name t) (App (Name eq) (Name t) (App (Name f) (Name x) (App (Name f) (Name y) (Name z))) (App (Name f) (App (Name f) (Name x) (Name y)) (Name z)))))))))) (Name T) (Name f)) (App (Name AC_PROP) (Name T) (Name f))))))))) 1) (App (Inductive ((Name list) (inductive_body (nil 1 (Prod (Name A) (Sort (Type (Universe (Level Coq.Init.Datatypes.44)))) (App (Name list) (Name A)))) (cons 2 (Prod (Name A) (Sort (Type (Universe (Level Coq.Init.Datatypes.44)))) (Prod (Anonymous) (Name A) (Prod (Anonymous) (App (Name list) (Name A)) (App (Name list) (Name A))))))))) (Inductive ((Name TriDigit) (inductive_body (TriZero 1 (Name TriDigit)) (TriOne 2 (Name TriDigit)) (TriTwo 3 (Name TriDigit)))))) (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0)) (Axiom triclass.trAC_Class (App (Definition AdvancedRewrite.advancedRewrite.AC (Lambda (Name t) (Sort (Type (Universe (Level AdvancedRewrite.advancedRewrite.2)))) (Lambda (Name f) (Prod (Anonymous) (Name t) (Prod (Anonymous) (Name t) (Name t))) (App (Name and) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (App (Name eq) (Name t) (App (Name f) (Name x) (Name y)) (App (Name f) (Name y) (Name x))))) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (Prod (Name z) (Name t) (App (Name eq) (Name t) (App (Name f) (Name x) (App (Name f) (Name y) (Name z))) (App (Name f) (App (Name f) (Name x) (Name y)) (Name z)))))))))) (App (Name list) (Name TriDigit)) (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0))))))
 typeclasses: Coq.Classes.RelationClasses.predicate_equivalence_equivalence
 typeclasses: Coq.Classes.RelationClasses.relation_equivalence_equivalence
 typeclasses: Coq.Classes.RelationClasses.eq_equivalence
 typeclasses: Coq.Classes.Equivalence.pointwise_equivalence
 typeclasses: Coq.Classes.RelationClasses.iff_equivalence
 typeclasses: Coq.Arith.PeanoNat.Nat.eqf_equiv
+typeclasses: Top.tac14
 typeclasses: Coq.Classes.CRelationClasses.Equivalence_PER
 typeclasses: Coq.Classes.RelationClasses.relation_implication_preorder
 typeclasses: Coq.Classes.RelationClasses.Equivalence_PreOrder
 typeclasses: Coq.Classes.RelationClasses.predicate_implication_preorder
 typeclasses: Coq.Arith.PeanoNat.Nat.le_preorder
+typeclasses: Top.tac8
 typeclasses: Coq.Classes.CRelationClasses.relation_equivalence_equivalence
 typeclasses: Coq.Classes.CRelationClasses.eq_equivalence
 typeclasses: Coq.Classes.CRelationClasses.iff_equivalence
 typeclasses: Coq.Classes.CRelationClasses.relation_implication_preorder
 typeclasses: Coq.Classes.SetoidTactics.equivalence_default
+typeclasses: Top.tac6
+typeclasses: Top.tac12
 typeclasses: Coq.Classes.CRelationClasses.partial_order_antisym
 typeclasses: Coq.Classes.CRelationClasses.iffT_Symmetric
 typeclasses: Coq.Classes.CRelationClasses.eq_Symmetric
@@ -220,6 +505,9 @@ typeclasses: Coq.Classes.Equivalence.equiv_symmetric
 typeclasses: Coq.Classes.Equivalence.pointwise_symmetric
 typeclasses: Coq.Classes.RelationClasses.PER_Symmetric
 typeclasses: Coq.Classes.RelationClasses.iff_Symmetric
+typeclasses: Top.tac13
+typeclasses: Definition(Top.tac13(C_AdvancedRewrite.advancedRewrite.TOP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.ltp_fun(), f_Top.dd_ltp())))
+typeclasses: TOP f_Top.eqp_fun f_Top.ltp_fun
 typeclasses: Coq.Classes.RelationClasses.equivalence_rewrite_relation
 typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_2
 typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_1
@@ -229,6 +517,27 @@ typeclasses: Coq.Classes.CRelationClasses.equivalence_rewrite_crelation
 typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_2
 typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_1
 typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_0
+typeclasses: Top.tac9
+typeclasses: Definition(Top.tac9(C_AdvancedRewrite.advancedRewrite.ETO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.lt_fun(), f_Top.dd_elt())))
+typeclasses: ETO f_Top.eq_fun f_Top.lt_fun
+typeclasses: Top.tac11
+typeclasses: Definition(Top.tac11(C_AdvancedRewrite.advancedRewrite.POP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.ltp_fun(), f_Top.dd_lpp())))
+typeclasses: POP f_Top.eqp_fun f_Top.ltp_fun
+typeclasses: Top.tac5
+typeclasses: Definition(Top.tac5(C_AdvancedRewrite.advancedRewrite.EQ_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.dd_eq())))
+typeclasses: EQ f_Top.eq_fun
+typeclasses: Top.tac10
+typeclasses: Definition(Top.tac10(C_AdvancedRewrite.advancedRewrite.EQP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.dd_eqp())))
+typeclasses: EQP f_Top.eqp_fun
+typeclasses: Top.tac4
+typeclasses: Definition(Top.tac4(C_AdvancedRewrite.advancedRewrite.C_PROP1(C_Coq.Init.Datatypes.list(C_triclass.TriDigit), f_triclass.triAdd(), f_Top.trC_Class())))
+typeclasses: C f_triclass.triAdd
+typeclasses: Top.tac3
+typeclasses: Definition(Top.tac3(C_AdvancedRewrite.advancedRewrite.A_PROP1(C_Coq.Init.Datatypes.list(C_triclass.TriDigit), f_triclass.triAdd(), f_Top.trA_Class())))
+typeclasses: A f_triclass.triAdd
+typeclasses: Top.tac7
+typeclasses: Definition(Top.tac7(C_AdvancedRewrite.advancedRewrite.EPO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.lt_fun(), f_Top.dd_elp())))
+typeclasses: EPO f_Top.eq_fun f_Top.lt_fun
 typeclasses: Coq.Classes.RelationClasses.Equivalence_PER
 typeclasses: Top.tac2
 typeclasses: Definition(Top.tac2(C_AdvancedRewrite.advancedRewrite.AC_PROP1(C_Coq.Init.Datatypes.list(C_triclass.TriDigit), f_triclass.triAdd(), f_Top.trAC_Class())))
@@ -242,16 +551,28 @@ typeclasses: Coq.Classes.RelationClasses.eq_equivalence
 typeclasses: Coq.Classes.Equivalence.pointwise_equivalence
 typeclasses: Coq.Classes.RelationClasses.iff_equivalence
 typeclasses: Coq.Arith.PeanoNat.Nat.eqf_equiv
+typeclasses: Top.tac14
+typeclasses: Definition(Top.tac14(C_AdvancedRewrite.advancedRewrite.ETOP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.ltp_fun(), f_Top.dd_eltp())))
+typeclasses: ETOP f_Top.eqp_fun f_Top.ltp_fun
 typeclasses: Coq.Classes.CRelationClasses.Equivalence_PER
 typeclasses: Coq.Classes.RelationClasses.relation_implication_preorder
 typeclasses: Coq.Classes.RelationClasses.Equivalence_PreOrder
 typeclasses: Coq.Classes.RelationClasses.predicate_implication_preorder
 typeclasses: Coq.Arith.PeanoNat.Nat.le_preorder
+typeclasses: Top.tac8
+typeclasses: Definition(Top.tac8(C_AdvancedRewrite.advancedRewrite.TO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.lt_fun(), f_Top.dd_lt())))
+typeclasses: TO f_Top.eq_fun f_Top.lt_fun
 typeclasses: Coq.Classes.CRelationClasses.relation_equivalence_equivalence
 typeclasses: Coq.Classes.CRelationClasses.eq_equivalence
 typeclasses: Coq.Classes.CRelationClasses.iff_equivalence
 typeclasses: Coq.Classes.CRelationClasses.relation_implication_preorder
 typeclasses: Coq.Classes.SetoidTactics.equivalence_default
+typeclasses: Top.tac6
+typeclasses: Definition(Top.tac6(C_AdvancedRewrite.advancedRewrite.PO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.lt_fun(), f_Top.dd_lp())))
+typeclasses: PO f_Top.eq_fun f_Top.lt_fun
+typeclasses: Top.tac12
+typeclasses: Definition(Top.tac12(C_AdvancedRewrite.advancedRewrite.EPOP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.ltp_fun(), f_Top.dd_elpp())))
+typeclasses: EPOP f_Top.eqp_fun f_Top.ltp_fun
 typeclasses: Coq.Classes.CRelationClasses.partial_order_antisym
 typeclasses: Coq.Classes.CRelationClasses.iffT_Symmetric
 typeclasses: Coq.Classes.CRelationClasses.eq_Symmetric

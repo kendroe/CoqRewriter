@@ -1,4 +1,4 @@
-DIGEST 8a67af16ea98044981de2908559b04d4
+DIGEST f9d255b92892b18e4dd7430d00852072
 Ftriclass
 R15:18 Coq.Lists.List <> <> lib
 R36:66 AdvancedRewrite.advancedRewrite <> <> lib
@@ -113,28 +113,10 @@ R1404:1410 triclass <> TriZero constr
 R1413:1415 Coq.Init.Datatypes <> nil constr
 R1401:1401 triclass <> x var
 prf 1464:1473 <> trAC_Class
-R1535:1538 Coq.Init.Logic <> :type_scope:x_'/\'_x not
-R1490:1490 Coq.Init.Logic <> :type_scope:x_'='_x not
-R1512:1513 Coq.Init.Logic <> :type_scope:x_'='_x not
-R1491:1496 triclass <> triAdd def
-R1501:1506 triclass <> triAdd def
-R1510:1510 triclass <> c var
-R1508:1508 triclass <> b var
-R1498:1498 triclass <> a var
-R1514:1519 triclass <> triAdd def
-R1534:1534 triclass <> c var
-R1522:1527 triclass <> triAdd def
-R1531:1531 triclass <> b var
-R1529:1529 triclass <> a var
-R1549:1549 Coq.Init.Logic <> :type_scope:x_'='_x not
+R1476:1477 AdvancedRewrite.advancedRewrite <> AC def
+R1479:1484 triclass <> triAdd def
+inst 1525:1527 <> tac
+R1531:1537 AdvancedRewrite.advancedRewrite <> AC_PROP class
 R1539:1544 triclass <> triAdd def
-R1548:1548 triclass <> b var
-R1546:1546 triclass <> a var
-R1550:1555 triclass <> triAdd def
-R1559:1559 triclass <> a var
-R1557:1557 triclass <> b var
-inst 1600:1602 <> tac
-R1606:1612 AdvancedRewrite.advancedRewrite <> AC_PROP class
-R1614:1619 triclass <> triAdd def
-R1631:1636 AdvancedRewrite.advancedRewrite <> acProp meth
-R1641:1650 triclass <> trAC_Class prfax
+R1556:1561 AdvancedRewrite.advancedRewrite <> acProp meth
+R1566:1575 triclass <> trAC_Class prfax

@@ -45,7 +45,7 @@ Proof.
     admit.
 Admitted.
 
-Theorem trAC_Class: forall a b c, (triAdd a (triAdd b c))=triAdd (triAdd a b) c /\ triAdd a b=triAdd b a.
+Theorem trAC_Class: AC triAdd.
 Proof.
     admit.
 Admitted.

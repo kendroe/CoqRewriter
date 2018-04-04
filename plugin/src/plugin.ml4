@@ -1783,6 +1783,18 @@ let rec print_type_classes cl =
   ;;
 
 let typeclass_ac = intern "C_AdvancedRewrite.advancedRewrite.AC_PROP1" ;;
+let typeclass_a = intern "C_AdvancedRewrite.advancedRewrite.A_PROP1" ;;
+let typeclass_c = intern "C_AdvancedRewrite.advancedRewrite.C_PROP1" ;;
+let typeclass_eq = intern "C_AdvancedRewrite.advancedRewrite.EQ_PROP1" ;;
+let typeclass_po = intern "C_AdvancedRewrite.advancedRewrite.PO_PROP1" ;;
+let typeclass_to = intern "C_AdvancedRewrite.advancedRewrite.TO_PROP1" ;;
+let typeclass_epo = intern "C_AdvancedRewrite.advancedRewrite.EPO_PROP1" ;;
+let typeclass_eto = intern "C_AdvancedRewrite.advancedRewrite.ETO_PROP1" ;;
+let typeclass_eqp = intern "C_AdvancedRewrite.advancedRewrite.EQP_PROP1" ;;
+let typeclass_pop = intern "C_AdvancedRewrite.advancedRewrite.POP_PROP1" ;;
+let typeclass_top = intern "C_AdvancedRewrite.advancedRewrite.TOP_PROP1" ;;
+let typeclass_epop = intern "C_AdvancedRewrite.advancedRewrite.EPOP_PROP1" ;;
+let typeclass_etop = intern "C_AdvancedRewrite.advancedRewrite.ETOP_PROP1" ;;
 
 let rec add_type_class_decl env se =
   (debug_print "typeclasses" (prExp se));
@@ -1790,6 +1802,33 @@ let rec add_type_class_decl env se =
   | (APPL (d,[(APPL (_,[(APPL (ac,[_;(APPL (f,[]));_]))]))])) ->
     if ac=typeclass_ac then
         ((debug_print "typeclasses" ("AC " ^ (decode f)));(Renv.addAttrib env intern_ac [Renv.S(f)]))
+    else if ac=typeclass_a then
+        ((debug_print "typeclasses" ("A " ^ (decode f)));(Renv.addAttrib env intern_a [Renv.S(f)]))
+    else if ac=typeclass_c then
+        ((debug_print "typeclasses" ("C " ^ (decode f)));(Renv.addAttrib env intern_c [Renv.S(f)]))
+    else if ac=typeclass_eq then
+        ((debug_print "typeclasses" ("EQ " ^ (decode f)));(Renv.addAttrib env intern_eq [Renv.S(f)]))
+    else if ac=typeclass_eqp then
+        ((debug_print "typeclasses" ("EQP " ^ (decode f)));(Renv.addAttrib env intern_eq [Renv.S(f)]))
+    else
+        env
+  | (APPL (d,[(APPL (_,[(APPL (ac,[_;(APPL (f,[]));(APPL (g,[]));_]))]))])) ->
+    if ac=typeclass_po then
+        ((debug_print "typeclasses" ("PO " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_po [Renv.S(g);Renv.S(f)]))
+    else if ac=typeclass_to then
+        ((debug_print "typeclasses" ("TO " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_to [Renv.S(g);Renv.S(f)]))
+    else if ac=typeclass_epo then
+        ((debug_print "typeclasses" ("EPO " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_epo [Renv.S(g);Renv.S(f)]))
+    else if ac=typeclass_eto then
+        ((debug_print "typeclasses" ("ETO " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_eto [Renv.S(g);Renv.S(f)]))
+    else if ac=typeclass_pop then
+        ((debug_print "typeclasses" ("POP " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_po [Renv.S(g);Renv.S(f)]))
+    else if ac=typeclass_top then
+        ((debug_print "typeclasses" ("TOP " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_to [Renv.S(g);Renv.S(f)]))
+    else if ac=typeclass_epop then
+        ((debug_print "typeclasses" ("EPOP " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_epo [Renv.S(g);Renv.S(f)]))
+    else if ac=typeclass_etop then
+        ((debug_print "typeclasses" ("ETOP " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_eto [Renv.S(g);Renv.S(f)]))
     else
         env
   | _ -> env
