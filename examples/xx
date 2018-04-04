@@ -304,6 +304,28 @@ Coq < Coq < Coq < Coq < Coq < tac14 is defined
 Coq < Coq < 1 subgoal
   
   ============================
+  REWRITE_RULE 1 2 True
+
+rrp < 1 subgoal
+  
+  ============================
+  REWRITE_RULE 1 2 True
+
+rrp < No more subgoals, but there are some goals you gave up:
+
+1 subgoal
+
+subgoal 1 is:
+ REWRITE_RULE 1 2 True
+You need to go back and solve them.
+
+rrp < rrp is declared
+
+Coq < Coq < Coq < Coq < Coq < rewriteRule is defined
+
+Coq < Coq < 1 subgoal
+  
+  ============================
   1 + 1 = 3
 
 x < 1 subgoal
@@ -343,6 +365,7 @@ typeclasses: Coq.Classes.RelationClasses.iff_equivalence
 typeclasses: Coq.Arith.PeanoNat.Nat.eqf_equiv
 typeclasses: Top.tac14
 typeclasses: Coq.Classes.CRelationClasses.Equivalence_PER
+typeclasses: Top.rewriteRule
 typeclasses: Coq.Classes.RelationClasses.relation_implication_preorder
 typeclasses: Coq.Classes.RelationClasses.Equivalence_PreOrder
 typeclasses: Coq.Classes.RelationClasses.predicate_implication_preorder
@@ -555,6 +578,9 @@ typeclasses: Top.tac14
 typeclasses: Definition(Top.tac14(C_AdvancedRewrite.advancedRewrite.ETOP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.ltp_fun(), f_Top.dd_eltp())))
 typeclasses: ETOP f_Top.eqp_fun f_Top.ltp_fun
 typeclasses: Coq.Classes.CRelationClasses.Equivalence_PER
+typeclasses: Top.rewriteRule
+typeclasses: Definition(Top.rewriteRule(C_AdvancedRewrite.advancedRewrite.REWRITE_RULE_PROP1(C_Coq.Init.Datatypes.nat, 1, 2, True, f_Top.rrp())))
+typeclasses: REWRITE_RULE 1 { True } -> 2
 typeclasses: Coq.Classes.RelationClasses.relation_implication_preorder
 typeclasses: Coq.Classes.RelationClasses.Equivalence_PreOrder
 typeclasses: Coq.Classes.RelationClasses.predicate_implication_preorder

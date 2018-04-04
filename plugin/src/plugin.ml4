@@ -1795,6 +1795,7 @@ let typeclass_pop = intern "C_AdvancedRewrite.advancedRewrite.POP_PROP1" ;;
 let typeclass_top = intern "C_AdvancedRewrite.advancedRewrite.TOP_PROP1" ;;
 let typeclass_epop = intern "C_AdvancedRewrite.advancedRewrite.EPOP_PROP1" ;;
 let typeclass_etop = intern "C_AdvancedRewrite.advancedRewrite.ETOP_PROP1" ;;
+let typeclass_rewrite_rule = intern "C_AdvancedRewrite.advancedRewrite.REWRITE_RULE_PROP1" ;;
 
 let rec add_type_class_decl env se =
   (debug_print "typeclasses" (prExp se));
@@ -1829,6 +1830,11 @@ let rec add_type_class_decl env se =
         ((debug_print "typeclasses" ("EPOP " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_epo [Renv.S(g);Renv.S(f)]))
     else if ac=typeclass_etop then
         ((debug_print "typeclasses" ("ETOP " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_eto [Renv.S(g);Renv.S(f)]))
+    else
+        env
+  | (APPL (d,[(APPL (_,[(APPL (ac,[_;l;r;c;_]))]))])) ->
+    if ac=typeclass_rewrite_rule then
+        ((debug_print "typeclasses" ("REWRITE_RULE " ^ (prExp (APPL (intern_oriented_rule,[l;r;c])))));(Renv.addProperty env (APPL (intern_oriented_rule,[l;r;c]))))
     else
         env
   | _ -> env

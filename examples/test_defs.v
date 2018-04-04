@@ -139,6 +139,16 @@ Instance tac14 : ETOP_PROP eqp_fun ltp_fun :=
     etopProp := dd_eltp
  }.
 
+Theorem rrp: REWRITE_RULE 1 2 True.
+Proof.
+    admit.
+Admitted.
+
+Instance rewriteRule : REWRITE_RULE_PROP 1 2 True :=
+ {
+    rewriteRuleProp := rrp
+ }.
+
 Theorem x: 1+1=3.
 Proof.
     arewrite.
