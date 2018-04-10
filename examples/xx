@@ -2,23 +2,28 @@ Welcome to Coq 8.7.0 (October 2017)
 
 Coq < [Loading ML file theplug.cmxs ... done]
 
-Coq < 
+Coq < Coq < Coq < Coq < Coq < Coq < Coq < beq is defined
+beq is recursively defined (decreasing on 1st argument)
+
+Coq < Coq < Coq < Coq < Coq < Coq < Coq < blt is defined
+blt is recursively defined (decreasing on 1st argument)
+
 Coq < Coq < 1 subgoal
   
   ============================
-  AC triAdd
+  EQ beq
 
 trAC_Class < 1 subgoal
   
   ============================
-  AC triAdd
+  EQ beq
 
 trAC_Class < No more subgoals, but there are some goals you gave up:
 
 1 subgoal
 
 subgoal 1 is:
- AC triAdd
+ EQ beq
 You need to go back and solve them.
 
 trAC_Class < trAC_Class is declared
@@ -26,737 +31,1830 @@ trAC_Class < trAC_Class is declared
 Coq < Coq < 1 subgoal
   
   ============================
-  A triAdd
+  TO beq blt
 
-trA_Class < 1 subgoal
+th_lt < 1 subgoal
   
   ============================
-  A triAdd
+  TO beq blt
 
-trA_Class < No more subgoals, but there are some goals you gave up:
+th_lt < No more subgoals, but there are some goals you gave up:
 
 1 subgoal
 
 subgoal 1 is:
- A triAdd
+ TO beq blt
 You need to go back and solve them.
 
-trA_Class < trA_Class is declared
+th_lt < th_lt is declared
 
-Coq < Coq < 1 subgoal
+Coq < Coq < Coq < Coq < Coq < to1 is defined
+
+Coq < Coq < build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+(Prod (Name x) (Name nat) (Prod (Name y) (Name nat) (App (Name eq) (Name bool) (App (Definition Top.blt (Fix (Functions ((Name blt) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name x) (Name nat) (Construct (Name bool) 1)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name blt) (Name x) (Name y)))))))))))) 0)) (Name x) (Name y)) (Construct (Name bool) 1))))
+Coq < Coq < Coq < Coq < Coq < Coq < Coq < 1 subgoal
   
   ============================
-  C triAdd
+  forall x y : nat, (negb (beq x y) && negb (blt x y))%bool = true
 
-trC_Class < 1 subgoal
+test2 < 1 subgoal
   
   ============================
-  C triAdd
+  forall x y : nat, (negb (beq x y) && negb (blt x y))%bool = true
+
+test2 < arewrite: CLEARING CACHE
+typeclasses: Test
+
+typeclasses: Top.to1
+print_full_pure_context: Lookup 3
+print_full_pure_context: Lookup 4
+print_full_pure_context: Lookup 3
+print_full_pure_context: Lookup 4
+print_full_pure_context: Lookup 3
+print_full_pure_context: Lookup 4
+print_full_pure_context: Lookup 3
+print_full_pure_context: Lookup 4
+print_full_pure_context: Lookup 3
+print_full_pure_context: Lookup 4
+arewrite: Environment:
+
+Compiling Library Top Top <>
+Unknown REQUIRE Top._2
+Unknown TOKEN Top._4
+
+Unknown TOKEN Top._5
+Unknown REQUIRE Top._3
+Unknown REQUIRE Top._6
+
+Unknown REQUIRE Top._7
+
+Definition beq  : nat -> nat -> bool
+ := fix beq (a b : nat) {struct a} : bool :=
+      match a with
+      | 0 => match b with
+             | 0 => true
+             | S _ => false
+             end
+      | S x => match b with
+               | 0 => false
+               | S y => beq x y
+               end
+      end.
+
+Unknown IMPLICITS Top._8
+Unknown HEAD Top._9
+Unknown ARGUMENTS-SCOPE Top._10
 
-trC_Class < No more subgoals, but there are some goals you gave up:
+Definition blt  : nat -> nat -> bool
+ := fix blt (a b : nat) {struct a} : bool :=
+      match a with
+      | 0 => match b with
+             | 0 => false
+             | S _ => true
+             end
+      | S x => match b with
+               | 0 => false
+               | S y => blt x y
+               end
+      end.
+
+Unknown IMPLICITS Top._11
+Unknown HEAD Top._12
+
+Unknown ARGUMENTS-SCOPE Top._13
+
+Parameter trAC_Class : EQ beq.
+
+Unknown IMPLICITS Top._14
+Unknown HEAD Top._15
+
+Unknown ARGUMENTS-SCOPE Top._16
+
+Parameter th_lt : TO beq blt.
+
+Unknown IMPLICITS Top._17
+Unknown HEAD Top._18
+
+Unknown ARGUMENTS-SCOPE Top._19
+
+Definition to1  : TO_PROP beq blt := {| toProp := th_lt |}.
+
+Unknown IMPLICITS Top._20
+Unknown HEAD Top._21
+
+Unknown ARGUMENTS-SCOPE Top._22
+Unknown type classes instances state Top._23
+
+Unknown AUTOHINT Top._24
+
+END
+
+
+build_rewrite_env: build_rewrite_env UNKNOWN AUTOHINT
+build_rewrite_env: build_rewrite_env UNKNOWN type classes instances state
+build_rewrite_env: build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
+build_rewrite_env: build_rewrite_env UNKNOWN HEAD
+build_rewrite_env: build_rewrite_env UNKNOWN IMPLICITS
+build_rewrite_env: HERE build_rewrite_env
+build_exp: App
+build_exp: Ind
+
+build_exp: Const
+get_def: Finding Top.beq
+get_def: Failed
+build_exp: Fix
+build_exp: prod
+build_exp: Ind
+
+build_exp: prod
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: lambda
+build_exp: Ind
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 1
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: App
+build_exp: Here 3
+build_exp: rel
+build_exp: rel
+build_exp: rel
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn a => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+add_def: Adding Top.beq
+build_exp: Const
+get_def: Finding Top.blt
+get_def: Failed
+build_exp: Fix
+build_exp: prod
+build_exp: Ind
+
+build_exp: prod
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: lambda
+build_exp: Ind
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 1
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: App
+build_exp: Here 3
+build_exp: rel
+build_exp: rel
+build_exp: rel
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn a => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+add_def: Adding Top.blt
+build_exp: Const
+get_def: Finding Top.th_lt
+get_def: Failed
+add_def: Adding Top.th_lt
+add_constr: Adding C_AdvancedRewrite.advancedRewrite.TO_PROP1
+build_exp: Here2
+
+build_rewrite_env: DEF C_AdvancedRewrite.advancedRewrite.TO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.beq(), f_Top.blt(), f_Top.th_lt())
+build_rewrite_env: AST: 
+build_ast: App
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (AdvancedRewrite.advancedRewrite.TO_PROP)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: App
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Lambda
+build_ast: Sort
+build_ast: Lambda
+build_ast: Prod
+build_ast: Rel
+build_ast: Prod
+build_ast: Rel
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Prod
+build_ast: Rel
+build_ast: Prod
+build_ast: Rel
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.and)
+build_ast: Prod
+build_ast: Rel
+build_ast: Prod
+build_ast: Rel
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.or)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.and)
+build_ast: Prod
+build_ast: Rel
+build_ast: Prod
+build_ast: Rel
+build_ast: Prod
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.and)
+build_ast: Prod
+build_ast: Rel
+build_ast: Prod
+build_ast: Rel
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.or)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.or)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Prod
+build_ast: Rel
+build_ast: Prod
+build_ast: Rel
+build_ast: Prod
+build_ast: Rel
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.or)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.or)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_rewrite_env: (App (Construct (Name TO_PROP) 1) (Name nat) (Definition Top.beq (Fix (Functions ((Name beq) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 1) (Lambda (Name n) (Name nat) (Construct (Name bool) 2)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name beq) (Name x) (Name y)))))))))))) 0)) (Definition Top.blt (Fix (Functions ((Name blt) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name x) (Name nat) (Construct (Name bool) 1)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name blt) (Name x) (Name y)))))))))))) 0)) (Axiom Top.th_lt (App (Definition AdvancedRewrite.advancedRewrite.TO (Lambda (Name t) (Sort (Type (Universe (Level AdvancedRewrite.advancedRewrite.45)))) (Lambda (Name eq) (Prod (Anonymous) (Name t) (Prod (Anonymous) (Name t) (Name bool))) (Lambda (Name to) (Prod (Anonymous) (Name t) (Prod (Anonymous) (Name t) (Name bool))) (App (Name and) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (App (Name or) (App (Name eq) (Name bool) (App (Name to) (Name x) (Name y)) (Construct (Name bool) 2)) (App (Name eq) (Name bool) (App (Name to) (Name y) (Name x)) (Construct (Name bool) 2))))) (App (Name and) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (Prod (Anonymous) (App (Name eq) (Name bool) (App (Name eq) (Name x) (Name y)) (Construct (Name bool) 1)) (App (Name eq) (Name bool) (App (Name to) (Name x) (Name y)) (Construct (Name bool) 2))))) (App (Name and) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (App (Name or) (App (Name eq) (Name bool) (App (Name eq) (Name x) (Name y)) (Construct (Name bool) 1)) (App (Name or) (App (Name eq) (Name bool) (App (Name to) (Name x) (Name y)) (Construct (Name bool) 1)) (App (Name eq) (Name bool) (App (Name to) (Name y) (Name x)) (Construct (Name bool) 1)))))) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (Prod (Name z) (Name t) (App (Name or) (App (Name eq) (Name bool) (App (Name to) (Name x) (Name y)) (Construct (Name bool) 2)) (App (Name or) (App (Name eq) (Name bool) (App (Name to) (Name y) (Name z)) (Construct (Name bool) 2)) (App (Name eq) (Name bool) (App (Name to) (Name x) (Name z)) (Construct (Name bool) 1)))))))))))))) (Name nat) (Definition Top.beq (Fix (Functions ((Name beq) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 1) (Lambda (Name n) (Name nat) (Construct (Name bool) 2)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name beq) (Name x) (Name y)))))))))))) 0)) (Definition Top.blt (Fix (Functions ((Name blt) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name x) (Name nat) (Construct (Name bool) 1)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name blt) (Name x) (Name y)))))))))))) 0)))))
+build_exp: App
+build_exp: Ind
+
+build_exp: Const
+get_def: Finding Top.beq
+build_exp: Const
+get_def: Finding Top.blt
+build_exp: Const
+get_def: Finding Top.th_lt
+add_constr: Adding C_AdvancedRewrite.advancedRewrite.TO_PROP1
+build_exp: Here2
+
+process_def: process_def C_AdvancedRewrite.advancedRewrite.TO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.beq(), f_Top.blt(), f_Top.th_lt())
+build_rewrite_env: build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
+build_rewrite_env: build_rewrite_env UNKNOWN HEAD
+build_rewrite_env: build_rewrite_env UNKNOWN IMPLICITS
+build_rewrite_env: HERE build_rewrite_env
+build_exp: App
+build_exp: Here 3
+build_exp: Ind
+
+build_exp: Const
+get_def: Finding Top.beq
+build_exp: Const
+get_def: Finding Top.blt
+build_exp: Here 3a
+
+build_rewrite_env: Parsed f_AdvancedRewrite.advancedRewrite.TO(C_Coq.Init.Datatypes.nat, f_Top.beq(), f_Top.blt())
+build_exp: App
+build_exp: Here 3
+build_exp: Ind
+
+build_exp: Const
+get_def: Finding Top.beq
+build_exp: Const
+get_def: Finding Top.blt
+build_exp: Here 3a
+
+process_property: Property f_AdvancedRewrite.advancedRewrite.TO(C_Coq.Init.Datatypes.nat, f_Top.beq(), f_Top.blt())
+process_property: Root Property f_AdvancedRewrite.advancedRewrite.TO(C_Coq.Init.Datatypes.nat, f_Top.beq(), f_Top.blt())
+build_rewrite_env: build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
+build_rewrite_env: build_rewrite_env UNKNOWN HEAD
+build_rewrite_env: build_rewrite_env UNKNOWN IMPLICITS
+build_rewrite_env: HERE build_rewrite_env
+build_exp: App
+build_exp: Here 3
+build_exp: Ind
+
+build_exp: Const
+get_def: Finding Top.beq
+build_exp: Here 3a
+
+build_rewrite_env: Parsed f_AdvancedRewrite.advancedRewrite.EQ(C_Coq.Init.Datatypes.nat, f_Top.beq())
+build_exp: App
+build_exp: Here 3
+build_exp: Ind
+
+build_exp: Const
+get_def: Finding Top.beq
+build_exp: Here 3a
+
+process_property: Property f_AdvancedRewrite.advancedRewrite.EQ(C_Coq.Init.Datatypes.nat, f_Top.beq())
+process_property: Root Property f_AdvancedRewrite.advancedRewrite.EQ(C_Coq.Init.Datatypes.nat, f_Top.beq())
+build_rewrite_env: build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
+build_rewrite_env: build_rewrite_env UNKNOWN HEAD
+build_rewrite_env: build_rewrite_env UNKNOWN IMPLICITS
+build_rewrite_env: HERE build_rewrite_env
+build_exp: Fix
+build_exp: prod
+build_exp: Ind
+
+build_exp: prod
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: lambda
+build_exp: Ind
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 1
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: App
+build_exp: Here 3
+build_exp: rel
+build_exp: rel
+build_exp: rel
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn a => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_rewrite_env: DEF fix(Functions((Name blt)(0, ALL(a:C_Coq.Init.Datatypes.nat: True) ALL(b:C_Coq.Init.Datatypes.nat: True) C_Coq.Init.Datatypes.bool, (fn a => (fn b => (CASE a OF C_Coq.Init.Datatypes.nat1 => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(x) => True) ||| C_Coq.Init.Datatypes.nat2(x) => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(y) => apply(blt, x, y))))))), 0)
+build_rewrite_env: AST: 
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_rewrite_env: (Fix (Functions ((Name blt) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name x) (Name nat) (Construct (Name bool) 1)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name blt) (Name x) (Name y)))))))))))) 0)
+build_exp: Fix
+build_exp: prod
+build_exp: Ind
+
+build_exp: prod
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: lambda
+build_exp: Ind
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 1
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: App
+build_exp: Here 3
+build_exp: rel
+build_exp: rel
+build_exp: rel
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn a => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+process_def: process_def fix(Functions((Name blt)(0, ALL(a:C_Coq.Init.Datatypes.nat: True) ALL(b:C_Coq.Init.Datatypes.nat: True) C_Coq.Init.Datatypes.bool, (fn a => (fn b => (CASE a OF C_Coq.Init.Datatypes.nat1 => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(x) => True) ||| C_Coq.Init.Datatypes.nat2(x) => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(y) => apply(blt, x, y))))))), 0)
+process_def: Name: blt
+Core: (CASE a OF C_Coq.Init.Datatypes.nat1 => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(x) => True) ||| C_Coq.Init.Datatypes.nat2(x) => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(y) => f_Top.blt(x, y)))
+process_var_core: The syms of f_Top.blt (CASE a OF C_Coq.Init.Datatypes.nat1 => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(x) => True) ||| C_Coq.Init.Datatypes.nat2(x) => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(y) => f_Top.blt(x, y)))
+process_var_core: Sym: blt
+
+process_var_core: Rule: f_Top.blt(C_Coq.Init.Datatypes.nat1, C_Coq.Init.Datatypes.nat1) { True } -> False
+process_var_core: Rule: f_Top.blt(C_Coq.Init.Datatypes.nat1, C_Coq.Init.Datatypes.nat2(x)) { True } -> True
+process_var_core: Rule: f_Top.blt(C_Coq.Init.Datatypes.nat2(x), C_Coq.Init.Datatypes.nat1) { True } -> False
+process_var_core: Rule: f_Top.blt(C_Coq.Init.Datatypes.nat2(x), C_Coq.Init.Datatypes.nat2(y)) { True } -> f_Top.blt(x, y)
+build_rewrite_env: build_rewrite_env UNKNOWN ARGUMENTS-SCOPE
+build_rewrite_env: build_rewrite_env UNKNOWN HEAD
+build_rewrite_env: build_rewrite_env UNKNOWN IMPLICITS
+build_rewrite_env: HERE build_rewrite_env
+build_exp: Fix
+build_exp: prod
+build_exp: Ind
+
+build_exp: prod
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: lambda
+build_exp: Ind
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 1
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: App
+build_exp: Here 3
+build_exp: rel
+build_exp: rel
+build_exp: rel
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn a => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_rewrite_env: DEF fix(Functions((Name beq)(0, ALL(a:C_Coq.Init.Datatypes.nat: True) ALL(b:C_Coq.Init.Datatypes.nat: True) C_Coq.Init.Datatypes.bool, (fn a => (fn b => (CASE a OF C_Coq.Init.Datatypes.nat1 => (CASE b OF C_Coq.Init.Datatypes.nat1 => True ||| C_Coq.Init.Datatypes.nat2(n) => False) ||| C_Coq.Init.Datatypes.nat2(x) => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(y) => apply(beq, x, y))))))), 0)
+build_rewrite_env: AST: 
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_rewrite_env: (Fix (Functions ((Name beq) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 1) (Lambda (Name n) (Name nat) (Construct (Name bool) 2)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name beq) (Name x) (Name y)))))))))))) 0)
+build_exp: Fix
+build_exp: prod
+build_exp: Ind
+
+build_exp: prod
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: lambda
+build_exp: Ind
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 1
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Case
+build_exp: lambda
+build_exp: Ind
+
+build_exp: Ind
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_exp: rel
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 2
+
+build_exp: lambda
+build_exp: Ind
+
+build_exp: App
+build_exp: Here 3
+build_exp: rel
+build_exp: rel
+build_exp: rel
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn b => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+build_case_exp: C_Coq.Init.Datatypes.nat
+build_case: CASE TYPE C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type (fn a => C_Coq.Init.Datatypes.bool)
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+process_def: process_def fix(Functions((Name beq)(0, ALL(a:C_Coq.Init.Datatypes.nat: True) ALL(b:C_Coq.Init.Datatypes.nat: True) C_Coq.Init.Datatypes.bool, (fn a => (fn b => (CASE a OF C_Coq.Init.Datatypes.nat1 => (CASE b OF C_Coq.Init.Datatypes.nat1 => True ||| C_Coq.Init.Datatypes.nat2(n) => False) ||| C_Coq.Init.Datatypes.nat2(x) => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(y) => apply(beq, x, y))))))), 0)
+process_def: Name: beq
+Core: (CASE a OF C_Coq.Init.Datatypes.nat1 => (CASE b OF C_Coq.Init.Datatypes.nat1 => True ||| C_Coq.Init.Datatypes.nat2(n) => False) ||| C_Coq.Init.Datatypes.nat2(x) => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(y) => f_Top.beq(x, y)))
+process_var_core: The syms of f_Top.beq (CASE a OF C_Coq.Init.Datatypes.nat1 => (CASE b OF C_Coq.Init.Datatypes.nat1 => True ||| C_Coq.Init.Datatypes.nat2(n) => False) ||| C_Coq.Init.Datatypes.nat2(x) => (CASE b OF C_Coq.Init.Datatypes.nat1 => False ||| C_Coq.Init.Datatypes.nat2(y) => f_Top.beq(x, y)))
+process_var_core: Sym: beq
+
+process_var_core: Rule: f_Top.beq(C_Coq.Init.Datatypes.nat1, C_Coq.Init.Datatypes.nat1) { True } -> True
+process_var_core: Rule: f_Top.beq(C_Coq.Init.Datatypes.nat1, C_Coq.Init.Datatypes.nat2(n)) { True } -> False
+process_var_core: Rule: f_Top.beq(C_Coq.Init.Datatypes.nat2(x), C_Coq.Init.Datatypes.nat1) { True } -> False
+process_var_core: Rule: f_Top.beq(C_Coq.Init.Datatypes.nat2(x), C_Coq.Init.Datatypes.nat2(y)) { True } -> f_Top.beq(x, y)
+build_rewrite_env: build_rewrite_env UNKNOWN REQUIRE
+build_rewrite_env: build_rewrite_env UNKNOWN REQUIRE
+build_rewrite_env: build_rewrite_env UNKNOWN REQUIRE
+build_rewrite_env: build_rewrite_env UNKNOWN TOKEN
+build_rewrite_env: build_rewrite_env UNKNOWN TOKEN
+build_rewrite_env: build_rewrite_env UNKNOWN REQUIRE
+typeclasses: Top.to1
+build_exp: App
+build_exp: Ind
+
+build_exp: Const
+get_def: Finding Top.beq
+build_exp: Const
+get_def: Finding Top.blt
+build_exp: Const
+get_def: Finding Top.th_lt
+add_constr: Adding C_AdvancedRewrite.advancedRewrite.TO_PROP1
+build_exp: Here2
+
+typeclasses: Definition(Top.to1(C_AdvancedRewrite.advancedRewrite.TO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.beq(), f_Top.blt(), f_Top.th_lt())))
+typeclasses: TO f_Top.beq f_Top.blt
+arewrite: ******* BEGIN *******
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: App
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+arewrite: (Prod (Name x) (Name nat) (Prod (Name y) (Name nat) (App (Name eq) (Name bool) (App (Definition Coq.Init.Datatypes.andb (Lambda (Name b1) (Name bool) (Lambda (Name b2) (Name bool) (Case 0 (Lambda (Name b1) (Name bool) (Name bool)) (CaseMatch (Name b1)) (CaseBranches (Name b2) (Construct (Name bool) 2)))))) (App (Definition Coq.Init.Datatypes.negb (Lambda (Name b) (Name bool) (Case 0 (Lambda (Name b) (Name bool) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Construct (Name bool) 1))))) (App (Definition Top.beq (Fix (Functions ((Name beq) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 1) (Lambda (Name n) (Name nat) (Construct (Name bool) 2)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name beq) (Name x) (Name y)))))))))))) 0)) (Name x) (Name y))) (App (Definition Coq.Init.Datatypes.negb (Lambda (Name b) (Name bool) (Case 0 (Lambda (Name b) (Name bool) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Construct (Name bool) 1))))) (App (Definition Top.blt (Fix (Functions ((Name blt) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name x) (Name nat) (Construct (Name bool) 1)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name blt) (Name x) (Name y)))))))))))) 0)) (Name x) (Name y)))) (Construct (Name bool) 1))))
+arewrite: ******* END *******
+build_exp: prod
+build_exp: Ind
+
+build_exp: prod
+build_exp: Ind
+
+build_exp: App
+build_exp: Here 3
+build_exp: Ind
+
+build_exp: App
+build_exp: Here 3
+build_exp: App
+build_exp: Here 3
+build_exp: App
+build_exp: Here 3
+build_exp: rel
+build_exp: rel
+build_exp: Here 3a
+
+build_exp: Here 3a
+
+build_exp: App
+build_exp: Here 3
+build_exp: App
+build_exp: Here 3
+build_exp: rel
+build_exp: rel
+build_exp: Here 3a
+
+build_exp: Here 3a
+
+build_exp: Here 3a
+
+build_exp: Construct
+build_exp: s = Coq.Init.Datatypes.bool i = 1
+
+arewrite: Ind s = Coq.Init.Logic.eq
+build_exp: Here 3a
+
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+convert_exp_to_type: Convert_exp_to_type C_Coq.Init.Datatypes.nat
+arewrite: Rewriting 
+arewrite: ALL(x:C_Coq.Init.Datatypes.nat: True) ALL(y:C_Coq.Init.Datatypes.nat: True) (not(f_Top.beq(x, y))  & not(f_Top.blt(x, y))) == True
+arewrite: Simplifying CONCLUSION
+arewrite: Result
+
+arewrite: not(EXISTS(x:C_Coq.Init.Datatypes.nat) EXISTS(y:C_Coq.Init.Datatypes.nat) f_Top.blt(x, y))
+build_predicate: build_evars
+build_coq_type: HEREprod C_Coq.Init.Datatypes.nat
+build_leaf_type: build leaf C_Coq.Init.Datatypes.nat
+build_predicate: build_evars1 EXISTS(y:C_Coq.Init.Datatypes.nat) f_Top.blt(x, y)
+build_predicate: Done evars
+build_predicate: build_evars
+build_coq_type: HEREprod C_Coq.Init.Datatypes.nat
+build_leaf_type: build leaf C_Coq.Init.Datatypes.nat
+build_predicate: build_evars1 f_Top.blt(x, y)
+build_predicate: Done evars
+build_predicate: Functor f_Top.blt
+functor_from_name: functor_from_name f_Top.blt
+functor_from_name: root Top.blt
+get_constr: Finding f_Top.blt
+get_constr: Failed
+functor_from_name: initing blt
+functor_from_name: DONE
+
+is_bool_type: Called
+get_type: type_from_name call
+get_constr: Finding f_Top.blt
+get_constr: Failed
+get_def: Finding Top.blt
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+type_from_name: (Fix (Functions ((Name blt) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name x) (Name nat) (Construct (Name bool) 1)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name blt) (Name x) (Name y)))))))))))) 0)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+type_from_name: (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool)))
+type_from_name: Done
+is_bool_type: Called1
+is_bool_type: Called2 (Coq.Init.Datatypes.bool)
+build_predicate: bool equality
+build_predicate: build_evars2
+build_predicate: build_evars3
+build_predicate: end build_evars
+build_predicate: build_evars2
+build_predicate: build_evars3
+build_predicate: end build_evars
+arewrite: Built predicate
+
+build_ast: Prod
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.ex)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.ex)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.eq)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: App
+build_ast: Const
+build_const: Lookup 1
+build_const: Lookup 2
+build_ast: Fix
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Prod
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Case
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Rel
+build_ast: Construct
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.bool)
+build_ast: Lambda
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Datatypes.nat)
+build_ast: App
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Rel
+build_ast: Ind
+lookup_mutind_body: (Coq.Init.Logic.False)
+arewrite: (Prod (Anonymous) (App (Name ex) (Name nat) (Lambda (Name x) (Name nat) (App (Name ex) (Name nat) (Lambda (Name y) (Name nat) (App (Name eq) (Name bool) (Construct (Name bool) 1) (App (Definition Top.blt (Fix (Functions ((Name blt) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name x) (Name nat) (Construct (Name bool) 1)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name blt) (Name x) (Name y)))))))))))) 0)) (Name x) (Name y))))))) (Name False))
+
+arewrite: End
 
-1 subgoal
-
-subgoal 1 is:
- C triAdd
-You need to go back and solve them.
-
-trC_Class < trC_Class is declared
-
-Coq < Coq < Coq < Coq < Coq < tac2 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac3 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac4 is defined
-
-Coq < Coq < eq_fun is defined
-
-Coq < lt_fun is defined
-
-Coq < le_fun is defined
-
-Coq < Coq < eqp_fun is defined
-
-Coq < ltp_fun is defined
-
-Coq < lep_fun is defined
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  EQ eq_fun
-
-dd_eq < 1 subgoal
-  
-  ============================
-  EQ eq_fun
-
-dd_eq < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- EQ eq_fun
-You need to go back and solve them.
-
-dd_eq < dd_eq is declared
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  PO eq_fun lt_fun
-
-dd_lp < 1 subgoal
-  
-  ============================
-  PO eq_fun lt_fun
-
-dd_lp < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- PO eq_fun lt_fun
-You need to go back and solve them.
-
-dd_lp < dd_lp is declared
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  TO eq_fun lt_fun
-
-dd_lt < 1 subgoal
-  
-  ============================
-  TO eq_fun lt_fun
-
-dd_lt < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- TO eq_fun lt_fun
-You need to go back and solve them.
-
-dd_lt < dd_lt is declared
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  EPO eq_fun lt_fun
-
-dd_elp < 1 subgoal
-  
-  ============================
-  EPO eq_fun lt_fun
-
-dd_elp < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- EPO eq_fun lt_fun
-You need to go back and solve them.
-
-dd_elp < dd_elp is declared
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  ETO eq_fun lt_fun
-
-dd_elt < 1 subgoal
-  
-  ============================
-  ETO eq_fun lt_fun
-
-dd_elt < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- ETO eq_fun lt_fun
-You need to go back and solve them.
-
-dd_elt < dd_elt is declared
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  EQP eqp_fun
-
-dd_eqp < 1 subgoal
-  
-  ============================
-  EQP eqp_fun
-
-dd_eqp < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- EQP eqp_fun
-You need to go back and solve them.
-
-dd_eqp < dd_eqp is declared
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  POP eqp_fun ltp_fun
-
-dd_lpp < 1 subgoal
-  
-  ============================
-  POP eqp_fun ltp_fun
-
-dd_lpp < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- POP eqp_fun ltp_fun
-You need to go back and solve them.
-
-dd_lpp < dd_lpp is declared
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  TOP eqp_fun ltp_fun
-
-dd_ltp < 1 subgoal
-  
-  ============================
-  TOP eqp_fun ltp_fun
-
-dd_ltp < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- TOP eqp_fun ltp_fun
-You need to go back and solve them.
-
-dd_ltp < dd_ltp is declared
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  EPOP eqp_fun ltp_fun
-
-dd_elpp < 1 subgoal
-  
-  ============================
-  EPOP eqp_fun ltp_fun
-
-dd_elpp < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- EPOP eqp_fun ltp_fun
-You need to go back and solve them.
-
-dd_elpp < dd_elpp is declared
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  ETOP eqp_fun ltp_fun
-
-dd_eltp < 1 subgoal
-  
-  ============================
-  ETOP eqp_fun ltp_fun
-
-dd_eltp < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- ETOP eqp_fun ltp_fun
-You need to go back and solve them.
-
-dd_eltp < dd_eltp is declared
-
-Coq < Coq < Coq < Coq < Coq < tac5 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac6 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac7 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac8 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac9 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac10 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac11 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac12 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac13 is defined
-
-Coq < Coq < Coq < Coq < Coq < tac14 is defined
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  REWRITE_RULE 1 2 True
-
-rrp < 1 subgoal
-  
-  ============================
-  REWRITE_RULE 1 2 True
-
-rrp < No more subgoals, but there are some goals you gave up:
-
-1 subgoal
-
-subgoal 1 is:
- REWRITE_RULE 1 2 True
-You need to go back and solve them.
-
-rrp < rrp is declared
-
-Coq < Coq < Coq < Coq < Coq < rewriteRule is defined
-
-Coq < Coq < 1 subgoal
-  
-  ============================
-  1 + 1 = 3
-
-x < 1 subgoal
-  
-  ============================
-  1 + 1 = 3
-
-x < typeclasses: Test
-
-typeclasses: Top.tac13
-typeclasses: Coq.Classes.RelationClasses.equivalence_rewrite_relation
-typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_2
-typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_1
-typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_0
-typeclasses: Coq.Arith.PeanoNat.Nat.lt_strorder
-typeclasses: Coq.Classes.CRelationClasses.equivalence_rewrite_crelation
-typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_2
-typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_1
-typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_0
-typeclasses: Top.tac9
-typeclasses: Top.tac11
-typeclasses: Top.tac5
-typeclasses: Top.tac10
-typeclasses: Top.tac4
-typeclasses: Top.tac3
-typeclasses: Top.tac7
-typeclasses: Coq.Classes.RelationClasses.Equivalence_PER
-typeclasses: Top.tac2
-typeclasses: triclass.tac
-typeclasses: Definition(triclass.tac(C_AdvancedRewrite.advancedRewrite.AC_PROP1(C_Coq.Init.Datatypes.list(C_triclass.TriDigit), f_triclass.triAdd(), f_triclass.trAC_Class())))
-typeclasses: (Definition triclass.tac (App (Construct (Record ((Name AC_PROP) (inductive_body (Build_AC_PROP 1 (Prod (Name T) (Sort (Type (Universe (Level AdvancedRewrite.advancedRewrite.9)))) (Prod (Name f) (Prod (Anonymous) (Name T) (Prod (Anonymous) (Name T) (Name T))) (Prod (Name acProp) (App (Definition AdvancedRewrite.advancedRewrite.AC (Lambda (Name t) (Sort (Type (Universe (Level AdvancedRewrite.advancedRewrite.2)))) (Lambda (Name f) (Prod (Anonymous) (Name t) (Prod (Anonymous) (Name t) (Name t))) (App (Name and) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (App (Name eq) (Name t) (App (Name f) (Name x) (Name y)) (App (Name f) (Name y) (Name x))))) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (Prod (Name z) (Name t) (App (Name eq) (Name t) (App (Name f) (Name x) (App (Name f) (Name y) (Name z))) (App (Name f) (App (Name f) (Name x) (Name y)) (Name z)))))))))) (Name T) (Name f)) (App (Name AC_PROP) (Name T) (Name f))))))))) 1) (App (Inductive ((Name list) (inductive_body (nil 1 (Prod (Name A) (Sort (Type (Universe (Level Coq.Init.Datatypes.44)))) (App (Name list) (Name A)))) (cons 2 (Prod (Name A) (Sort (Type (Universe (Level Coq.Init.Datatypes.44)))) (Prod (Anonymous) (Name A) (Prod (Anonymous) (App (Name list) (Name A)) (App (Name list) (Name A))))))))) (Inductive ((Name TriDigit) (inductive_body (TriZero 1 (Name TriDigit)) (TriOne 2 (Name TriDigit)) (TriTwo 3 (Name TriDigit)))))) (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0)) (Axiom triclass.trAC_Class (App (Definition AdvancedRewrite.advancedRewrite.AC (Lambda (Name t) (Sort (Type (Universe (Level AdvancedRewrite.advancedRewrite.2)))) (Lambda (Name f) (Prod (Anonymous) (Name t) (Prod (Anonymous) (Name t) (Name t))) (App (Name and) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (App (Name eq) (Name t) (App (Name f) (Name x) (Name y)) (App (Name f) (Name y) (Name x))))) (Prod (Name x) (Name t) (Prod (Name y) (Name t) (Prod (Name z) (Name t) (App (Name eq) (Name t) (App (Name f) (Name x) (App (Name f) (Name y) (Name z))) (App (Name f) (App (Name f) (Name x) (Name y)) (Name z)))))))))) (App (Name list) (Name TriDigit)) (Definition triclass.triAdd (Fix (Functions ((Name triAdd) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (Prod (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit)))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Lambda (Name y) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (Name y) (Lambda (Name t) (Name TriDigit) (Lambda (Name r1) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (Name r1)) (Lambda (Name f) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (App (Construct (Name list) 2) (Name TriDigit) (Name f) (App (Name triAdd) (Name r1) (Name r2))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2))) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))))))))) (Case 1 (Lambda (Name y) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name y)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r1)) (Lambda (Name t) (Name TriDigit) (Lambda (Name r2) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (App (Name triAdd) (Name r1) (Name r2))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triAdd) (Name r1) (Name r2)))) (App (Definition triclass.triIncrement (Fix (Functions ((Name triIncrement) 0 (Prod (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (Lambda (Name x) (App (Name list) (Name TriDigit)) (Case 1 (Lambda (Name x) (App (Name list) (Name TriDigit)) (App (Name list) (Name TriDigit))) (CaseMatch (Name x)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Construct (Name list) 1) (Name TriDigit))) (Lambda (Name t) (Name TriDigit) (Lambda (Name r) (App (Name list) (Name TriDigit)) (Case 0 (Lambda (Name t) (Name TriDigit) (App (Name list) (Name TriDigit))) (CaseMatch (Name t)) (CaseBranches (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 3) (Name r)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 1) (App (Name triIncrement) (Name r)))))))))))) 0)) (App (Construct (Name list) 2) (Name TriDigit) (Construct (Name TriDigit) 2) (App (Name triAdd) (Name r1) (Name r2)))))))))))))))))))) 0))))))
-typeclasses: Coq.Classes.RelationClasses.predicate_equivalence_equivalence
-typeclasses: Coq.Classes.RelationClasses.relation_equivalence_equivalence
-typeclasses: Coq.Classes.RelationClasses.eq_equivalence
-typeclasses: Coq.Classes.Equivalence.pointwise_equivalence
-typeclasses: Coq.Classes.RelationClasses.iff_equivalence
-typeclasses: Coq.Arith.PeanoNat.Nat.eqf_equiv
-typeclasses: Top.tac14
-typeclasses: Coq.Classes.CRelationClasses.Equivalence_PER
-typeclasses: Top.rewriteRule
-typeclasses: Coq.Classes.RelationClasses.relation_implication_preorder
-typeclasses: Coq.Classes.RelationClasses.Equivalence_PreOrder
-typeclasses: Coq.Classes.RelationClasses.predicate_implication_preorder
-typeclasses: Coq.Arith.PeanoNat.Nat.le_preorder
-typeclasses: Top.tac8
-typeclasses: Coq.Classes.CRelationClasses.relation_equivalence_equivalence
-typeclasses: Coq.Classes.CRelationClasses.eq_equivalence
-typeclasses: Coq.Classes.CRelationClasses.iff_equivalence
-typeclasses: Coq.Classes.CRelationClasses.relation_implication_preorder
-typeclasses: Coq.Classes.SetoidTactics.equivalence_default
-typeclasses: Top.tac6
-typeclasses: Top.tac12
-typeclasses: Coq.Classes.CRelationClasses.partial_order_antisym
-typeclasses: Coq.Classes.CRelationClasses.iffT_Symmetric
-typeclasses: Coq.Classes.CRelationClasses.eq_Symmetric
-typeclasses: Coq.Classes.CRelationClasses.Equivalence_Symmetric
-typeclasses: Coq.Classes.CRelationClasses.PER_Symmetric
-typeclasses: Coq.Classes.CRelationClasses.iff_Symmetric
-typeclasses: Coq.Arith.PeanoNat.Nat.le_partialorder
-typeclasses: Coq.Classes.RelationClasses.subrelation_partial_order
-typeclasses: Coq.Classes.Morphisms.iff_impl_subrelation
-typeclasses: Coq.Classes.Morphisms.iff_flip_impl_subrelation
-typeclasses: Coq.Classes.Morphisms.pointwise_subrelation
-typeclasses: Coq.Classes.RelationClasses.PER_Transitive
-typeclasses: Coq.Classes.RelationClasses.PreOrder_Transitive
-typeclasses: Coq.Classes.RelationClasses.iff_Transitive
-typeclasses: Coq.Classes.RelationClasses.eq_Transitive
-typeclasses: Coq.Classes.RelationClasses.Equivalence_Transitive
-typeclasses: Coq.Classes.Equivalence.pointwise_transitive
-typeclasses: Coq.Classes.Equivalence.equiv_transitive
-typeclasses: Coq.Classes.RelationClasses.impl_Transitive
-typeclasses: Coq.Classes.RelationClasses.StrictOrder_Transitive
-typeclasses: Coq.Arith.PeanoNat.Nat.divide_transitive
-typeclasses: Coq.Classes.CMorphisms.pointwise_subrelation
-typeclasses: Coq.Classes.CMorphisms.iffT_arrow_subrelation
-typeclasses: Coq.Classes.CMorphisms.iffT_flip_arrow_subrelation
-typeclasses: Coq.Classes.CMorphisms.iff_impl_subrelation
-typeclasses: Coq.Classes.CMorphisms.iff_flip_impl_subrelation
-typeclasses: Coq.Classes.CMorphisms.trans_contra_co_type_morphism
-typeclasses: Coq.Classes.CMorphisms.subrelation_id_proper
-typeclasses: Coq.Classes.CMorphisms.proper_subrelation_proper_arrow
-typeclasses: Coq.Classes.CMorphisms.trans_contra_inv_impl_type_morphism
-typeclasses: Coq.Classes.CMorphisms.proper_proper
-typeclasses: Coq.Classes.CMorphisms.trans_co_impl_type_morphism
-typeclasses: Coq.Classes.CMorphisms.compose_proper
-typeclasses: Coq.Classes.CMorphisms.trans_sym_co_inv_impl_type_morphism
-typeclasses: Coq.Classes.CMorphisms.PartialOrder_proper_type
-typeclasses: Coq.Classes.CMorphisms.trans_sym_contra_arrow_morphism
-typeclasses: Coq.Classes.CMorphisms.respectful_morphism
-typeclasses: Coq.Classes.CMorphisms.PER_type_morphism
-typeclasses: Coq.Classes.CMorphisms.per_partial_app_type_morphism
-typeclasses: Coq.Classes.CMorphisms.trans_co_eq_inv_arrow_morphism
-typeclasses: Coq.Classes.CRelationClasses.impl_Transitive
-typeclasses: Coq.Classes.CRelationClasses.StrictOrder_Transitive
-typeclasses: Coq.Classes.CRelationClasses.PER_Transitive
-typeclasses: Coq.Classes.CRelationClasses.PreOrder_Transitive
-typeclasses: Coq.Classes.CRelationClasses.iff_Transitive
-typeclasses: Coq.Classes.CRelationClasses.eq_Transitive
-typeclasses: Coq.Classes.CRelationClasses.iffT_Transitive
-typeclasses: Coq.Classes.CRelationClasses.arrow_Transitive
-typeclasses: Coq.Classes.CRelationClasses.Equivalence_Transitive
-typeclasses: Coq.Classes.RelationClasses.StrictOrder_Irreflexive
-typeclasses: Coq.Classes.RelationClasses.StrictOrder_Asymmetric
-typeclasses: Coq.Arith.PeanoNat.Nat.mul_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.mod_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lor_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lcm_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.gcd_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.div_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.add_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lt_alt_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.Odd_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.pred_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.min_compat
-typeclasses: Coq.Classes.Morphisms_Prop.iff_iff_iff_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.ones_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.sqrt_up_wd
-typeclasses: Coq.Classes.Morphisms.proper_subrelation_proper
-typeclasses: Coq.Classes.Morphisms_Prop.or_iff_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.Proper_instance_0
-typeclasses: Coq.Arith.PeanoNat.Nat.lxor_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.Private_NZSqrt.sqrt_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lt_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.le_wd
-typeclasses: Coq.Classes.Morphisms_Prop.ex_flip_impl_morphism
-typeclasses: Coq.Classes.Morphisms.PartialOrder_proper
-typeclasses: Coq.Arith.PeanoNat.Nat.log2_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lnot_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.land_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.max_compat
-typeclasses: Coq.Classes.Morphisms.subrelation_id_proper
-typeclasses: Coq.Classes.Morphisms.trans_co_eq_inv_impl_morphism
-typeclasses: Coq.Classes.Morphisms.trans_contra_inv_impl_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.and_impl_morphism
-typeclasses: Coq.Classes.Morphisms.proper_proper
-typeclasses: Coq.Arith.PeanoNat.Nat.recursion_wd
-typeclasses: Coq.Classes.Morphisms_Prop.Acc_rel_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.not_iff_morphism
-typeclasses: Coq.Classes.Morphisms.compose_proper
-typeclasses: Coq.Classes.Morphisms.PER_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.le_alt_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.log2_up_wd
-typeclasses: Coq.Classes.Morphisms_Prop.all_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.even_wd
-typeclasses: Coq.Classes.Morphisms.trans_sym_co_inv_impl_morphism
-typeclasses: Coq.Classes.Morphisms.trans_sym_contra_impl_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.ex_iff_morphism
-typeclasses: Coq.Classes.Morphisms.per_partial_app_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.testbit_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.div2_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.Bezout_wd
-typeclasses: Coq.Classes.Morphisms.respectful_morphism
-typeclasses: Coq.Classes.Morphisms.trans_co_impl_morphism
-typeclasses: Coq.Classes.Morphisms.trans_contra_co_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.Acc_pt_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.all_iff_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.divide_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.ldiff_wd
-typeclasses: Coq.Classes.Morphisms_Prop.not_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.eqb_compat
-typeclasses: Coq.Classes.Morphisms_Prop.ex_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.b2n_proper
-typeclasses: Coq.Classes.Morphisms_Prop.and_iff_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.clearbit_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.shiftr_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.shiftl_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.setbit_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.succ_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.Even_wd
-typeclasses: Coq.Classes.Morphisms_Prop.or_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.testbit_eqf
-typeclasses: Coq.Classes.Morphisms_Prop.well_founded_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.sub_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.pow_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.odd_wd
-typeclasses: Coq.Classes.Morphisms_Prop.all_flip_impl_morphism
-typeclasses: Coq.Classes.CRelationClasses.StrictOrder_Irreflexive
-typeclasses: Coq.Classes.CRelationClasses.StrictOrder_Asymmetric
-typeclasses: Coq.Classes.Morphisms.reflexive_eq_dom_reflexive
-typeclasses: Coq.Classes.RelationClasses.Equivalence_Reflexive
-typeclasses: Coq.Classes.Equivalence.equiv_reflexive
-typeclasses: Coq.Classes.Equivalence.pointwise_reflexive
-typeclasses: Coq.Classes.RelationClasses.iff_Reflexive
-typeclasses: Coq.Classes.RelationClasses.impl_Reflexive
-typeclasses: Coq.Classes.RelationClasses.PreOrder_Reflexive
-typeclasses: Coq.Arith.PeanoNat.Nat.divide_reflexive
-typeclasses: Coq.Classes.RelationClasses.eq_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.eq_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.Equivalence_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.iff_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.impl_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.PreOrder_Reflexive
-typeclasses: Coq.Classes.CMorphisms.reflexive_eq_dom_reflexive
-typeclasses: Coq.Classes.CRelationClasses.iffT_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.arrow_Reflexive
-typeclasses: Coq.Classes.RelationClasses.partial_order_antisym
-typeclasses: Coq.Classes.RelationClasses.eq_Symmetric
-typeclasses: Coq.Classes.RelationClasses.Equivalence_Symmetric
-typeclasses: Coq.Classes.Equivalence.equiv_symmetric
-typeclasses: Coq.Classes.Equivalence.pointwise_symmetric
-typeclasses: Coq.Classes.RelationClasses.PER_Symmetric
-typeclasses: Coq.Classes.RelationClasses.iff_Symmetric
-typeclasses: Top.tac13
-typeclasses: Definition(Top.tac13(C_AdvancedRewrite.advancedRewrite.TOP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.ltp_fun(), f_Top.dd_ltp())))
-typeclasses: TOP f_Top.eqp_fun f_Top.ltp_fun
-typeclasses: Coq.Classes.RelationClasses.equivalence_rewrite_relation
-typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_2
-typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_1
-typeclasses: Coq.Classes.RelationClasses.RewriteRelation_instance_0
-typeclasses: Coq.Arith.PeanoNat.Nat.lt_strorder
-typeclasses: Coq.Classes.CRelationClasses.equivalence_rewrite_crelation
-typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_2
-typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_1
-typeclasses: Coq.Classes.CRelationClasses.RewriteRelation_instance_0
-typeclasses: Top.tac9
-typeclasses: Definition(Top.tac9(C_AdvancedRewrite.advancedRewrite.ETO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.lt_fun(), f_Top.dd_elt())))
-typeclasses: ETO f_Top.eq_fun f_Top.lt_fun
-typeclasses: Top.tac11
-typeclasses: Definition(Top.tac11(C_AdvancedRewrite.advancedRewrite.POP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.ltp_fun(), f_Top.dd_lpp())))
-typeclasses: POP f_Top.eqp_fun f_Top.ltp_fun
-typeclasses: Top.tac5
-typeclasses: Definition(Top.tac5(C_AdvancedRewrite.advancedRewrite.EQ_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.dd_eq())))
-typeclasses: EQ f_Top.eq_fun
-typeclasses: Top.tac10
-typeclasses: Definition(Top.tac10(C_AdvancedRewrite.advancedRewrite.EQP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.dd_eqp())))
-typeclasses: EQP f_Top.eqp_fun
-typeclasses: Top.tac4
-typeclasses: Definition(Top.tac4(C_AdvancedRewrite.advancedRewrite.C_PROP1(C_Coq.Init.Datatypes.list(C_triclass.TriDigit), f_triclass.triAdd(), f_Top.trC_Class())))
-typeclasses: C f_triclass.triAdd
-typeclasses: Top.tac3
-typeclasses: Definition(Top.tac3(C_AdvancedRewrite.advancedRewrite.A_PROP1(C_Coq.Init.Datatypes.list(C_triclass.TriDigit), f_triclass.triAdd(), f_Top.trA_Class())))
-typeclasses: A f_triclass.triAdd
-typeclasses: Top.tac7
-typeclasses: Definition(Top.tac7(C_AdvancedRewrite.advancedRewrite.EPO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.lt_fun(), f_Top.dd_elp())))
-typeclasses: EPO f_Top.eq_fun f_Top.lt_fun
-typeclasses: Coq.Classes.RelationClasses.Equivalence_PER
-typeclasses: Top.tac2
-typeclasses: Definition(Top.tac2(C_AdvancedRewrite.advancedRewrite.AC_PROP1(C_Coq.Init.Datatypes.list(C_triclass.TriDigit), f_triclass.triAdd(), f_Top.trAC_Class())))
-typeclasses: AC f_triclass.triAdd
-typeclasses: triclass.tac
-typeclasses: Definition(triclass.tac(C_AdvancedRewrite.advancedRewrite.AC_PROP1(C_Coq.Init.Datatypes.list(C_triclass.TriDigit), f_triclass.triAdd(), f_triclass.trAC_Class())))
-typeclasses: AC f_triclass.triAdd
-typeclasses: Coq.Classes.RelationClasses.predicate_equivalence_equivalence
-typeclasses: Coq.Classes.RelationClasses.relation_equivalence_equivalence
-typeclasses: Coq.Classes.RelationClasses.eq_equivalence
-typeclasses: Coq.Classes.Equivalence.pointwise_equivalence
-typeclasses: Coq.Classes.RelationClasses.iff_equivalence
-typeclasses: Coq.Arith.PeanoNat.Nat.eqf_equiv
-typeclasses: Top.tac14
-typeclasses: Definition(Top.tac14(C_AdvancedRewrite.advancedRewrite.ETOP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.ltp_fun(), f_Top.dd_eltp())))
-typeclasses: ETOP f_Top.eqp_fun f_Top.ltp_fun
-typeclasses: Coq.Classes.CRelationClasses.Equivalence_PER
-typeclasses: Top.rewriteRule
-typeclasses: Definition(Top.rewriteRule(C_AdvancedRewrite.advancedRewrite.REWRITE_RULE_PROP1(C_Coq.Init.Datatypes.nat, 1, 2, True, f_Top.rrp())))
-typeclasses: REWRITE_RULE 1 { True } -> 2
-typeclasses: Coq.Classes.RelationClasses.relation_implication_preorder
-typeclasses: Coq.Classes.RelationClasses.Equivalence_PreOrder
-typeclasses: Coq.Classes.RelationClasses.predicate_implication_preorder
-typeclasses: Coq.Arith.PeanoNat.Nat.le_preorder
-typeclasses: Top.tac8
-typeclasses: Definition(Top.tac8(C_AdvancedRewrite.advancedRewrite.TO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.lt_fun(), f_Top.dd_lt())))
-typeclasses: TO f_Top.eq_fun f_Top.lt_fun
-typeclasses: Coq.Classes.CRelationClasses.relation_equivalence_equivalence
-typeclasses: Coq.Classes.CRelationClasses.eq_equivalence
-typeclasses: Coq.Classes.CRelationClasses.iff_equivalence
-typeclasses: Coq.Classes.CRelationClasses.relation_implication_preorder
-typeclasses: Coq.Classes.SetoidTactics.equivalence_default
-typeclasses: Top.tac6
-typeclasses: Definition(Top.tac6(C_AdvancedRewrite.advancedRewrite.PO_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eq_fun(), f_Top.lt_fun(), f_Top.dd_lp())))
-typeclasses: PO f_Top.eq_fun f_Top.lt_fun
-typeclasses: Top.tac12
-typeclasses: Definition(Top.tac12(C_AdvancedRewrite.advancedRewrite.EPOP_PROP1(C_Coq.Init.Datatypes.nat, f_Top.eqp_fun(), f_Top.ltp_fun(), f_Top.dd_elpp())))
-typeclasses: EPOP f_Top.eqp_fun f_Top.ltp_fun
-typeclasses: Coq.Classes.CRelationClasses.partial_order_antisym
-typeclasses: Coq.Classes.CRelationClasses.iffT_Symmetric
-typeclasses: Coq.Classes.CRelationClasses.eq_Symmetric
-typeclasses: Coq.Classes.CRelationClasses.Equivalence_Symmetric
-typeclasses: Coq.Classes.CRelationClasses.PER_Symmetric
-typeclasses: Coq.Classes.CRelationClasses.iff_Symmetric
-typeclasses: Coq.Arith.PeanoNat.Nat.le_partialorder
-typeclasses: Coq.Classes.RelationClasses.subrelation_partial_order
-typeclasses: Coq.Classes.Morphisms.iff_impl_subrelation
-typeclasses: Coq.Classes.Morphisms.iff_flip_impl_subrelation
-typeclasses: Coq.Classes.Morphisms.pointwise_subrelation
-typeclasses: Coq.Classes.RelationClasses.PER_Transitive
-typeclasses: Coq.Classes.RelationClasses.PreOrder_Transitive
-typeclasses: Coq.Classes.RelationClasses.iff_Transitive
-typeclasses: Coq.Classes.RelationClasses.eq_Transitive
-typeclasses: Coq.Classes.RelationClasses.Equivalence_Transitive
-typeclasses: Coq.Classes.Equivalence.pointwise_transitive
-typeclasses: Coq.Classes.Equivalence.equiv_transitive
-typeclasses: Coq.Classes.RelationClasses.impl_Transitive
-typeclasses: Coq.Classes.RelationClasses.StrictOrder_Transitive
-typeclasses: Coq.Arith.PeanoNat.Nat.divide_transitive
-typeclasses: Coq.Classes.CMorphisms.pointwise_subrelation
-typeclasses: Coq.Classes.CMorphisms.iffT_arrow_subrelation
-typeclasses: Coq.Classes.CMorphisms.iffT_flip_arrow_subrelation
-typeclasses: Coq.Classes.CMorphisms.iff_impl_subrelation
-typeclasses: Coq.Classes.CMorphisms.iff_flip_impl_subrelation
-typeclasses: Coq.Classes.CMorphisms.trans_contra_co_type_morphism
-typeclasses: Coq.Classes.CMorphisms.subrelation_id_proper
-typeclasses: Coq.Classes.CMorphisms.proper_subrelation_proper_arrow
-typeclasses: Coq.Classes.CMorphisms.trans_contra_inv_impl_type_morphism
-typeclasses: Coq.Classes.CMorphisms.proper_proper
-typeclasses: Coq.Classes.CMorphisms.trans_co_impl_type_morphism
-typeclasses: Coq.Classes.CMorphisms.compose_proper
-typeclasses: Coq.Classes.CMorphisms.trans_sym_co_inv_impl_type_morphism
-typeclasses: Coq.Classes.CMorphisms.PartialOrder_proper_type
-typeclasses: Coq.Classes.CMorphisms.trans_sym_contra_arrow_morphism
-typeclasses: Coq.Classes.CMorphisms.respectful_morphism
-typeclasses: Coq.Classes.CMorphisms.PER_type_morphism
-typeclasses: Coq.Classes.CMorphisms.per_partial_app_type_morphism
-typeclasses: Coq.Classes.CMorphisms.trans_co_eq_inv_arrow_morphism
-typeclasses: Coq.Classes.CRelationClasses.impl_Transitive
-typeclasses: Coq.Classes.CRelationClasses.StrictOrder_Transitive
-typeclasses: Coq.Classes.CRelationClasses.PER_Transitive
-typeclasses: Coq.Classes.CRelationClasses.PreOrder_Transitive
-typeclasses: Coq.Classes.CRelationClasses.iff_Transitive
-typeclasses: Coq.Classes.CRelationClasses.eq_Transitive
-typeclasses: Coq.Classes.CRelationClasses.iffT_Transitive
-typeclasses: Coq.Classes.CRelationClasses.arrow_Transitive
-typeclasses: Coq.Classes.CRelationClasses.Equivalence_Transitive
-typeclasses: Coq.Classes.RelationClasses.StrictOrder_Irreflexive
-typeclasses: Coq.Classes.RelationClasses.StrictOrder_Asymmetric
-typeclasses: Coq.Arith.PeanoNat.Nat.mul_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.mod_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lor_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lcm_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.gcd_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.div_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.add_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lt_alt_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.Odd_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.pred_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.min_compat
-typeclasses: Coq.Classes.Morphisms_Prop.iff_iff_iff_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.ones_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.sqrt_up_wd
-typeclasses: Coq.Classes.Morphisms.proper_subrelation_proper
-typeclasses: Coq.Classes.Morphisms_Prop.or_iff_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.Proper_instance_0
-typeclasses: Coq.Arith.PeanoNat.Nat.lxor_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.Private_NZSqrt.sqrt_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lt_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.le_wd
-typeclasses: Coq.Classes.Morphisms_Prop.ex_flip_impl_morphism
-typeclasses: Coq.Classes.Morphisms.PartialOrder_proper
-typeclasses: Coq.Arith.PeanoNat.Nat.log2_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.lnot_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.land_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.max_compat
-typeclasses: Coq.Classes.Morphisms.subrelation_id_proper
-typeclasses: Coq.Classes.Morphisms.trans_co_eq_inv_impl_morphism
-typeclasses: Coq.Classes.Morphisms.trans_contra_inv_impl_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.and_impl_morphism
-typeclasses: Coq.Classes.Morphisms.proper_proper
-typeclasses: Coq.Arith.PeanoNat.Nat.recursion_wd
-typeclasses: Coq.Classes.Morphisms_Prop.Acc_rel_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.not_iff_morphism
-typeclasses: Coq.Classes.Morphisms.compose_proper
-typeclasses: Coq.Classes.Morphisms.PER_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.le_alt_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.log2_up_wd
-typeclasses: Coq.Classes.Morphisms_Prop.all_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.even_wd
-typeclasses: Coq.Classes.Morphisms.trans_sym_co_inv_impl_morphism
-typeclasses: Coq.Classes.Morphisms.trans_sym_contra_impl_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.ex_iff_morphism
-typeclasses: Coq.Classes.Morphisms.per_partial_app_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.testbit_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.div2_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.Bezout_wd
-typeclasses: Coq.Classes.Morphisms.respectful_morphism
-typeclasses: Coq.Classes.Morphisms.trans_co_impl_morphism
-typeclasses: Coq.Classes.Morphisms.trans_contra_co_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.Acc_pt_morphism
-typeclasses: Coq.Classes.Morphisms_Prop.all_iff_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.divide_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.ldiff_wd
-typeclasses: Coq.Classes.Morphisms_Prop.not_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.eqb_compat
-typeclasses: Coq.Classes.Morphisms_Prop.ex_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.b2n_proper
-typeclasses: Coq.Classes.Morphisms_Prop.and_iff_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.clearbit_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.shiftr_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.shiftl_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.setbit_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.succ_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.Even_wd
-typeclasses: Coq.Classes.Morphisms_Prop.or_impl_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.testbit_eqf
-typeclasses: Coq.Classes.Morphisms_Prop.well_founded_morphism
-typeclasses: Coq.Arith.PeanoNat.Nat.sub_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.pow_wd
-typeclasses: Coq.Arith.PeanoNat.Nat.odd_wd
-typeclasses: Coq.Classes.Morphisms_Prop.all_flip_impl_morphism
-typeclasses: Coq.Classes.CRelationClasses.StrictOrder_Irreflexive
-typeclasses: Coq.Classes.CRelationClasses.StrictOrder_Asymmetric
-typeclasses: Coq.Classes.Morphisms.reflexive_eq_dom_reflexive
-typeclasses: Coq.Classes.RelationClasses.Equivalence_Reflexive
-typeclasses: Coq.Classes.Equivalence.equiv_reflexive
-typeclasses: Coq.Classes.Equivalence.pointwise_reflexive
-typeclasses: Coq.Classes.RelationClasses.iff_Reflexive
-typeclasses: Coq.Classes.RelationClasses.impl_Reflexive
-typeclasses: Coq.Classes.RelationClasses.PreOrder_Reflexive
-typeclasses: Coq.Arith.PeanoNat.Nat.divide_reflexive
-typeclasses: Coq.Classes.RelationClasses.eq_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.eq_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.Equivalence_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.iff_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.impl_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.PreOrder_Reflexive
-typeclasses: Coq.Classes.CMorphisms.reflexive_eq_dom_reflexive
-typeclasses: Coq.Classes.CRelationClasses.iffT_Reflexive
-typeclasses: Coq.Classes.CRelationClasses.arrow_Reflexive
-typeclasses: Coq.Classes.RelationClasses.partial_order_antisym
-typeclasses: Coq.Classes.RelationClasses.eq_Symmetric
-typeclasses: Coq.Classes.RelationClasses.Equivalence_Symmetric
-typeclasses: Coq.Classes.Equivalence.equiv_symmetric
-typeclasses: Coq.Classes.Equivalence.pointwise_symmetric
-typeclasses: Coq.Classes.RelationClasses.PER_Symmetric
-typeclasses: Coq.Classes.RelationClasses.iff_Symmetric
 
 2 subgoals
   
   ============================
-  False
+  (exists x y : nat, true = blt x y) -> False
 
 subgoal 2 is:
- False = (1 + 1 = 3)
+ ((exists x y : nat, true = blt x y) -> False) =
+ (forall x y : nat, (negb (beq x y) && negb (blt x y))%bool = true)
 
-x < 
+test2 < 
 Coq < 

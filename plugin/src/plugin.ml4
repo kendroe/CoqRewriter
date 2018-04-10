@@ -71,7 +71,7 @@ open Context.Rel.Declaration
 open Intern
 open Exp
 
-let debug_ids = ["typeclasses"]
+let debug_ids = ["ALL";"build_predicate";"type_from_name";"typeclasses";"arewrite";"get_constr";"add_constr";"get_def";"add_def"]
 
 let debug_print c s =
     if (List.mem "ALL" debug_ids) || (List.mem c debug_ids) then
@@ -87,9 +87,9 @@ module StringConstr =
 
 module StringMap = Map.Make(StringConstr)
 
-let constr_cache : Constr.t StringMap.t ref = ref (StringMap.empty) ;;
-
 exception NoEntry;;
+
+let constr_cache : Constr.t StringMap.t ref = ref (StringMap.empty) ;;
 
 let get_constr s =
     debug_print "get_constr" ("Finding " ^ s);
@@ -99,6 +99,18 @@ let get_constr s =
 let add_constr s c =
     debug_print "add_constr" ("Adding " ^ s);
     constr_cache := StringMap.add s c (!constr_cache) ;;
+
+let def_cache : Constr.t StringMap.t ref = ref (StringMap.empty) ;;
+
+let get_def s =
+    debug_print "get_def" ("Finding " ^ s);
+    try (StringMap.find s (!def_cache)) with
+    Not_found -> (debug_print "get_def" "Failed";raise NoEntry) ;;
+
+let add_def s c =
+    debug_print "add_def" ("Adding " ^ s);
+    def_cache := StringMap.add s c (!def_cache) ;;
+
 
 (* --- Options --- *)
 
@@ -1063,6 +1075,9 @@ and build_app_term (env : Environ.env) f xs =
             let kn' = build_kername kn in
             let xs' = List.map (build_exp env) (Array.to_list xs) in
                  Some (match kn' with
+                       | "Coq.Init.Datatypes.andb" -> (APPL (intern_and,xs'))
+                       | "Coq.Init.Datatypes.orb" -> (APPL (intern_or,xs'))
+                       | "Coq.Init.Datatypes.negb" -> (APPL (intern_not,xs'))
                        | "Coq.Init.Nat.add" -> (APPL (intern_nat_plus,xs'))
                        | "Coq.Init.Nat.sub" -> (APPL (intern_nat_minus,xs'))
                        | "Coq.Init.Nat.mul" -> (APPL (intern_nat_times,xs'))
@@ -1093,18 +1108,21 @@ and build_app_constant_term (env : Environ.env) f xs =
 and build_const_exp (env : Environ.env) ((c, u) : pconstant) =
   let kn = Constant.canonical c in
   let kn' = build_kername kn in
+  let d = try get_def kn' with NoEntry ->
+      let cd = Environ.lookup_constant c env in
+      let global_env = Global.env () in
+      let dd =
+          match get_definition cd with
+            None ->
+              begin
+                match cd.const_type with
+                  RegularArity ty -> ty (*build_axiom_exp kn (build_exp global_env ty) u*)
+                | TemplateArity _ -> assert false (* pre-8.5 universe polymorphism *)
+              end
+          | Some c ->
+              (build_definition_exp kn (build_exp global_env c) u);c
+      in ((add_def kn' dd);dd) in
       (APPL (intern ("f_" ^ kn'),[]))
-  (*let cd = Environ.lookup_constant c env in
-  let global_env = Global.env () in
-  match get_definition cd with
-    None ->
-      begin
-        match cd.const_type with
-          RegularArity ty -> build_axiom_exp kn (build_exp global_env ty) u
-        | TemplateArity _ -> assert false (* pre-8.5 universe polymorphism *)
-      end
-  | Some c ->
-      build_definition_exp kn (build_exp global_env c) u*)
 
 and build_fixpoint_functions_exp (env : Environ.env) (names : name array) (typs : constr array) (defs : constr array)  =
   let env_fix = Environ.push_rel_context (bindings_for_fix names typs) env in
@@ -1188,7 +1206,7 @@ let reify_div = lazy (Lib_coq.init_constant ["Coq";"Init";"Nat"] "div")
 
 let test_term = Term.mkApp (Lazy.force reify_eq, [|(Lazy.force reify_nat);Lib_coq.Nat.of_int 2;Lib_coq.Nat.of_int 3|])
 
-let rec build_term x = Lib_coq.Nat.of_int 42 ;;
+(*let rec build_term x = Lib_coq.Nat.of_int 42 ;;*)
 
 exception NoTypeInfo;;
 
@@ -1471,33 +1489,65 @@ let print_full_pure_context () =
   | _ -> mt () in
   prec (Lib.contents ())
 
+let rec root_type l t =
+    if l=0 then t else
+    match kind_of_term t with
+    | Prod (n, t, b) -> root_type (l-1) b
+    | x -> t
+    ;;
+
 let type_from_name s =
-    let Construct (m,u) = kind_of_term (get_constr (decode s)) in
-    (*let xx = Global.lookup_mind (Construct (m,u)) in*)
-    let root = root_name s in
-    let index = root_index s in
-    let rec sl h r = match r with
-                     | [x] -> (h,x)
-                     | [] -> (h,"")
-                     | (f::r) -> sl (List.append h [f]) r
-                     in
-    let _ = debug_print "type_from_name" ("root " ^ root) in
-    let (path,name) = sl [] (String.split_on_char '.' root) in
-    let dirpath = DirPath.make (List.map Id.of_string path) in
-    let modpath = ModPath.MPfile dirpath in
+    let _ = debug_print "type_from_name" in
     let (evm, env) = Lemmas.get_current_context() in
-    let d = Environ.lookup_mind (MutInd.make2 modpath (Names.Label.make name)) env in
-    let _ = debug_print "type_from_name" "Here 3" in
-    (*let (body, _) = Constrintern.interp_constr env evm def in*)
-    let ind_bodies = d.mind_packets in
-    let ind_bodies_list = Array.to_list ind_bodies in
-    let env_ind = Environ.push_rel_context (bindings_for_inductive env d ind_bodies_list) env in
-    let cs = List.map (build_oinductive env_ind 0) ind_bodies_list in
-    let ind_or_coind = d.mind_finite in
-    let ast = build_inductive ind_or_coind cs u in
-    let _ = debug_print "type_from_name" "Here 4" in
-    let _ = debug_print "type_from_name" ast in
-        Lazy.force reify_nat
+    try
+        let Construct (m,u) = kind_of_term (get_constr (decode s)) in
+        (*let xx = Global.lookup_mind (Construct (m,u)) in*)
+        let root = root_name s in
+        let index = root_index s in
+        let rec sl h r = match r with
+                         | [x] -> (h,x)
+                         | [] -> (h,"")
+                         | (f::r) -> sl (List.append h [f]) r
+                         in
+        let _ = debug_print "type_from_name" ("root " ^ root) in
+        let (path,name) = sl [] (String.split_on_char '.' root) in
+        let dirpath = DirPath.make (List.map Id.of_string path) in
+        let modpath = ModPath.MPfile dirpath in
+        let d = Environ.lookup_mind (MutInd.make2 modpath (Names.Label.make name)) env in
+        let _ = debug_print "type_from_name" "Here 3" in
+        (*let (body, _) = Constrintern.interp_constr env evm def in*)
+        let ind_bodies = d.mind_packets in
+        let ind_bodies_list = Array.to_list ind_bodies in
+        let env_ind = Environ.push_rel_context (bindings_for_inductive env d ind_bodies_list) env in
+        let cs = List.map (build_oinductive env_ind 0) ind_bodies_list in
+        let ind_or_coind = d.mind_finite in
+        let ast = build_inductive ind_or_coind cs u in
+        let _ = debug_print "type_from_name" "Here 4" in
+        let _ = debug_print "type_from_name" ast in
+            Lazy.force reify_nat
+    with NoEntry ->
+        let d = get_def (String.sub (decode s) 2 ((String.length (decode s))-2)) in
+        let ast = apply_to_definition build_ast env 0 d in
+        let _ = debug_print "type_from_name" ast in
+        let td = match kind_of_term d with
+                 | Fix ((is, i), (ns, ts, ds)) -> ts
+                 | _ -> raise NoEntry in
+        let ast2 = Array.map (apply_to_definition build_ast env 0) td in
+        let _ = Array.map (debug_print "type_from_name") ast2 in
+        let t = Array.get td 0 in
+        let rt = root_type (-1) t in
+        let _ = debug_print "type_from_name" "Done" in rt
+
+        (*let x = Lib_coq.init_constant root in
+        let kn = Constant.canonical c in
+        let _ = debug_print "build_const" "Lookup 1" in
+        let cd = Environ.lookup_constant c env in
+        let _ = debug_print "build_const" "Lookup 2" in
+        let global_env = Global.env () in
+        match get_definition cd with
+          None -> raise NoEntry
+        | Some c ->
+            build_definition kn (build_ast global_env (depth - 1) c) u*)
 
 let functor_from_name s =
     let _ = debug_print "functor_from_name" ("functor_from_name " ^ (decode s)) in
@@ -1562,7 +1612,7 @@ let rec get_type x tenv = match x with
   | (APPL (11,_)) -> (Lazy.force reify_bool)
   | (APPL (12,_)) -> (Lazy.force reify_bool)
   | (APPL (17,_)) -> (Lazy.force reify_bool)
-  | (APPL (18,[c;l;r])) -> (try get_type l tenv with NoTypeInfo -> get_type r tenv)
+  | (APPL (18,[c;l;r])) -> (try debug_print "get_type" "Recursive call";get_type l tenv with NoTypeInfo -> get_type r tenv)
   | (APPL (76,_)) -> (Lazy.force reify_nat)
   | (APPL (77,_)) -> (Lazy.force reify_nat)
   | (APPL (78,_)) -> (Lazy.force reify_nat)
@@ -1570,14 +1620,22 @@ let rec get_type x tenv = match x with
   | (APPL (80,_)) -> (Lazy.force reify_bool)
   | (APPL (86,_)) -> (Lazy.force reify_bool)
   | (APPL (90,_)) -> (Lazy.force reify_bool)
-  | (APPL (f,_)) -> type_from_name f
+  | (APPL (f,_)) -> debug_print "get_type" "type_from_name call";type_from_name f
   | (VAR x) -> get_var_type tenv (decode x)
   | (CASE (e,t,c)) -> get_case_type c tenv
   | _ -> raise NoTypeInfo
 and get_case_type c tenv = match c with
   | [] -> raise NoTypeInfo
-  | ((p,e)::r) -> try get_type e tenv with NoTypeInfo -> get_case_type r tenv
+  | ((p,e)::r) -> try debug_print "get_type" "recursive call";get_type e tenv with NoTypeInfo -> get_case_type r tenv
   ;;
+
+let is_bool_type x tenv =
+   let _ = debug_print "is_bool_type" "Called" in
+   let typ = (get_type x tenv) in
+   let _ = debug_print "is_bool_type" "Called1" in
+   let r = match (kind_of_term typ) with
+           | Ind ((i, i_index), u) -> (debug_print "is_bool_type" ("Called2 "^(MutInd.debug_to_string i));"(Coq.Init.Datatypes.bool)"=(MutInd.debug_to_string i))
+           | x -> false in r;;
 
 let constructorList t =
     let name = decode (Rtype.nameProduct t) in
@@ -1648,7 +1706,7 @@ let rec build_term e tenv = match e with
   | (APPL (5,[])) -> (Lazy.force reify_false_val)
   | (APPL (9,l)) -> build_and_term l tenv
   | (APPL (10,l)) -> build_or_term l tenv
-  | (APPL (11,[a;b])) -> Term.mkApp (Lazy.force reify_eq_val, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
+  | (APPL (11,[a;b])) -> debug_print "build_term" "equal_build";Term.mkApp (Lazy.force reify_eq_val, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
   | (APPL (17,[a])) -> Term.mkApp (Lazy.force reify_not_val, [| build_term a tenv |])
   (*| (APPL (21,[])) -> (Lazy.force reify_nil)*)
   (*| (APPL (22,[f;e])) -> Term.mkApp(Lazy.force reify_cons,[|build_term f tenv;build_termn e tenv|])*)
@@ -1702,10 +1760,11 @@ let rec build_predicate e tenv = match e with
   | (APPL (5,[])) -> (Lazy.force reify_false)
   | (APPL (9,l)) -> build_and l tenv
   | (APPL (10,l)) -> build_or l tenv
-  | (APPL (11,[a;b])) -> Term.mkApp (Lazy.force reify_eq, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
+  | (APPL (11,[a;b])) -> debug_print "build_predicate" "equal";Term.mkApp (Lazy.force reify_eq, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
   | (APPL (17,[x])) -> Term.mkProd(Anonymous,build_predicate x tenv,(Lazy.force reify_false))
   | (APPL (80,[a;b])) -> Term.mkApp (Lazy.force reify_lt, [| build_term a tenv;build_term b tenv|])
-  | (APPL (75,[f;e])) -> let t = get_type e tenv in
+  | (APPL (75,[f;e])) -> let _ = debug_print "build_predicate" "building0" in
+                         let t = get_type e tenv in
                          let te = build_term e tenv in
                          let _ = debug_print "build_predicate" ("building1 "^(prExp f)^" "^(prExp(APPL (75,[f;e])))) in
                          let r = Term.mkApp(build_term f tenv,[|te|]) in
@@ -1718,8 +1777,16 @@ let rec build_predicate e tenv = match e with
   | (QUANT (73,[(v,t)],e,p)) -> 
     let tenv' = push_var (decode v) t tenv in
         Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_predicate e tenv')
-  | (APPL (f,l)) -> let x = List.map (fun x -> build_term x tenv) l in
-                        Term.mkApp(functor_from_name f,Array.of_list x)
+  | (APPL (f,l)) -> let _ = debug_print "build_predicate" ("Functor " ^ (decode f)) in
+                    let x = List.map (fun x -> build_term x tenv) l in
+                    let r = Term.mkApp(functor_from_name f,Array.of_list x) in
+                        if is_bool_type (APPL (f,l)) tenv then
+                            let coq_init_specif = ModPath.MPfile (DirPath.make (List.map Id.of_string ["Datatypes"; "Init"; "Coq"])) in
+                            let sigT = mkInd (MutInd.make1 (KerName.make2 coq_init_specif (Label.make "bool")), 0) in
+                            let true_term = mkConstruct (fst (destInd sigT), 1) in
+                            (debug_print "build_predicate" "bool equality";
+                            Term.mkApp(Lazy.force reify_eq,[|(Lazy.force reify_bool);true_term;r|]))
+                        else (debug_print "build_predicate" "no bool equality";r)
   | _ -> debug_print "build_predicate" ("buildPredicate " ^ (prExp e));raise BadBuild
 and push_uvars tenv vtl e = match vtl with
   | ((v,t)::r) -> let tenv' = push_var (decode v) t tenv in
@@ -1737,8 +1804,16 @@ and push_uvars tenv vtl e = match vtl with
   | _ -> build_predicate e tenv
 and push_evars tenv vtl e = match vtl with
   | ((v,t)::r) -> let tenv' = push_var (decode v) t tenv in
-                  Term.mkApp (Lazy.force reify_ex, [|build_coq_type t;Term.mkLambda ((Name (Id.of_string (decode v))),(build_coq_type t),(push_evars tenv' r e))|])
-  | _ -> build_predicate e tenv
+                  let _ = debug_print "build_predicate" "build_evars" in
+                  let typ = build_coq_type t in
+                  let _ = debug_print "build_predicate" ("build_evars1 " ^ (prExp e)) in
+                  let rr = (push_evars tenv' r e) in
+                  let _ = debug_print "build_predicate" "build_evars2" in
+                  let lam = Term.mkLambda ((Name (Id.of_string (decode v))),typ,rr) in
+                  let _ = debug_print "build_predicate" "build_evars3" in
+                  let r = Term.mkApp (Lazy.force reify_ex, [|typ;lam|]) in
+                  let _ = debug_print "build_predicate" "end build_evars" in r
+  | _ -> debug_print "build_predicate" "Done evars";build_predicate e tenv
 and build_and l tenv = match l with
   | [] -> Lazy.force reify_true
   | [a] -> build_predicate a tenv
@@ -1870,6 +1945,9 @@ let rec build_typeclasses_env env cl =
 (* Top-level arewrite functionality *)
 let arewrite cl : unit Proofview.tactic =
   Proofview.Goal.enter (fun gl ->
+  let _ = debug_print "arewrite" "CLEARING CACHE" in
+  let _ = (constr_cache := StringMap.empty) in
+  let _ = (def_cache := StringMap.empty) in
   let _ = debug_print "typeclasses" "Test\n" in
   let _ = print_type_classes (Typeclasses.all_instances ()) in
   let _ = debug_print "arewrite" ("Environment:\n\n" ^ string_of_ppcmds (print_full_pure_context ()) ^ "\nEND\n\n") in

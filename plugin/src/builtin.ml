@@ -1261,6 +1261,10 @@ let rec builtin rewrite env e = match e with
             [(APPL (12,[APPL (78,(NUM (n1 / d))::l1);APPL (78,(NUM (n2 / d))::l2)]))]
         else []
     else []
+  | (APPL (11,[x;(APPL (4,[]))])) -> [x]
+  | (APPL (11,[(APPL (4,[]));x])) -> [x]
+  | (APPL (11,[x;(APPL (5,[]))])) -> [(APPL (17,[x]))]
+  | (APPL (11,[(APPL (5,[]));x])) -> [(APPL (17,[x]))]
   | (APPL (11,[(APPL (c1,l1));(APPL (c2,l2))])) ->
     if is_constructor c1 && is_constructor c2 then
         (if c1 = c2 && List.length l1 = List.length l2 then

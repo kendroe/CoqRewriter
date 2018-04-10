@@ -1,0 +1,14 @@
+Some basic tests
+
+example.v - Many simple tests illustrating the rewriting algorithms
+Hyp.v - Tests of contextual rewriting (where hypotheses are put
+in context)
+
+To run:
+
+1) build and install AdvancedRewrite.
+2) Execute the following commands:
+
+coqtop < example.v
+coqtyp < Hyp.v
+
