@@ -679,7 +679,7 @@ let elaborate_phase env oper terms =
                     [])
            else if is_le oper op1 then
                (if is_eq oper op2 then
-                    make_tran_op1 mk_lt op1 op2
+                    make_tran_op1 mk_le op1 op2
                 else if is_lt oper op2 then
                     make_dir_tran_op mk_lt op1 op2
                 else if is_le oper op2 then
@@ -699,6 +699,8 @@ let elaborate_phase env oper terms =
                  let t1 = SingleMap.find l sd in
                  let t2 = SingleMap.find r sd in
                  let t = t1@t2 in
+                 let _ = Rtrace.trace "kbrewrite" (fun x -> ("    new_transitive term " ^ (prExp term))) in
+                 let _ = Rtrace.trace_list "kbrewrite" (fun xx -> (List.map (fun (x) -> ("    new_transitive t " ^ (prExp (decode_term (REF x))))) t)) in
                  let terms = List.map (fun (x) -> decode_term (REF x)) t in
                      transitive_cycle term terms
                  ) terms) [] in
@@ -724,6 +726,7 @@ let elaborate_phase env oper terms =
                 let nl = nl1@nl2 in
                 let terms = List.map (fun (x) -> decode_term (REF x)) nl in
                     not((List.filter (fun (t) -> represented_by x t) terms)=[]) in
+            let _ = Rtrace.trace_list "kbrewrite" (fun xx -> (List.map (fun (x) -> ("    new_transitive_input " ^ (prExp x))) terms)) in
             let nt = new_transitive_terms sd dd terms in
             let _ = Rtrace.trace "kbrewrite" (fun x -> "    Cycle") in
             let _ = Rtrace.trace_list "kbrewrite" (fun xx -> (List.map (fun (x) -> ("    b " ^ (prExp x))) nt)) in
@@ -752,6 +755,7 @@ let elaborate_phase env oper terms =
                             (sd,dd)
                         else
                             transitive_closure sd dd new_trans) in
+        let _ = Rtrace.trace_list "kbrewrite" (fun x -> List.map (fun (x) -> ("    terms transitive " ^ (prExp x))) terms) in
         let (sd,dd) = transitive_closure one_ref two_ref terms in
         let res = List.fold_right List.append (List.map (fun (_,t) -> t) (PairsMap.bindings dd)) [] in
         let _ = Rtrace.trace "kbrewrite" (fun (x) -> "Elaboration") in

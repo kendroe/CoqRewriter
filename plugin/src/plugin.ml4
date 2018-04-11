@@ -71,7 +71,7 @@ open Context.Rel.Declaration
 open Intern
 open Exp
 
-let debug_ids = ["ALL";"build_predicate";"type_from_name";"typeclasses";"arewrite";"get_constr";"add_constr";"get_def";"add_def"]
+let debug_ids = []
 
 let debug_print c s =
     if (List.mem "ALL" debug_ids) || (List.mem c debug_ids) then

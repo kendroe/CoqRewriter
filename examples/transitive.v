@@ -29,8 +29,6 @@ Instance to1 : TO_PROP beq blt :=
     toProp := th_lt
  }.
 
-printAST (forall x y, blt x y=true).
-
 (*Theorem test1: forall x y, orb (negb (beq x y)) (negb(blt x y))=true.
 Proof.
     arewrite.
