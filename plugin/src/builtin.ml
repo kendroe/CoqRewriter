@@ -1446,14 +1446,14 @@ let rec builtin rewrite env e = match e with
                     else
                         [(APPL (intern_and,(Rsubst.subst theta p)::r))]
                 with noProper -> [])
-  | (QUANT (15,v,(APPL (17,[e])),p)) ->
+  (*| (QUANT (15,v,(APPL (17,[e])),p)) ->
     [APPL (intern_not,[QUANT (intern_all,v,e,p)])]
   | (QUANT (14,v,(APPL (17,[e])),p)) ->
 [APPL (intern_not,[QUANT (intern_exists,v,(APPL (intern_or,[e;(APPL (intern_not,[p]))])),(APPL (intern_true,[])))])]
   | (QUANT (14,v,(APPL (9,el)),p)) ->
     [(APPL (intern_and,List.map (fun (x) -> (QUANT (intern_all,v,x,p))) el))]
   | (QUANT (15,v,(APPL (10,el)),p)) ->
-    [(APPL (intern_or,List.map (fun (x) -> (QUANT (intern_exists,v,x,p))) el))]
+    [(APPL (intern_or,List.map (fun (x) -> (QUANT (intern_exists,v,x,p))) el))]*)
   | (QUANT (15,[(vv,t)],APPL (11,[REF v;e]),p)) ->
     (match (ExpIntern.decode_one_exp (REF v)) with
     | (VAR v) ->

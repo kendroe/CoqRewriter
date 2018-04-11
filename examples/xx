@@ -60,120 +60,13 @@ test2 < 1 subgoal
   ============================
   forall x y : nat, (negb (beq x y) && negb (blt x y))%bool = true
 
-test2 < arewrite: CLEARING CACHE
-arewrite: Environment:
-
-Compiling Library Top Top <>
-Unknown REQUIRE Top._2
-Unknown TOKEN Top._4
-
-Unknown TOKEN Top._5
-Unknown REQUIRE Top._3
-Unknown REQUIRE Top._6
-
-Unknown REQUIRE Top._7
-
-Definition beq  : nat -> nat -> bool
- := fix beq (a b : nat) {struct a} : bool :=
-      match a with
-      | 0 => match b with
-             | 0 => true
-             | S _ => false
-             end
-      | S x => match b with
-               | 0 => false
-               | S y => beq x y
-               end
-      end.
-
-Unknown IMPLICITS Top._8
-Unknown HEAD Top._9
-Unknown ARGUMENTS-SCOPE Top._10
-
-Definition blt  : nat -> nat -> bool
- := fix blt (a b : nat) {struct a} : bool :=
-      match a with
-      | 0 => match b with
-             | 0 => false
-             | S _ => true
-             end
-      | S x => match b with
-               | 0 => false
-               | S y => blt x y
-               end
-      end.
-
-Unknown IMPLICITS Top._11
-Unknown HEAD Top._12
-
-Unknown ARGUMENTS-SCOPE Top._13
-
-Parameter trAC_Class : EQ beq.
-
-Unknown IMPLICITS Top._14
-Unknown HEAD Top._15
-
-Unknown ARGUMENTS-SCOPE Top._16
-
-Parameter th_lt : TO beq blt.
-
-Unknown IMPLICITS Top._17
-Unknown HEAD Top._18
-
-Unknown ARGUMENTS-SCOPE Top._19
-
-Definition to1  : TO_PROP beq blt := {| toProp := th_lt |}.
-
-Unknown IMPLICITS Top._20
-Unknown HEAD Top._21
-
-Unknown ARGUMENTS-SCOPE Top._22
-Unknown type classes instances state Top._23
-
-Unknown AUTOHINT Top._24
-
-END
-
-
-arewrite: ******* BEGIN *******
-arewrite: (Prod (Name x) (Name nat) (Prod (Name y) (Name nat) (App (Name eq) (Name bool) (App (Definition Coq.Init.Datatypes.andb (Lambda (Name b1) (Name bool) (Lambda (Name b2) (Name bool) (Case 0 (Lambda (Name b1) (Name bool) (Name bool)) (CaseMatch (Name b1)) (CaseBranches (Name b2) (Construct (Name bool) 2)))))) (App (Definition Coq.Init.Datatypes.negb (Lambda (Name b) (Name bool) (Case 0 (Lambda (Name b) (Name bool) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Construct (Name bool) 1))))) (App (Definition Top.beq (Fix (Functions ((Name beq) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 1) (Lambda (Name n) (Name nat) (Construct (Name bool) 2)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name beq) (Name x) (Name y)))))))))))) 0)) (Name x) (Name y))) (App (Definition Coq.Init.Datatypes.negb (Lambda (Name b) (Name bool) (Case 0 (Lambda (Name b) (Name bool) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Construct (Name bool) 1))))) (App (Definition Top.blt (Fix (Functions ((Name blt) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name x) (Name nat) (Construct (Name bool) 1)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name blt) (Name x) (Name y)))))))))))) 0)) (Name x) (Name y)))) (Construct (Name bool) 1))))
-arewrite: ******* END *******
-arewrite: Ind s = Coq.Init.Logic.eq
-arewrite: Rewriting 
-arewrite: ALL(x:C_Coq.Init.Datatypes.nat: True) ALL(y:C_Coq.Init.Datatypes.nat: True) (not(f_Top.beq(x, y))  & not(f_Top.blt(x, y))) == True
-arewrite: Simplifying CONCLUSION
-HERE2
-HERE2
-HERE2
-HERE2
-HERE2
-HERE2
-HERE2
-HERE2
-HERE2
-HERE2
-HERE2
-HERE2
-HERE2
-arewrite: Result
-
-arewrite: not(EXISTS(x:C_Coq.Init.Datatypes.nat) EXISTS(y:C_Coq.Init.Datatypes.nat) f_Top.beq(y, x)) & not(EXISTS(x:C_Coq.Init.Datatypes.nat) EXISTS(y:C_Coq.Init.Datatypes.nat) f_Top.blt(x, y))
-arewrite: Built predicate
-
-arewrite: (App (Name and) (Prod (Anonymous) (App (Name ex) (Name nat) (Lambda (Name x) (Name nat) (App (Name ex) (Name nat) (Lambda (Name y) (Name nat) (App (Name eq) (Name bool) (Construct (Name bool) 1) (App (Definition Top.beq (Fix (Functions ((Name beq) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 1) (Lambda (Name n) (Name nat) (Construct (Name bool) 2)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name beq) (Name x) (Name y)))))))))))) 0)) (Name y) (Name x))))))) (Name False)) (Prod (Anonymous) (App (Name ex) (Name nat) (Lambda (Name x) (Name nat) (App (Name ex) (Name nat) (Lambda (Name y) (Name nat) (App (Name eq) (Name bool) (Construct (Name bool) 1) (App (Definition Top.blt (Fix (Functions ((Name blt) 0 (Prod (Name a) (Name nat) (Prod (Name b) (Name nat) (Name bool))) (Lambda (Name a) (Name nat) (Lambda (Name b) (Name nat) (Case 0 (Lambda (Name a) (Name nat) (Name bool)) (CaseMatch (Name a)) (CaseBranches (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name x) (Name nat) (Construct (Name bool) 1)))) (Lambda (Name x) (Name nat) (Case 0 (Lambda (Name b) (Name nat) (Name bool)) (CaseMatch (Name b)) (CaseBranches (Construct (Name bool) 2) (Lambda (Name y) (Name nat) (App (Name blt) (Name x) (Name y)))))))))))) 0)) (Name x) (Name y))))))) (Name False)))
-
-arewrite: End
-
-
-2 subgoals
+test2 < 2 subgoals
   
   ============================
-  ((exists x y : nat, true = beq y x) -> False) /\
-  ((exists x y : nat, true = blt x y) -> False)
+  forall x y : nat, true = blt y x
 
 subgoal 2 is:
- (((exists x y : nat, true = beq y x) -> False) /\
-  ((exists x y : nat, true = blt x y) -> False)) =
+ (forall x y : nat, true = blt y x) =
  (forall x y : nat, (negb (beq x y) && negb (blt x y))%bool = true)
 
 test2 < 

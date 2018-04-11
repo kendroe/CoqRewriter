@@ -2198,3 +2198,5 @@ VERNAC COMMAND EXTEND AR
 | [ "printAST" constr(def) "with" "depth" integer(depth)] -> [ Stuff.print_ast depth def ]
 END
 
+(*Rtrace.toggle_trace () ;;*)
+

@@ -249,7 +249,7 @@ and int_rewrite e kb = (match e with
     else
         rewrite_front (x,env)
   | (APPL (9,l),env) ->
-    rewriteTopCont (APPL (9,l)) (flt (repeat_rewrite rewrite_nokb_front ((APPL (intern_and,l)),env))) kb
+    rewriteTopCont (APPL (9,l)) (flt (repeat_rewrite rewrite_front ((APPL (intern_and,l)),env))) kb
   | ((APPL (10,[])),env) -> (intern_exp_false,env)
   | ((APPL (10,[x])),env) -> rewrite_front (ExpIntern.intern_exp (Renv.isACorC env) x,env)
   | (APPL (10,l),env) ->
@@ -270,9 +270,15 @@ and int_rewrite e kb = (match e with
     let (r,_) = rewrite_front (r,e2) in
         rewriteTopCont (APPL (2,[l;r;c])) (APPL (intern_unoriented_rule,[l;r;c]),env) kb
   | (APPL (17,[e]),env) ->
-    let (e2,envs) = if kb then rewrite_sub env e 0 else rewrite_nokb_sub env e 0 in
-    let (res,env) = rewriteTopCont (APPL (17,[e])) ((APPL (intern_not,[e2])),envs) kb in
-        (res,env)
+    if (!kbmode) && kb && Kbrewrite.useful_subterm env e [] then
+        let (ff,_) = rewrite_front (e,env) in
+        let f = (APPL (17,[e])) in
+        let f = List.hd ((Kbrewrite.kbrewrite2 rewrite2_front env f [])@[f]) in
+            rewriteTopCont f (f,env) kb
+    else
+        let (e2,envs) = if kb then rewrite_sub env e 0 else rewrite_nokb_sub env e 0 in
+        let (res,env) = rewriteTopCont (APPL (17,[e])) ((APPL (intern_not,[e2])),envs) kb in
+            (res,env)
   | (APPL (71,l),env) -> rewriteTopCont (APPL (71,l)) (APPL (71,l),env) kb
   | (APPL (72,l),env) -> rewriteTopCont (APPL (72,l)) (APPL (72,l),env) kb
   | (APPL (s,l2),env) ->
@@ -318,7 +324,7 @@ and rewrite2_front env x =
 and rewrite2 env x = (Cache.save_good_rewrites () ; [(ExpIntern.decode_exp (List.hd (rewrite2_front env x)))])
 and rewrite_front_k (x,env) kb =
     let _ = Rtrace.trace "rewrite"
-                (fun (xx) -> "rewriting expression: " ^ (prExp x)) in
+                (fun (xx) -> "rewriting expression3: " ^ (prExp x)) in
     let _ = Rtrace.indent () in
     let (REF x1) = ExpIntern.intern_exp (Renv.isACorC env) x in
     let (res1,env) =
@@ -346,7 +352,7 @@ and rewrite_front_k (x,env) kb =
         (ExpIntern.intern_exp (Renv.isACorC env) res1,env)
 and rewrite_front (x,env) =
     let _ = Rtrace.trace "rewrite"
-                (fun (xx) -> "rewriting expression: " ^ (prExp x)) in
+                (fun (xx) -> "rewriting expression1: " ^ (prExp x)) in
     let _ = Rtrace.indent () in
     let (REF x1) = ExpIntern.intern_exp (Renv.isACorC env) x in
     let (res1,env) =
@@ -375,7 +381,7 @@ and rewrite_front (x,env) =
         (ExpIntern.intern_exp (Renv.isACorC env) res1,env)
 and rewrite_nokb_front (x,env) =
     let _ = Rtrace.trace "rewrite"
-                (fun (xx) -> "rewriting expression: " ^ (prExp x)) in
+                (fun (xx) -> "rewriting expression2: " ^ (prExp x)) in
     let _ = Rtrace.indent () in
     let (REF x1) = ExpIntern.intern_exp (Renv.isACorC env) x in
     let (res1,env) =

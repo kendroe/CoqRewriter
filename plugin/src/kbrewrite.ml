@@ -128,12 +128,18 @@ let default_operand e = match e with
   | _ -> false
   ;;
 
-let useful_subterm env exp t =
+let useful_subterm1 env exp t =
     (is_useful_conjunction env (getSubterm exp t)) ||
     ((is_relevant_operator env (getSubterm exp t)) &&
      not(conjunction_p exp (parent t)) &&
      not(default_operand (getSubterm exp t)))
   ;;
+
+let useful_subterm env exp t =
+    match exp with
+    | (APPL (17,[x])) -> useful_subterm1 env x t
+    | e -> useful_subterm1 env e t
+   ;;
 
 let possible_terms env e =
     List.filter (useful_subterm env e) (Exp.allSubterms e)
