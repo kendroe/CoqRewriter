@@ -1063,6 +1063,7 @@ and build_app_term (env : Environ.env) f xs =
                  Some (match MutInd.to_string i with
                        | "Coq.Init.Logic.or" -> (APPL (intern_or,xs'))
                        | "Coq.Init.Logic.and" -> (APPL (intern_and,xs'))
+                       | "Coq.Init.Logic.not" -> (APPL (intern_not,xs'))
                        | "Coq.Init.Logic.ex" ->
                               (match xs' with
                               | [t1;(QUANT (intern_lambda,[(v1,t2)],b,_))] ->
@@ -1083,12 +1084,15 @@ and build_app_term (env : Environ.env) f xs =
                        | "Coq.Init.Nat.mul" -> (APPL (intern_nat_times,xs'))
                        | "Coq.Init.Peano.lt" -> (APPL (intern_nat_less,xs'))
                        | "Coq.Init.Logic.eq" -> (APPL (intern_equal,xs'))
+                       | "Coq.Init.Logic.not" -> (APPL (intern_not,xs'))
                        | x -> (APPL (intern ("f_" ^ x),xs')))
       | Construct ((i, c_index),u) ->
              let (x,_) = i in
              (*let _ = print ("s = "^(MutInd.to_string x)^" i = "^(string_of_int c_index)^"\n") in*)
                  if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=2 then
                      Some (APPL (intern_cons,[build_exp env (Array.get xs 1);build_exp env (Array.get xs 2)]))
+                 else if (MutInd.to_string x)="Coq.Init.Logic.not" then
+                     Some (APPL (intern_not,[build_exp env (Array.get xs 1)]))
                  else
                      None
       | _ -> None)

@@ -5,8 +5,8 @@ Coq < [Loading ML file theplug.cmxs ... done]
 Coq < Coq < Coq < Coq < Coq < Coq < Coq < beq is defined
 beq is recursively defined (decreasing on 1st argument)
 
-Coq < Coq < Coq < Coq < Coq < Coq < Coq < blt is defined
-blt is recursively defined (decreasing on 1st argument)
+Coq < Coq < Coq < Coq < Coq < Coq < Coq < Coq < ble is defined
+ble is recursively defined (decreasing on 1st argument)
 
 Coq < Coq < 1 subgoal
   
@@ -31,43 +31,63 @@ trAC_Class < trAC_Class is declared
 Coq < Coq < 1 subgoal
   
   ============================
-  TO beq blt
+  ETO beq ble
 
 th_lt < 1 subgoal
   
   ============================
-  TO beq blt
+  ETO beq ble
 
 th_lt < No more subgoals, but there are some goals you gave up:
 
 1 subgoal
 
 subgoal 1 is:
- TO beq blt
+ ETO beq ble
 You need to go back and solve them.
 
 th_lt < th_lt is declared
 
 Coq < Coq < Coq < Coq < Coq < to1 is defined
 
-Coq < Coq < Coq < Coq < Coq < Coq < Coq < 1 subgoal
+Coq < Coq < 1 subgoal
   
   ============================
-  forall x y : nat, (negb (beq x y) && negb (blt x y))%bool = true
+  forall x y : nat, (negb (beq x y) || negb (ble x y))%bool = true
+
+test1 < 1 subgoal
+  
+  ============================
+  forall x y : nat, (negb (beq x y) || negb (ble x y))%bool = true
+
+test1 < 2 subgoals
+  
+  ============================
+  forall x y : nat, true = beq y x -> False
+
+subgoal 2 is:
+ (forall x y : nat, true = beq y x -> False) =
+ (forall x y : nat, (negb (beq x y) || negb (ble x y))%bool = true)
+
+test1 < 
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall x y : nat, (negb (beq x y) && negb (ble x y))%bool = true
 
 test2 < 1 subgoal
   
   ============================
-  forall x y : nat, (negb (beq x y) && negb (blt x y))%bool = true
+  forall x y : nat, (negb (beq x y) && negb (ble x y))%bool = true
 
 test2 < 2 subgoals
   
   ============================
-  forall x y : nat, true = blt y x
+  forall x y : nat, true = ble x y -> False
 
 subgoal 2 is:
- (forall x y : nat, true = blt y x) =
- (forall x y : nat, (negb (beq x y) && negb (blt x y))%bool = true)
+ (forall x y : nat, true = ble x y -> False) =
+ (forall x y : nat, (negb (beq x y) && negb (ble x y))%bool = true)
 
 test2 < 
 Coq < 

@@ -29,12 +29,27 @@ Instance to1 : TO_PROP beq blt :=
     toProp := th_lt
  }.
 
-(*Theorem test1: forall x y, orb (negb (beq x y)) (negb(blt x y))=true.
+Theorem test1: forall x y, orb (negb (beq x y)) (negb(blt x y))=true.
 Proof.
     arewrite.
-Abort.*)
+Abort.
 
 Theorem test2: forall x y, andb (negb (beq x y)) (negb(blt x y))=true.
+Proof.
+    arewrite.
+Abort.
+
+Theorem test3: forall x y, andb (negb (beq x y)) (blt x y)=true.
+Proof.
+    arewrite.
+Abort.
+
+Theorem test4: forall x y, andb (beq x y) (blt x y)=true.
+Proof.
+    arewrite.
+Abort.
+
+Theorem test5: forall x y, andb (beq x y) (negb (blt x y))=true.
 Proof.
     arewrite.
 Abort.
