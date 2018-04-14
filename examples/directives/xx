@@ -1,0 +1,57 @@
+Welcome to Coq 8.7.0 (October 2017)
+
+Coq < 
+Coq < [Loading ML file theplug.cmxs ... done]
+
+Coq < 
+Coq < Coq < (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (App (Construct (Name nat) 2) (Construct (Name nat) 1)) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))))
+Coq < ntimes(1, 2)
+Coq < (App (Name eq) (Name nat) (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (App (Construct (Name nat) 2) (Construct (Name nat) 1)) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))))
+Coq < nplus(1, 2) == 3
+Coq < (App (Name eq) (Name nat) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))))
+Coq < 2 == 3
+Coq < (App (Name eq) (Name nat) (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (App (Construct (Name nat) 2) (Construct (Name nat) 1)) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))) (App (Definition Coq.Init.Nat.add (Fix (Functions ((Name add) 0 (Prod (Name n) (Name nat) (Prod (Name m) (Name nat) (Name nat))) (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (Case 0 (Lambda (Name n) (Name nat) (Name nat)) (CaseMatch (Name n)) (CaseBranches (Name m) (Lambda (Name p) (Name nat) (App (Construct (Name nat) 2) (App (Name add) (Name p) (Name m)))))))))) 0)) (App (Construct (Name nat) 2) (App (Construct (Name nat) 2) (Construct (Name nat) 1))) (App (Construct (Name nat) 2) (Construct (Name nat) 1))))
+Coq < nplus(1, 2) == nplus(2, 1)
+Coq < (App (Definition Coq.Init.Peano.lt (Lambda (Name n) (Name nat) (Lambda (Name m) (Name nat) (App (Name le) (App (Construct (Name nat) 2) (Name n)) (Name m))))) (App (Construct (Name nat) 2) (Construct (Name nat) 1)) (App (Construct (Name nat) 2) (Construct (Name nat) 1)))
+Coq < nless(1, 1)
+Coq < Coq < 1 subgoal
+  
+  ============================
+  1 < 2
+
+x < 1 subgoal
+  
+  ============================
+  1 < 2
+
+x < 2 subgoals
+  
+  ============================
+  True
+
+subgoal 2 is:
+ True = (1 < 2)
+
+x < x is declared
+
+Coq < Coq < 1 subgoal
+  
+  ============================
+  forall x0 : list TriDigit, x0 = triAdd x0 (TriZero :: nil)
+
+q < 1 subgoal
+  
+  ============================
+  forall x0 : list TriDigit, x0 = triAdd x0 (TriZero :: nil)
+
+q < 2 subgoals
+  
+  ============================
+  True
+
+subgoal 2 is:
+ True = (forall x0 : list TriDigit, x0 = triAdd x0 (TriZero :: nil))
+
+q < q is declared
+
+Coq < 

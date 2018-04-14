@@ -1,5 +1,5 @@
-Require Import AdvancedRewrite.advancedRewrite.
 Require Import triclass.
+Require Import AdvancedRewrite.advancedRewrite.
 
 Theorem trAC_Class: AC triAdd.
 Proof.
@@ -144,7 +144,7 @@ Proof.
     admit.
 Admitted.
 
-Instance rewriteRule : REWRITE_RULE_PROP 1 2 True :=
+Instance rewriteRule : REWRITE_RULE_PROP (REWRITE_RULE 1 2 True) :=
  {
     rewriteRuleProp := rrp
  }.

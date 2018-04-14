@@ -1877,9 +1877,11 @@ let typeclass_etop = intern "C_AdvancedRewrite.advancedRewrite.ETOP_PROP1" ;;
 let typeclass_rewrite_rule = intern "C_AdvancedRewrite.advancedRewrite.REWRITE_RULE_PROP1" ;;
 
 let rec add_type_class_decl env se =
-  (debug_print "typeclasses" (prExp se));
+  (debug_print "typeclasses" "Change test";
+   debug_print "typeclasses" (prExp se));
   match se with
   | (APPL (d,[(APPL (_,[(APPL (ac,[_;(APPL (f,[]));_]))]))])) ->
+    debug_print "typeclasses" "pattern1";
     if ac=typeclass_ac then
         ((debug_print "typeclasses" ("AC " ^ (decode f)));(Renv.addAttrib env intern_ac [Renv.S(f)]))
     else if ac=typeclass_a then
@@ -1893,6 +1895,7 @@ let rec add_type_class_decl env se =
     else
         env
   | (APPL (d,[(APPL (_,[(APPL (ac,[_;(APPL (f,[]));(APPL (g,[]));_]))]))])) ->
+    debug_print "typeclasses" "pattern2";
     if ac=typeclass_po then
         ((debug_print "typeclasses" ("PO " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_po [Renv.S(g);Renv.S(f)]))
     else if ac=typeclass_to then
@@ -1911,14 +1914,16 @@ let rec add_type_class_decl env se =
         ((debug_print "typeclasses" ("ETOP " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_eto [Renv.S(g);Renv.S(f)]))
     else
         env
-  | (APPL (d,[(APPL (_,[(APPL (ac,[_;l;r;c;_]))]))])) ->
+  | (APPL (d,[(APPL (_,[(APPL (ac,[p;_]))]))])) ->
+    debug_print "typeclasses" "Rewrite Rule pattern";
     if ac=typeclass_rewrite_rule then
-        ((debug_print "typeclasses" ("REWRITE_RULE " ^ (prExp (APPL (intern_oriented_rule,[l;r;c])))));(Renv.addProperty env (APPL (intern_oriented_rule,[l;r;c]))))
+        ((debug_print "typeclasses" ("REWRITE_RULE " ^ (prExp p)));(process_property env p))
     else
         env
-  | _ -> env
+  | q -> debug_print "typeclasses" "funny def";env
 
 let rec build_type_class_env env (c : Typeclasses.instance) =
+    let _ = debug_print "typeclasses" "build_type_class_env" in
     let impl = Typeclasses.instance_impl c in
     let c = printable_constr_of_global impl in
     let n = match kind_of_term c with

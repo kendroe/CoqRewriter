@@ -1,4 +1,4 @@
-DIGEST f9d255b92892b18e4dd7430d00852072
+DIGEST 9967400d8b94aace1caedf5222f1c25a
 Ftriclass
 R15:18 Coq.Lists.List <> <> lib
 R36:66 AdvancedRewrite.advancedRewrite <> <> lib
@@ -120,3 +120,15 @@ R1531:1537 AdvancedRewrite.advancedRewrite <> AC_PROP class
 R1539:1544 triclass <> triAdd def
 R1556:1561 AdvancedRewrite.advancedRewrite <> acProp meth
 R1566:1575 triclass <> trAC_Class prfax
+inst 1591:1596 <> trzero
+R1600:1616 AdvancedRewrite.advancedRewrite <> REWRITE_RULE_PROP class
+R1629:1640 AdvancedRewrite.advancedRewrite <> REWRITE_RULE def
+R1670:1673 Coq.Init.Logic <> True ind
+R1668:1668 triclass <> x var
+R1643:1648 triclass <> triAdd def
+R1660:1661 Coq.Init.Datatypes <> :list_scope:x_'::'_x not
+R1653:1659 triclass <> TriZero constr
+R1662:1664 Coq.Init.Datatypes <> nil constr
+R1650:1650 triclass <> x var
+R1686:1700 AdvancedRewrite.advancedRewrite <> rewriteRuleProp meth
+R1705:1713 triclass <> trAC_Zero prfax

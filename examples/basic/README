@@ -3,6 +3,7 @@ Some basic tests
 example.v - Many simple tests illustrating the rewriting algorithms
 Hyp.v - Tests of contextual rewriting (where hypotheses are put
 in context)
+decls.v - tests a few basic commands
 
 To run:
 
@@ -10,5 +11,6 @@ To run:
 2) Execute the following commands:
 
 coqtop < example.v
-coqtyp < Hyp.v
+coqtop < Hyp.v
+coqtop < decls.v
 
