@@ -1,0 +1,15 @@
+*.glob
+*.aux
+*~
+*.vo
+extra/*
+*.bak
+*.v.d
+xx
+trace.out
+*.o
+*.cmxs
+*.cmxa
+*.cmi
+*.cmx
+
