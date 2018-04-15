@@ -71,7 +71,7 @@ open Context.Rel.Declaration
 open Intern
 open Exp
 
-let debug_ids = []
+let debug_ids = [""]
 
 let debug_print c s =
     if (List.mem "ALL" debug_ids) || (List.mem c debug_ids) then
@@ -105,7 +105,7 @@ let def_cache : Constr.t StringMap.t ref = ref (StringMap.empty) ;;
 let get_def s =
     debug_print "get_def" ("Finding " ^ s);
     try (StringMap.find s (!def_cache)) with
-    Not_found -> (debug_print "get_def" "Failed";raise NoEntry) ;;
+    Not_found -> (debug_print "get_def" "Failed2";raise NoEntry) ;;
 
 let add_def s c =
     debug_print "add_def" ("Adding " ^ s);
@@ -909,6 +909,7 @@ and build_oinductive (env : Environ.env) (depth : int) (ind_body : one_inductive
   in build (build "Name" [Names.string_of_id ind_body.mind_typename]) [build_inductive_body constrs]
 
 and build_minductive (env : Environ.env) (depth : int) (((i, i_index), u) : pinductive) =
+  let _ = debug_print "build_minductive" "lookup_mutind_body1" in
   let mutind_body = lookup_mutind_body i env in
   let ind_bodies = mutind_body.mind_packets in
   if depth <= 0 then (* don't expand *)
@@ -1145,6 +1146,7 @@ and build_oinductive_exp (env : Environ.env) (ind_body : one_inductive_body) =
   in APPL ((intern ("Name "^(Names.string_of_id ind_body.mind_typename))),[build_inductive_body_exp constrs])
 
 and build_minductive_exp (env : Environ.env) (((i, i_index), u) : pinductive) =
+  let _ = debug_print "build_minductive_exp" "lookup_mutind_body2" in
   let mutind_body = lookup_mutind_body i env in
   let ind_bodies = mutind_body.mind_packets in
     let ind_bodies_list = Array.to_list ind_bodies in
@@ -1501,7 +1503,7 @@ let rec root_type l t =
     ;;
 
 let type_from_name s =
-    let _ = debug_print "type_from_name" in
+    let _ = debug_print "type_from_name" (decode s) in
     let (evm, env) = Lemmas.get_current_context() in
     try
         let Construct (m,u) = kind_of_term (get_constr (decode s)) in
@@ -1535,7 +1537,7 @@ let type_from_name s =
         let _ = debug_print "type_from_name" ast in
         let td = match kind_of_term d with
                  | Fix ((is, i), (ns, ts, ds)) -> ts
-                 | _ -> raise NoEntry in
+                 | _ -> debug_print "type_from_name" "Failed3";raise NoEntry in
         let ast2 = Array.map (apply_to_definition build_ast env 0) td in
         let _ = Array.map (debug_print "type_from_name") ast2 in
         let t = Array.get td 0 in
@@ -1549,7 +1551,7 @@ let type_from_name s =
         let _ = debug_print "build_const" "Lookup 2" in
         let global_env = Global.env () in
         match get_definition cd with
-          None -> raise NoEntry
+          None -> debug_print "type_from_name" "Failed4";raise NoEntry
         | Some c ->
             build_definition kn (build_ast global_env (depth - 1) c) u*)
 
@@ -1634,12 +1636,14 @@ and get_case_type c tenv = match c with
   ;;
 
 let is_bool_type x tenv =
-   let _ = debug_print "is_bool_type" "Called" in
-   let typ = (get_type x tenv) in
-   let _ = debug_print "is_bool_type" "Called1" in
-   let r = match (kind_of_term typ) with
-           | Ind ((i, i_index), u) -> (debug_print "is_bool_type" ("Called2 "^(MutInd.debug_to_string i));"(Coq.Init.Datatypes.bool)"=(MutInd.debug_to_string i))
-           | x -> false in r;;
+   try
+       let _ = debug_print "is_bool_type" "Called" in
+       let typ = (get_type x tenv) in
+       let _ = debug_print "is_bool_type" "Called1" in
+       let r = match (kind_of_term typ) with
+               | Ind ((i, i_index), u) -> (debug_print "is_bool_type" ("Called2 "^(MutInd.debug_to_string i));"(Coq.Init.Datatypes.bool)"=(MutInd.debug_to_string i))
+               | x -> false in r
+    with NoEntry -> false
 
 let constructorList t =
     let name = decode (Rtype.nameProduct t) in
