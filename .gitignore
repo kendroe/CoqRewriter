@@ -12,4 +12,12 @@ trace.out
 *.cmxa
 *.cmi
 *.cmx
+*.swp
+*.swh
+*.swi
+*.swj
+*.swk
+*.swl
+*.swm
+*.swn
 
