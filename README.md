@@ -37,5 +37,6 @@ Acknowledgements:
     The files lib_coq.ml and lib_coq.mli come from Thomas Braibant's
     tutorial. (Available at https://github.com/braibant/coq-tutorial-ml-tactics)
 
-
+    The files in examples/Complex come from the QWIRE project located at:
+    https://github.com/jpaykin/QWIRE.
 
