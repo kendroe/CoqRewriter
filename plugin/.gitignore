@@ -15,6 +15,7 @@
 *.cmxa
 *.mllib.d
 *.o
+*.swp
 .*.aux
 Makefile-localvars.gen
 Makefile
