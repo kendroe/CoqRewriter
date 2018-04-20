@@ -71,7 +71,7 @@ open Context.Rel.Declaration
 open Intern
 open Exp
 
-let debug_ids = [""]
+let debug_ids = ["ALL"]
 
 let debug_print c s =
     if (List.mem "ALL" debug_ids) || (List.mem c debug_ids) then
