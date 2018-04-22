@@ -2,7 +2,7 @@
  *
  * REWRITELIB
  *
- * advanced_rewrite.ml4
+ * plugin.ml4
  *
  * This file contains the interface between Coq and the rewriting library
  *
@@ -71,7 +71,7 @@ open Context.Rel.Declaration
 open Intern
 open Exp
 
-let debug_ids = ["ALL"]
+let debug_ids = []
 
 let debug_print c s =
     if (List.mem "ALL" debug_ids) || (List.mem c debug_ids) then
@@ -535,8 +535,8 @@ let get_definition (cd : Declarations.constant_body) =
      None
  | Def cs ->
      Some (Mod_subst.force_constr cs)
- | OpaqueDef o -> (* https://coq.inria.fr/refman/Reference-Manual008.html#Opaque*)
-     Some (Opaqueproof.force_proof (Global.opaque_tables ()) o)
+ | OpaqueDef o -> (* https://coq.inria.fr/refman/Reference-Manual008.html#Opaque*) None
+     (*Some (Opaqueproof.force_proof (Global.opaque_tables ()) o)*)
 
 (*
  * Build the AST for an axiom, which is a constant with no associated body
@@ -774,12 +774,14 @@ let getConstructors (t : Rtype.etype) (branch_asts : exp list) =
         else bf branch_asts 1
 
 let build_case_exp (info : case_info) (case_typ_ast : exp) (match_ast : exp) (branch_asts : exp list) =
-  let num_args = info.ci_npar in
-  let match_typ = APPL ((intern "CaseMatch"),[match_ast]) in
-  let (QUANT (l,[(v,t)],_,_)) = case_typ_ast in
-  let _ = debug_print "build_case_exp" ((Rtype.pretype t)) in
-  let branches = APPL ((intern "CaseBranches"),branch_asts) in
-  CASE (match_ast,convert_exp_to_type case_typ_ast,(getConstructors t branch_asts))
+  try
+      let num_args = info.ci_npar in
+      let match_typ = APPL ((intern "CaseMatch"),[match_ast]) in
+      let (QUANT (l,[(v,t)],_,_)) = case_typ_ast in
+      let _ = debug_print "build_case_exp" ((Rtype.pretype t)) in
+      let branches = APPL ((intern "CaseBranches"),branch_asts) in
+      CASE (match_ast,convert_exp_to_type case_typ_ast,(getConstructors t branch_asts))
+  with (Rtype.TypeError(_,_,_)) -> NOEXP
   (*APPL ((intern "Case"),[NUM num_args; t; match_typ; branches])*)
 
 (* --- Projections --- *)
@@ -1026,7 +1028,7 @@ let rec build_exp (env : Environ.env) (trm : types) =
           else if s="Coq.Init.Datatypes.list" && c_index=1 then
               (APPL (intern_nil,[]))
           else
-              (APPL ((intern (("C_"^s^(string_of_int c_index)))),[]))
+              (APPL ((intern (("C_"^s^" "^(string_of_int c_index)))),[]))
   | Ind ((i, i_index), u) ->
       debug_print "build_exp" "Ind\n" ;
       (match build_inductive_term env i i_index with
@@ -1070,7 +1072,7 @@ and build_app_term (env : Environ.env) f xs =
                               | [t1;(QUANT (intern_lambda,[(v1,t2)],b,_))] ->
                                     (QUANT (intern_exists,[(v1,t2)],b,(APPL (intern_true,[]))))
                               | _ -> (APPL ((intern "Coq.Init.Logic.ex"),xs')))
-                       | "Coq.Init.Logic.eq" -> (APPL (intern_equal,[(List.nth xs' 1);(List.nth xs' 2)]))
+                       | "Coq.Init.Logic.eq" -> (if (List.length xs')=3 then APPL (intern_equal,[(List.nth xs' 1);(List.nth xs' 2)]) else APPL (intern ("C_Coq.Init.Logic.eq"),xs'))
                        | x -> (APPL ((intern ("C_" ^ x),xs'))))
       | Const (c, u) ->
             let kn = Constant.canonical c in
@@ -1086,7 +1088,25 @@ and build_app_term (env : Environ.env) f xs =
                        | "Coq.Init.Peano.lt" -> (APPL (intern_nat_less,xs'))
                        | "Coq.Init.Logic.eq" -> (APPL (intern_equal,xs'))
                        | "Coq.Init.Logic.not" -> (APPL (intern_not,xs'))
-                       | x -> (APPL (intern ("f_" ^ x),xs')))
+                       | x -> if (String.length kn')>3 &&
+                                 (String.sub kn' 0 3)=="Coq" then
+                                 (APPL (intern x,xs'))
+                              else
+                              (let d = try get_def kn' with NoEntry ->
+                               let cd = Environ.lookup_constant c env in
+                               let global_env = Global.env () in
+                               let dd =
+                                   match get_definition cd with
+                                     None ->
+                                       begin
+                                         match cd.const_type with
+                                           RegularArity ty -> ty (*build_axiom_exp kn (build_exp global_env ty) u*)
+                                         | TemplateArity _ -> assert false (* pre-8.5 universe polymorphism *)
+                                       end
+                                   | Some c ->
+                                       (build_definition_exp kn (build_exp global_env c) u);c
+                               in ((add_def kn' dd);dd) in
+                                                   debug_print "build_exp" ("building "^("f_"^x));APPL (intern ("f_" ^ x),xs')))
       | Construct ((i, c_index),u) ->
              let (x,_) = i in
              (*let _ = print ("s = "^(MutInd.to_string x)^" i = "^(string_of_int c_index)^"\n") in*)
@@ -1102,32 +1122,35 @@ and build_app_constant_term (env : Environ.env) f xs =
       | Construct ((i, c_index),u) ->
              let (x,_) = i in
              let xs' = List.map (build_exp env) (Array.to_list xs) in
-             let _ = (add_constr ("C_" ^ (MutInd.to_string x) ^ (string_of_int c_index)) f) in
+             let _ = (add_constr ("C_" ^ (MutInd.to_string x) ^ " " ^ (string_of_int c_index)) f) in
                  if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=2 then
                      Some (APPL (intern_cons,[build_exp env (Array.get xs 1);build_exp env (Array.get xs 2)]))
                  else if (MutInd.to_string x)="Coq.Init.Datatypes.list" && c_index=1 then
                      Some (APPL (intern_nil,[]))
                  else
-                     Some (APPL ((intern ("C_" ^ (MutInd.to_string x)^(string_of_int c_index))),xs'))
+                     Some (APPL ((intern ("C_" ^ (MutInd.to_string x)^" "^(string_of_int c_index))),xs'))
       | _ -> None)
 and build_const_exp (env : Environ.env) ((c, u) : pconstant) =
   let kn = Constant.canonical c in
   let kn' = build_kername kn in
-  let d = try get_def kn' with NoEntry ->
-      let cd = Environ.lookup_constant c env in
-      let global_env = Global.env () in
-      let dd =
-          match get_definition cd with
-            None ->
-              begin
-                match cd.const_type with
-                  RegularArity ty -> ty (*build_axiom_exp kn (build_exp global_env ty) u*)
-                | TemplateArity _ -> assert false (* pre-8.5 universe polymorphism *)
-              end
-          | Some c ->
-              (build_definition_exp kn (build_exp global_env c) u);c
-      in ((add_def kn' dd);dd) in
-      (APPL (intern ("f_" ^ kn'),[]))
+      if (String.length kn')>3 &&
+         (String.sub kn' 0 3)=="Coq" then
+         (APPL (intern kn',[]))
+      else let d = try get_def kn' with NoEntry ->
+          let cd = Environ.lookup_constant c env in
+          let global_env = Global.env () in
+          let dd =
+              match get_definition cd with
+                None ->
+                  begin
+                    match cd.const_type with
+                      RegularArity ty -> ty (*build_axiom_exp kn (build_exp global_env ty) u*)
+                    | TemplateArity _ -> assert false (* pre-8.5 universe polymorphism *)
+                  end
+              | Some c ->
+                  (build_definition_exp kn (build_exp global_env c) u);c
+          in ((add_def kn' dd);dd) in
+          (debug_print "build_const_exp" ("building2 "^("f_"^kn'));APPL (intern ("f_" ^ kn'),[]))
 
 and build_fixpoint_functions_exp (env : Environ.env) (names : name array) (typs : constr array) (defs : constr array)  =
   let env_fix = Environ.push_rel_context (bindings_for_fix names typs) env in
@@ -1176,6 +1199,11 @@ let print_ast (depth : int) (def : Constrexpr.constr_expr) =
   let (body, _) = Constrintern.interp_constr env evm def in
   let ast = apply_to_definition build_ast env depth body in
   print ast
+
+let debug_print_ast f d =
+    if (List.mem "ALL" debug_ids) || (List.mem f debug_ids) then
+        let ast = apply_to_definition build_ast (Global.env ()) 0 d in
+        let _ = debug_print f ast in () else ()
 
 (* Top-level print AST functionality *)
 let print_exp (depth : int) (def : Constrexpr.constr_expr) =
@@ -1533,8 +1561,7 @@ let type_from_name s =
             Lazy.force reify_nat
     with NoEntry ->
         let d = get_def (String.sub (decode s) 2 ((String.length (decode s))-2)) in
-        let ast = apply_to_definition build_ast env 0 d in
-        let _ = debug_print "type_from_name" ast in
+        let _ = debug_print_ast "type_from_name" d in
         let td = match kind_of_term d with
                  | Fix ((is, i), (ns, ts, ds)) -> ts
                  | _ -> debug_print "type_from_name" "Failed3";raise NoEntry in
@@ -1570,11 +1597,22 @@ let functor_from_name s =
         let d = (get_constr (decode s)) in
         let (evm, env) = Lemmas.get_current_context() in
         (*let (body, _) = Constrintern.interp_constr env evm def in*)
-        let ast = apply_to_definition build_ast env 0 d in
-        let _ = print ast in
+        let _ = debug_print_ast "functor_from_name" d in
             d
     with NoEntry ->
-        (debug_print "functor_from_name" ("initing " ^ name);let x = Lib_coq.init_constant path name in let _ = debug_print "functor_from_name" "DONE\n" in x)
+        (debug_print "functor_from_name" ("initing " ^ name ^ " " ^ (string_of_int index));
+        if index < 0 then
+            Lib_coq.init_constant path name
+        else
+            let (evm, env) = Lemmas.get_current_context() in
+            (*let x = Lib_coq.init_constant path name in*)
+            let coq_init_specif = ModPath.MPfile (DirPath.make (List.map Id.of_string (List.rev path))) in
+            let _ = debug_print "functor_from_name" "Making inductive term" in
+            let sigT = mkInd (MutInd.make1 (KerName.make2 coq_init_specif (Label.make name)), 0) in
+            let _ = debug_print "functor_from_name" "Done making inductive term" in
+            let term = mkConstruct (fst (destInd sigT), index) in
+            let _ = debug_print_ast "functor_from_name" term in
+            let _ = debug_print "functor_from_name" "DONE\n" in term)
 
 let rec build_var v tenv = match tenv with
   | ((vv,t,n)::r) -> if v=vv then mkRel n else build_var v r
@@ -1626,7 +1664,7 @@ let rec get_type x tenv = match x with
   | (APPL (80,_)) -> (Lazy.force reify_bool)
   | (APPL (86,_)) -> (Lazy.force reify_bool)
   | (APPL (90,_)) -> (Lazy.force reify_bool)
-  | (APPL (f,_)) -> debug_print "get_type" "type_from_name call";type_from_name f
+  | (APPL (f,_)) -> debug_print "get_type" "type_from_name call";(try type_from_name f with NoEntry -> raise NoTypeInfo)
   | (VAR x) -> get_var_type tenv (decode x)
   | (CASE (e,t,c)) -> get_case_type c tenv
   | _ -> raise NoTypeInfo
@@ -1638,7 +1676,7 @@ and get_case_type c tenv = match c with
 let is_bool_type x tenv =
    try
        let _ = debug_print "is_bool_type" "Called" in
-       let typ = (get_type x tenv) in
+       let typ = EConstr.Unsafe.to_constr (Typing.unsafe_type_of (Global.env()) (Evd.empty) (EConstr.of_constr x)) in
        let _ = debug_print "is_bool_type" "Called1" in
        let r = match (kind_of_term typ) with
                | Ind ((i, i_index), u) -> (debug_print "is_bool_type" ("Called2 "^(MutInd.debug_to_string i));"(Coq.Init.Datatypes.bool)"=(MutInd.debug_to_string i))
@@ -1708,13 +1746,19 @@ let buildCase t constructor cases =
 
 exception BadReify of exp
 
+let get_the_type t =
+    EConstr.Unsafe.to_constr (Typing.unsafe_type_of (Global.env()) (Evd.empty) (EConstr.of_constr t))
+
 let rec build_term e tenv = match e with
   | (NUM x) -> Lib_coq.Nat.of_int x
   | (APPL (4,[])) -> (Lazy.force reify_true_val)
   | (APPL (5,[])) -> (Lazy.force reify_false_val)
   | (APPL (9,l)) -> build_and_term l tenv
   | (APPL (10,l)) -> build_or_term l tenv
-  | (APPL (11,[a;b])) -> debug_print "build_term" "equal_build";Term.mkApp (Lazy.force reify_eq_val, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
+  | (APPL (11,[a;b])) -> let t1=build_term a tenv in
+                         let t2=build_term b tenv in
+                         let t = try get_the_type t1 with NoTypeInfo -> get_the_type t2 in
+                  debug_print "build_term" "equal_build";Term.mkApp (Lazy.force reify_eq_val, [| t;t1;t2 |])
   | (APPL (17,[a])) -> Term.mkApp (Lazy.force reify_not_val, [| build_term a tenv |])
   (*| (APPL (21,[])) -> (Lazy.force reify_nil)*)
   (*| (APPL (22,[f;e])) -> Term.mkApp(Lazy.force reify_cons,[|build_term f tenv;build_termn e tenv|])*)
@@ -1725,8 +1769,25 @@ let rec build_term e tenv = match e with
   | (APPL (79,[l;r])) -> Term.mkApp(Lazy.force reify_div,[|build_term l tenv;build_term r tenv|])
   | (APPL (80,[l;r])) -> Term.mkApp(Lazy.force reify_lt_val,[|build_term l tenv;build_term r tenv|])
   | (APPL (90,[l;r])) -> Term.mkApp(Lazy.force reify_imply_val,[|build_term l tenv;build_term r tenv|])
-  | (APPL (f,l)) -> let x = List.map (fun x -> build_term x tenv) l in
-                        Term.mkApp(functor_from_name f,Array.of_list x)
+  | (APPL (f,l)) -> let _ = debug_print "build_term" "Here0" in
+                    let _ = debug_print "build_term" (decode f) in
+                    let _ = debug_print "build_term" (string_of_int (List.length l)) in
+                    let x = List.map (fun x -> build_term x tenv) l in
+                    let ff = functor_from_name f in
+                    let _ = debug_print "build_term" "Here0.5" in
+                    let tt = get_the_type ff in
+                    let _ = debug_print "build_term" "Here0.7" in
+                    let _ = debug_print_ast "build_name" ff in
+                    let _ = debug_print "build_term" "Here1" in
+                    let _ = List.map (fun x -> debug_print "build_term" (prExp x)) l in
+                    let _ = debug_print "build_term" "Here2" in
+                    let _ = List.map (fun x -> debug_print_ast "build_term" x) x in
+                    let _ = debug_print "build_term" "Here3" in
+                    let _ = debug_print "build_term" ((decode f)^" "^(string_of_int (List.length x))) in
+                    let r = Term.mkApp(ff,Array.of_list x) in
+                    let _ = debug_print "build_term" "Here5" in
+                    let _ = debug_print_ast "build_term" r in
+                    let _ = debug_print "build_term" "Done build term" in r
   | (VAR x) -> build_var (decode x) tenv
   | (QUANT (73,[(v,t)],e,p)) -> 
     let tenv' = push_var (decode v) t tenv in
@@ -1737,19 +1798,19 @@ let rec build_term e tenv = match e with
 and build_mul_term l tenv = match l with
   | [] -> Lib_coq.Nat.of_int 1
   | [a] -> build_term a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_mul,[|build_term f tenv;build_mul_term r tenv|])
+  | (f::r) -> debug_print "build_mul_term" "Here a";Term.mkApp(Lazy.force reify_mul,[|build_term f tenv;build_mul_term r tenv|])
 and build_add_term l tenv = match l with
   | [] -> Lib_coq.Nat.of_int 0
   | [a] -> build_term a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_add,[|build_term f tenv;build_add_term r tenv|])
+  | (f::r) -> debug_print "build_add_term" "Here b";Term.mkApp(Lazy.force reify_add,[|build_term f tenv;build_add_term r tenv|])
 and build_and_term l tenv = match l with
   | [] -> Lazy.force reify_true_val
   | [a] -> build_term a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_and_val,[|build_term f tenv;build_and_term r tenv|])
+  | (f::r) -> debug_print "build_and_term" "here c";Term.mkApp(Lazy.force reify_and_val,[|build_term f tenv;build_and_term r tenv|])
 and build_or_term l tenv = match l with
   | [] -> Lazy.force reify_false_val
   | [a] -> build_term a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_or_val,[|build_term f tenv;build_or_term r tenv|])
+  | (f::r) -> debug_print "build_or_term" "here d";Term.mkApp(Lazy.force reify_or_val,[|build_term f tenv;build_or_term r tenv|])
 and buildMatch e (t : Rtype.etype) cases tenv =
     let constructors = constructorList t in
     let terms = List.map (fun (c,l) -> build_term (buildCase t c cases) tenv) constructors in
@@ -1768,16 +1829,18 @@ let rec build_predicate e tenv = match e with
   | (APPL (5,[])) -> (Lazy.force reify_false)
   | (APPL (9,l)) -> build_and l tenv
   | (APPL (10,l)) -> build_or l tenv
-  | (APPL (11,[a;b])) -> debug_print "build_predicate" "equal";Term.mkApp (Lazy.force reify_eq, [| (try get_type a tenv with NoTypeInfo -> get_type b tenv);build_term a tenv;build_term b tenv|])
+  | (APPL (11,[a;b])) -> let t1=build_term a tenv in
+                         let t2=build_term b tenv in
+                         let t = try get_the_type t1 with NoTypeInfo -> get_the_type t2 in
+                  debug_print "build_term" "equal_build";Term.mkApp (Lazy.force reify_eq, [| t;t1;t2 |])
   | (APPL (17,[x])) -> Term.mkProd(Anonymous,build_predicate x tenv,(Lazy.force reify_false))
-  | (APPL (80,[a;b])) -> Term.mkApp (Lazy.force reify_lt, [| build_term a tenv;build_term b tenv|])
+  | (APPL (80,[a;b])) -> debug_print "build_predicate" "here f";Term.mkApp (Lazy.force reify_lt, [| build_term a tenv;build_term b tenv|])
   | (APPL (75,[f;e])) -> let _ = debug_print "build_predicate" "building0" in
-                         let t = get_type e tenv in
                          let te = build_term e tenv in
+                         let t = get_the_type te in
                          let _ = debug_print "build_predicate" ("building1 "^(prExp f)^" "^(prExp(APPL (75,[f;e])))) in
                          let r = Term.mkApp(build_term f tenv,[|te|]) in
-                         let ast = apply_to_definition build_ast (Global.env()) 0 r in
-                         let _ = debug_print "build_predicate" ("AST " ^ ast) in
+                         let _ = debug_print_ast "build_predicate" r in
                          let _ = debug_print "build_predicate" "Done building" in r
   | (APPL (90,[l;r])) -> Term.mkProd(Anonymous,build_predicate l tenv,build_predicate r tenv)
   | (QUANT (14,vtl,e,p)) -> push_uvars tenv vtl e
@@ -1787,8 +1850,10 @@ let rec build_predicate e tenv = match e with
         Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_predicate e tenv')
   | (APPL (f,l)) -> let _ = debug_print "build_predicate" ("Functor " ^ (decode f)) in
                     let x = List.map (fun x -> build_term x tenv) l in
-                    let r = Term.mkApp(functor_from_name f,Array.of_list x) in
-                        if is_bool_type (APPL (f,l)) tenv then
+                    let ff = functor_from_name f in
+                    let _ = debug_print "build_predicate" "here g" in
+                    let r = Term.mkApp(ff,Array.of_list x) in
+                        if is_bool_type r tenv then
                             let coq_init_specif = ModPath.MPfile (DirPath.make (List.map Id.of_string ["Datatypes"; "Init"; "Coq"])) in
                             let sigT = mkInd (MutInd.make1 (KerName.make2 coq_init_specif (Label.make "bool")), 0) in
                             let true_term = mkConstruct (fst (destInd sigT), 1) in
@@ -1802,10 +1867,8 @@ and push_uvars tenv vtl e = match vtl with
                   let ct = build_coq_type t in
                   let _ = debug_print "push_uvars" "Done coq type (now push uvars)" in
                   let pr = push_uvars tenv' r e in
-                  let ast = apply_to_definition build_ast (Global.env()) 0 ct in
-                  let _ = debug_print "push_uvars" ("AST " ^ ast) in
-                  let ast2 = apply_to_definition build_ast (Global.env()) 0 pr in
-                  let _ = debug_print "push_uvars" ("AST2 " ^ ast2) in
+                  let _ = debug_print_ast "push_uvars" ct in
+                  let _ = debug_print_ast "push_uvars" pr in
                   let _ = debug_print "push_uvars" ("Done push_uvars "^(Rtype.unparse t)) in
                   let r = Term.mkProd ((Name (Id.of_string (decode v))),ct,pr) in
                   let _ = debug_print "push_uvars" "Done making r" in r
@@ -1825,11 +1888,11 @@ and push_evars tenv vtl e = match vtl with
 and build_and l tenv = match l with
   | [] -> Lazy.force reify_true
   | [a] -> build_predicate a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_and,[|build_predicate f tenv;build_and r tenv|])
+  | (f::r) -> debug_print "build_and" "here h";Term.mkApp(Lazy.force reify_and,[|build_predicate f tenv;build_and r tenv|])
 and build_or l tenv = match l with
   | [] -> Lazy.force reify_false
   | [a] -> build_predicate a tenv
-  | (f::r) -> Term.mkApp(Lazy.force reify_or,[|build_predicate f tenv;build_or r tenv|])
+  | (f::r) -> debug_print "build_or" "here i";Term.mkApp(Lazy.force reify_or,[|build_predicate f tenv;build_or r tenv|])
   ;;
 
 
@@ -1844,7 +1907,6 @@ let rec print_type_class (c : Typeclasses.instance) =
     (*let ast = apply_to_definition build_ast (Global.env ()) 1 c in*)
         debug_print "typeclasses" n;
         if String.length n > 3 && String.sub n 0 3 ="tri" then
-            let ast = apply_to_definition build_ast (Global.env ()) 1 c in
             let se = match kind_of_term c with
                     | Const (c, u) ->
                       let kn = Constant.canonical c in
@@ -1855,7 +1917,7 @@ let rec print_type_class (c : Typeclasses.instance) =
                           build_definition_exp kn (build_exp (Global.env ()) c) u
                     | _ -> NOEXP in
                 debug_print "typeclasses" (prExp se) ;
-                debug_print "typeclasses" ast
+                debug_print_ast "typeclasses" c
         else ()
   ;;
 
@@ -1970,8 +2032,7 @@ let arewrite cl : unit Proofview.tactic =
   let (evm, env) = Lemmas.get_current_context() in
   (*let (body, _) = Constrintern.interp_constr env evm concl in*)
   let _ = debug_print "arewrite" "******* BEGIN *******" in
-  let ast = apply_to_definition build_ast env 0 (EConstr.Unsafe.to_constr concl) in
-  let _ = debug_print "arewrite" ast in
+  let _ = debug_print_ast "arewrite" (EConstr.Unsafe.to_constr concl) in
   let _ = debug_print "arewrite" "******* END *******" in
   let e = build_exp env (EConstr.Unsafe.to_constr concl) in
   let _ = debug_print "arewrite" "Rewriting " in
@@ -2006,10 +2067,9 @@ let arewrite cl : unit Proofview.tactic =
                let _ = debug_print "arewrite" (prExp e') in
                let pr = build_predicate e' [] in
                let _ = debug_print "arewrite" "Built predicate\n" in
-               let pr_ast = apply_to_definition build_ast env 0 pr in
-               let _ = debug_print "arewrite" (pr_ast ^ "\n") in
+               let _ = debug_print_ast "arewrite" pr in
                let _ = debug_print "arewrite" "End\n" in
-                   (Equality.replace_in_clause_maybe_by concl (EConstr.of_constr pr) cl None)::tl in
+	       (Equality.replace_in_clause_maybe_by concl (EConstr.of_constr pr) cl None)::tl in
   (
    (*Tacticals.New.tclFAIL 1
     (Pp.str "The tactic is not imlplemented.")*)

@@ -2,6 +2,7 @@ Require Import Prelim.
 Require Import Complex.
 Require Import Complex_directives.
 Require Import AdvancedRewrite.advancedRewrite.
+Require Import Coq.Bool.BoolEq.
 
 Check 1.
 
