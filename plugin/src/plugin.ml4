@@ -1927,26 +1927,28 @@ let rec print_type_classes cl =
   | _ -> ()
   ;;
 
-let typeclass_ac = intern "C_AdvancedRewrite.advancedRewrite.AC_PROP1" ;;
-let typeclass_a = intern "C_AdvancedRewrite.advancedRewrite.A_PROP1" ;;
-let typeclass_c = intern "C_AdvancedRewrite.advancedRewrite.C_PROP1" ;;
-let typeclass_eq = intern "C_AdvancedRewrite.advancedRewrite.EQ_PROP1" ;;
-let typeclass_po = intern "C_AdvancedRewrite.advancedRewrite.PO_PROP1" ;;
-let typeclass_to = intern "C_AdvancedRewrite.advancedRewrite.TO_PROP1" ;;
-let typeclass_epo = intern "C_AdvancedRewrite.advancedRewrite.EPO_PROP1" ;;
-let typeclass_eto = intern "C_AdvancedRewrite.advancedRewrite.ETO_PROP1" ;;
-let typeclass_eqp = intern "C_AdvancedRewrite.advancedRewrite.EQP_PROP1" ;;
-let typeclass_pop = intern "C_AdvancedRewrite.advancedRewrite.POP_PROP1" ;;
-let typeclass_top = intern "C_AdvancedRewrite.advancedRewrite.TOP_PROP1" ;;
-let typeclass_epop = intern "C_AdvancedRewrite.advancedRewrite.EPOP_PROP1" ;;
-let typeclass_etop = intern "C_AdvancedRewrite.advancedRewrite.ETOP_PROP1" ;;
-let typeclass_rewrite_rule = intern "C_AdvancedRewrite.advancedRewrite.REWRITE_RULE_PROP1" ;;
+let typeclass_ac = intern "C_AdvancedRewrite.advancedRewrite.AC_PROP 1" ;;
+let typeclass_a = intern "C_AdvancedRewrite.advancedRewrite.A_PROP 1" ;;
+let typeclass_c = intern "C_AdvancedRewrite.advancedRewrite.C_PROP 1" ;;
+let typeclass_eq = intern "C_AdvancedRewrite.advancedRewrite.EQ_PROP 1" ;;
+let typeclass_po = intern "C_AdvancedRewrite.advancedRewrite.PO_PROP 1" ;;
+let typeclass_to = intern "C_AdvancedRewrite.advancedRewrite.TO_PROP 1" ;;
+let typeclass_epo = intern "C_AdvancedRewrite.advancedRewrite.EPO_PROP 1" ;;
+let typeclass_eto = intern "C_AdvancedRewrite.advancedRewrite.ETO_PROP 1" ;;
+let typeclass_eqp = intern "C_AdvancedRewrite.advancedRewrite.EQP_PROP 1" ;;
+let typeclass_pop = intern "C_AdvancedRewrite.advancedRewrite.POP_PROP 1" ;;
+let typeclass_top = intern "C_AdvancedRewrite.advancedRewrite.TOP_PROP 1" ;;
+let typeclass_epop = intern "C_AdvancedRewrite.advancedRewrite.EPOP_PROP 1" ;;
+let typeclass_etop = intern "C_AdvancedRewrite.advancedRewrite.ETOP_PROP 1" ;;
+let typeclass_rewrite_rule = intern "C_AdvancedRewrite.advancedRewrite.REWRITE_RULE_PROP 1" ;;
+let typeclass_prec_less = intern "C_AdvancedRewrite.advancedRewrite.PREC_LESS_PROP 1" ;;
+let typeclass_prec_equal = intern "C_AdvancedRewrite.advancedRewrite.PREC_EQUAL_PROP 1" ;;
 
 let rec add_type_class_decl env se =
-  (debug_print "typeclasses" "Change test";
+  (debug_print "typeclasses" "Processing";
    debug_print "typeclasses" (prExp se));
   match se with
-  | (APPL (d,[(APPL (_,[(APPL (ac,[_;(APPL (f,[]));_]))]))])) ->
+  | (APPL (d,[(APPL (_,[(APPL (ac,[_;(APPL (f,[]));q]))]))])) ->
     debug_print "typeclasses" "pattern1";
     if ac=typeclass_ac then
         ((debug_print "typeclasses" ("AC " ^ (decode f)));(Renv.addAttrib env intern_ac [Renv.S(f)]))
@@ -1980,6 +1982,15 @@ let rec add_type_class_decl env se =
         ((debug_print "typeclasses" ("ETOP " ^ (decode f) ^ " " ^ (decode g)));(Renv.addAttrib env intern_eto [Renv.S(g);Renv.S(f)]))
     else
         env
+  | (APPL (d,[(APPL (_,[(APPL (ac,[_;_;(APPL (f,[]));(APPL (g,[]))]))]))])) ->
+    debug_print "typeclasses" "pattern3";
+    if ac=typeclass_prec_less then
+        (debug_print "typeclasses" ("LESS PREC " ^ (decode f) ^ " " ^ (decode g));
+        Renv.addPrecedence env (f,g))
+    else if ac=typeclass_prec_equal then
+        (debug_print "typeclasses" ("EQUAL PREC " ^ (decode f) ^ " " ^ (decode g));
+        Renv.addEqualPrecedence env (f,g))
+    else env
   | (APPL (d,[(APPL (_,[(APPL (ac,[p;_]))]))])) ->
     debug_print "typeclasses" "Rewrite Rule pattern";
     if ac=typeclass_rewrite_rule then

@@ -161,9 +161,17 @@ Class ETOP_PROP {t} (eq: t -> t -> Prop) (to: t -> t -> Prop) : Prop :=
    etopProp: @ETOP t eq to
 }.
 
-Definition PREC_LESS {t1} {t2} (s1: t1) (s2 : t2) := True.
+Definition PREC_LESS {t1} {t2} (s1 : t1) (s2 : t2) := True.
+
+Class PREC_LESS_PROP {t1} {t2} (l : t1) (r : t2) : Prop :=
+{
+}.
 
 Definition PREC_EQUAL {t1} {t2} (s1: t1) (s2 : t2) := True.
+
+Class PREC_EQUAL_PROP {t1} {t2} (l : t1) (r : t2) : Prop :=
+{
+}.
 
 Definition REWRITE_RULE {t} (l : t) (r : t) (c: Prop) := (c -> (l=r)).
 

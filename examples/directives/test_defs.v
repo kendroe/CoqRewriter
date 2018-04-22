@@ -149,6 +149,10 @@ Instance rewriteRule : REWRITE_RULE_PROP (REWRITE_RULE 1 2 True) :=
     rewriteRuleProp := rrp
  }.
 
+Instance precLess : PREC_LESS_PROP eqp_fun ltp_fun.
+
+Instance precEqual : PREC_EQUAL_PROP eqp_fun ltp_fun.
+
 Theorem x: 1+1=3.
 Proof.
     arewrite.
