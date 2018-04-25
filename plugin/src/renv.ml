@@ -803,6 +803,17 @@ let getVarType env s =
 
 exception CircularPrecedence ;;
 
+let rec list_prod l1 l2 =
+    let rec list_p a l = 
+        match l with
+        | [] -> []
+        | (f::r) -> (a,f)::(list_p a r)
+    in
+        match l2 with
+        | [] -> []
+        | (f::r) -> List.append (list_p f l2) (list_prod l1 r)
+    ;;
+
 let addP (s1,s2) pr =
    if (is_constructor s2) && (not (is_constructor s1)) then
         raise CircularPrecedence
@@ -815,7 +826,7 @@ let addP (s1,s2) pr =
        let smaller = List.filter
                      (fun (s) -> List.mem s1 (precItemGet pr s))
                      (upto (Array.length pr)) in
-       let pairs = List.combine (s1::smaller) (s2::bigger) in
+       let pairs = list_prod (s1::smaller) (s2::bigger) in
        let rec add (s1,s2) pr =
                    precItemSet pr s1 (
                    let g = precItemGet pr s1

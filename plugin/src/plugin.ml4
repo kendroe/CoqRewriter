@@ -1991,6 +1991,18 @@ let rec add_type_class_decl env se =
         (debug_print "typeclasses" ("EQUAL PREC " ^ (decode f) ^ " " ^ (decode g));
         Renv.addEqualPrecedence env (f,g))
     else env
+  (*| (APPL (d,[(APPL (_,[(APPL (ac,[p;_]))]))])) ->
+    debug_print "typeclasses" "Rewrite Rule pattern";
+    if ac=typeclass_rewrite_rule then
+        ((debug_print "typeclasses" ("REWRITE_RULE " ^ (prExp p)));(process_property env p))
+    else
+        env*)
+  | q -> debug_print "typeclasses" "funny def";env
+
+let rec add_type_class_rewrite_decl env se =
+  (debug_print "typeclasses" "Processing";
+   debug_print "typeclasses" (prExp se));
+  match se with
   | (APPL (d,[(APPL (_,[(APPL (ac,[p;_]))]))])) ->
     debug_print "typeclasses" "Rewrite Rule pattern";
     if ac=typeclass_rewrite_rule then
@@ -2028,6 +2040,35 @@ let rec build_typeclasses_env env cl =
   | _ -> env
   ;;
 
+let rec build_type_class_rewrite_env env (c : Typeclasses.instance) =
+    let _ = debug_print "typeclasses" "build_type_class_env" in
+    let impl = Typeclasses.instance_impl c in
+    let c = printable_constr_of_global impl in
+    let n = match kind_of_term c with
+            | Const (c, u) ->
+                  let kn = Constant.canonical c in
+                  let kn' = build_kername kn in kn'
+            | _ -> "" in
+        debug_print "typeclasses" n;
+        if String.length n > 3 && not(String.sub n 0 3="Coq") then
+            let se = match kind_of_term c with
+                    | Const (c, u) ->
+                      let kn = Constant.canonical c in
+                      let cd = (Environ.lookup_constant c (Global.env ())) in
+                          match get_definition cd with
+                          | None -> NOEXP
+                          | Some c ->
+                          build_definition_exp kn (build_exp (Global.env ()) c) u
+                    | _ -> NOEXP in
+             add_type_class_rewrite_decl env se
+        else env
+
+let rec build_typeclasses_rewrite_env env cl =
+  match cl with
+  | (f::r) -> build_typeclasses_rewrite_env (build_type_class_rewrite_env env f) r
+  | _ -> env
+  ;;
+
 (* Top-level arewrite functionality *)
 let arewrite cl : unit Proofview.tactic =
   Proofview.Goal.enter (fun gl ->
@@ -2037,8 +2078,9 @@ let arewrite cl : unit Proofview.tactic =
   let _ = debug_print "typeclasses" "Test\n" in
   let _ = print_type_classes (Typeclasses.all_instances ()) in
   let _ = debug_print "arewrite" ("Environment:\n\n" ^ string_of_ppcmds (print_full_pure_context ()) ^ "\nEND\n\n") in
-  let rewriteEnv1 = build_rewrite_env Renv.emptyEnv in
-  let rewriteEnv = build_typeclasses_env rewriteEnv1 (Typeclasses.all_instances ()) in
+  let rewriteEnv1 = (*build_rewrite_env*) Renv.emptyEnv in
+  let rewriteEnv2 = build_typeclasses_env rewriteEnv1 (Typeclasses.all_instances ()) in
+  let rewriteEnv = build_typeclasses_rewrite_env rewriteEnv2 (Typeclasses.all_instances ()) in
   let concl = Proofview.Goal.concl gl in
   let (evm, env) = Lemmas.get_current_context() in
   (*let (body, _) = Constrintern.interp_constr env evm concl in*)

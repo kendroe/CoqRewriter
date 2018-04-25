@@ -2,11 +2,14 @@ Require Import Prelim.
 Require Import Complex.
 Require Import Complex_directives.
 Require Import AdvancedRewrite.advancedRewrite.
-Require Import Coq.Bool.BoolEq.
+Open Scope R_scope.
 
-Check 1.
+Theorem test1:1+1=3.
+Proof.
+    arewrite.
+Abort.
 
-Theorem x:1+1=3.
+Theorem test2: forall a b c d, Complex.Cmult (Complex.Cplus a b) (Complex.Cplus c d)=0.
 Proof.
     arewrite.
 Abort.

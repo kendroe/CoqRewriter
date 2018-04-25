@@ -287,7 +287,7 @@ and int_rewrite e kb = (match e with
                                 in
                                    (r@[e],env,n+1)
                                 )) ([],env,0) l2 in
-    let (res,env) = rewriteTopCont (APPL (s,l2)) ((APPL (s,l)),envs) kb in
+    let (res,env) = rewriteTopCont (APPL (s,l2)) ((Renv.flatten_top env (APPL (s,l))),envs) kb in
         if l=l2 then (Renv.flatten_top env res,env) else (res,env)
   | ((QUANT (v,t,e,p)),env) ->
     let (r_e,env) = try rewrite_front (e,env) with NoRewrite -> (e,env) in
@@ -413,7 +413,7 @@ and rewrite_nokb (x,env) =
 and rewrite (x,env) =
     let _ = Cache.save_good_rewrites () in
     let (x,env) = rewrite_front (x,env) in
-        (ExpIntern.decode_exp x,env)
+        (Renv.flatten env (ExpIntern.decode_exp x),env)
     ;;
 
 let rewrite_in_context (e,c,d,env) =

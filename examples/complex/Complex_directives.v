@@ -52,6 +52,8 @@ Instance rule_Cmod_opp : REWRITE_RULE_PROP (forall x, REWRITE_RULE (Cmod (-x)) (
     rewriteRuleProp := rr_Cmod_opp
  }.
 
+Instance prec_Rmult_Cmod: PREC_LESS_PROP Coq.Reals.Rdefinitions.Rmult Complex.Cmod.
+
 Theorem rr_Cmod_mult: forall x y, REWRITE_RULE (Cmod (x * y)) ((Cmod x) * (Cmod y)) True.
 Proof.
     admit.
@@ -112,6 +114,8 @@ Instance rule_Cplus_opp_r : REWRITE_RULE_PROP (forall r, @REWRITE_RULE R (r+(-r)
     rewriteRuleProp := rr_Cplus_opp_r
  }.
 
+Instance prec_Rplus_Ropp: PREC_LESS_PROP Coq.Reals.Rdefinitions.Rplus Coq.Reals.Rdefinitions.Ropp.
+
 Theorem rr_Copp_plus_distr: forall z1 z2, REWRITE_RULE (-(z1+z2)) ((-z1)+(-z2)) True.
 Proof.
     admit.
@@ -162,12 +166,12 @@ Instance rule_Cinv_r : REWRITE_RULE_PROP (forall r, REWRITE_RULE (r* /r) (1) (r<
     rewriteRuleProp := rr_Cinv_r
  }.
 
-Theorem rr_Cmult_plus_distr: forall x y z, REWRITE_RULE (x * (y + z)) (x * y + x * z) True.
+Theorem rr_Cmult_plus_distr: forall x y z, REWRITE_RULE (Complex.Cmult x (Complex.Cplus y z)) (Complex.Cplus (Complex.Cmult x y) (Complex.Cmult x z)) True.
 Proof.
     admit.
 Admitted.
 
-Instance rule_Cmult_plus_distr : REWRITE_RULE_PROP (forall x y z, REWRITE_RULE (x * (y + z)) (x * y + x * z) True) :=
+Instance rule_Cmult_plus_distr : REWRITE_RULE_PROP (forall x y z, REWRITE_RULE (Complex.Cmult x (Complex.Cplus y z)) (Complex.Cplus (Complex.Cmult x y) (Complex.Cmult x z)) True) :=
  {
     rewriteRuleProp := rr_Cmult_plus_distr
  }.
@@ -312,10 +316,15 @@ Instance rule_Csnd : REWRITE_RULE_PROP (forall (c:Complex.C), REWRITE_RULE (snd 
     rewriteRuleProp := rr_Csnd
  }.
 
+Instance prec_Rplus_Rmult: PREC_LESS_PROP Coq.Reals.Rdefinitions.Rplus Coq.Reals.Rdefinitions.Rmult.
+Instance prec_Cplus_Cmult: PREC_LESS_PROP Complex.Cplus Complex.Cmult.
+
 Theorem rr_Cinv_mult_distr: forall c1 c2, REWRITE_RULE (/ (c1 * c2)) ((/ c1) * (/ c2)) True.
 Proof.
     admit.
 Admitted.
+
+Instance prec_Rmult_Rinv: PREC_LESS_PROP Coq.Reals.Rdefinitions.Rmult Coq.Reals.Rdefinitions.Rinv.
 
 Instance rule_Cinv_mult_distr : REWRITE_RULE_PROP (forall c1 c2, REWRITE_RULE (/ (c1 * c2)) ((/ c1) * (/ c2)) True) :=
  {
