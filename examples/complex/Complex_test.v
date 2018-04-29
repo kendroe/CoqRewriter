@@ -40,3 +40,27 @@ Theorem test6: forall a b c, (/(a*b*c))%C =1.
 Proof.
     arewrite.
 Abort.
+
+Theorem test7: forall x, (Cmod ((x+(-x))%C))=0.
+Proof.
+    arewrite.
+    reflexivity.
+Abort.
+
+Theorem test8: forall x, (Cmod ((x+(-x))))=0.
+Proof.
+    arewrite.
+    reflexivity.
+Abort.
+
+Theorem test9: forall x, (Cmod (x*0))=0.
+Proof.
+    arewrite.
+    reflexivity.
+Abort.
+
+Theorem test10: forall x, (Cmod ((x*0)%C))=0.
+Proof.
+    arewrite.
+    reflexivity.
+Abort.

@@ -13,7 +13,7 @@ Proof.
 Admitted.
 
 Instance cplus_ac : AC_PROP Cplus :=
- {
+ { 
     acProp := CplusAC_Class
  }.
 
@@ -124,14 +124,24 @@ Instance rule_Cplus_0_r : REWRITE_RULE_PROP (forall r, @REWRITE_RULE Complex.C (
     rewriteRuleProp := rr_Cplus_0_r
  }.
 
-Theorem rr_Cplus_opp_r: forall r, @REWRITE_RULE R (r+(-r)) 0 True.
+Theorem rr_Cplus_opp_r: forall r, @REWRITE_RULE Complex.C ((r+(-r))%C) 0 True.
 Proof.
     admit.
 Admitted.
 
-Instance rule_Cplus_opp_r : REWRITE_RULE_PROP (forall r, @REWRITE_RULE R (r+(-r)) 0 True) :=
+Instance rule_Cplus_opp_r : REWRITE_RULE_PROP (forall r, @REWRITE_RULE Complex.C ((r+(-r))%C) 0 True) :=
  {
     rewriteRuleProp := rr_Cplus_opp_r
+ }.
+
+Theorem rr_Rplus_opp_r: forall r, @REWRITE_RULE R ((r+(-r))) 0 True.
+Proof.
+    admit.
+Admitted.
+
+Instance rule_Rplus_opp_r : REWRITE_RULE_PROP (forall r, @REWRITE_RULE R ((r+(-r))) 0 True) :=
+ {
+    rewriteRuleProp := rr_Rplus_opp_r
  }.
 
 Instance prec_Rplus_Ropp: PREC_LESS_PROP Coq.Reals.Rdefinitions.Rplus Coq.Reals.Rdefinitions.Ropp.
@@ -156,22 +166,42 @@ Instance rule_Copp_minus_distr : REWRITE_RULE_PROP (forall z1 z2, REWRITE_RULE (
     rewriteRuleProp := rr_Copp_minus_distr
  }.
 
-Theorem rr_Cmult_0_r: forall r, REWRITE_RULE (r*0) (0) True.
+Theorem rr_Rmult_0_r: forall r, REWRITE_RULE (r*0) (0) True.
 Proof.
     admit.
 Admitted.
 
-Instance rule_Cmult_0_r : REWRITE_RULE_PROP (forall r, REWRITE_RULE (r*0) (0) True) :=
+Instance rule_Rmult_0_r : REWRITE_RULE_PROP (forall r, REWRITE_RULE (r*0) (0) True) :=
+ {
+    rewriteRuleProp := rr_Rmult_0_r
+ }.
+
+Theorem rr_Rmult_1_r: forall r, REWRITE_RULE (r*1) (r) True.
+Proof.
+    admit.
+Admitted.
+
+Instance rule_Rmult_1_r : REWRITE_RULE_PROP (forall r, REWRITE_RULE (r*1) (r) True) :=
+ {
+    rewriteRuleProp := rr_Rmult_1_r
+ }.
+
+Theorem rr_Cmult_0_r: forall r, REWRITE_RULE ((r*0)%C) (0) True.
+Proof.
+    admit.
+Admitted.
+
+Instance rule_Cmult_0_r : REWRITE_RULE_PROP (forall r, REWRITE_RULE ((r*0)%C) (0) True) :=
  {
     rewriteRuleProp := rr_Cmult_0_r
  }.
 
-Theorem rr_Cmult_1_r: forall r, REWRITE_RULE (r*1) (r) True.
+Theorem rr_Cmult_1_r: forall r, REWRITE_RULE ((r*1)%C) (r) True.
 Proof.
     admit.
 Admitted.
 
-Instance rule_Cmult_1_r : REWRITE_RULE_PROP (forall r, REWRITE_RULE (r*1) (r) True) :=
+Instance rule_Cmult_1_r : REWRITE_RULE_PROP (forall r, REWRITE_RULE ((r*1)%C) (r) True) :=
  {
     rewriteRuleProp := rr_Cmult_1_r
  }.
