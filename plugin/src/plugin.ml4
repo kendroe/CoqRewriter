@@ -1749,72 +1749,79 @@ exception BadReify of exp
 let get_the_type t =
     EConstr.Unsafe.to_constr (Typing.unsafe_type_of (Global.env()) (Evd.empty) (EConstr.of_constr t))
 
-let rec build_term e tenv = match e with
+let rec build_term e tenv env = match e with
   | (NUM x) -> Lib_coq.Nat.of_int x
   | (APPL (4,[])) -> (Lazy.force reify_true_val)
   | (APPL (5,[])) -> (Lazy.force reify_false_val)
-  | (APPL (9,l)) -> build_and_term l tenv
-  | (APPL (10,l)) -> build_or_term l tenv
-  | (APPL (11,[a;b])) -> let t1=build_term a tenv in
-                         let t2=build_term b tenv in
+  | (APPL (9,l)) -> build_and_term l tenv env
+  | (APPL (10,l)) -> build_or_term l tenv env
+  | (APPL (11,[a;b])) -> let t1=build_term a tenv env in
+                         let t2=build_term b tenv env in
                          let t = try get_the_type t1 with NoTypeInfo -> get_the_type t2 in
                   debug_print "build_term" "equal_build";Term.mkApp (Lazy.force reify_eq_val, [| t;t1;t2 |])
-  | (APPL (17,[a])) -> Term.mkApp (Lazy.force reify_not_val, [| build_term a tenv |])
+  | (APPL (17,[a])) -> Term.mkApp (Lazy.force reify_not_val, [| build_term a tenv env |])
   (*| (APPL (21,[])) -> (Lazy.force reify_nil)*)
-  (*| (APPL (22,[f;e])) -> Term.mkApp(Lazy.force reify_cons,[|build_term f tenv;build_termn e tenv|])*)
-  | (APPL (75,[f;e])) -> Term.mkApp(build_term f tenv,[| build_term e tenv|])
-  | (APPL (76,l)) -> build_add_term l tenv
-  | (APPL (77,[l;r])) -> Term.mkApp((Lazy.force reify_sub),[|build_term l tenv;build_term r tenv|])
-  | (APPL (78,l)) -> build_mul_term l tenv
-  | (APPL (79,[l;r])) -> Term.mkApp(Lazy.force reify_div,[|build_term l tenv;build_term r tenv|])
-  | (APPL (80,[l;r])) -> Term.mkApp(Lazy.force reify_lt_val,[|build_term l tenv;build_term r tenv|])
-  | (APPL (90,[l;r])) -> Term.mkApp(Lazy.force reify_imply_val,[|build_term l tenv;build_term r tenv|])
-  | (APPL (f,l)) -> let _ = debug_print "build_term" "Here0" in
-                    let _ = debug_print "build_term" (decode f) in
-                    let _ = debug_print "build_term" (string_of_int (List.length l)) in
-                    let x = List.map (fun x -> build_term x tenv) l in
-                    let ff = functor_from_name f in
-                    let _ = debug_print "build_term" "Here0.5" in
-                    let tt = get_the_type ff in
-                    let _ = debug_print "build_term" "Here0.7" in
-                    let _ = debug_print_ast "build_name" ff in
-                    let _ = debug_print "build_term" "Here1" in
-                    let _ = List.map (fun x -> debug_print "build_term" (prExp x)) l in
-                    let _ = debug_print "build_term" "Here2" in
-                    let _ = List.map (fun x -> debug_print_ast "build_term" x) x in
-                    let _ = debug_print "build_term" "Here3" in
-                    let _ = debug_print "build_term" ((decode f)^" "^(string_of_int (List.length x))) in
-                    let r = Term.mkApp(ff,Array.of_list x) in
-                    let _ = debug_print "build_term" "Here5" in
-                    let _ = debug_print_ast "build_term" r in
-                    let _ = debug_print "build_term" "Done build term" in r
+  (*| (APPL (22,[f;e])) -> Term.mkApp(Lazy.force reify_cons,[|build_term f tenv env;build_term e tenv env|])*)
+  | (APPL (75,[f;e])) -> Term.mkApp(build_term f tenv env,[| build_term e tenv env|])
+  | (APPL (76,l)) -> build_add_term l tenv env
+  | (APPL (77,[l;r])) -> Term.mkApp((Lazy.force reify_sub),[|build_term l tenv env;build_term r tenv env|])
+  | (APPL (78,l)) -> build_mul_term l tenv env
+  | (APPL (79,[l;r])) -> Term.mkApp(Lazy.force reify_div,[|build_term l tenv env;build_term r tenv env|])
+  | (APPL (80,[l;r])) -> Term.mkApp(Lazy.force reify_lt_val,[|build_term l tenv env;build_term r tenv env|])
+  | (APPL (90,[l;r])) -> Term.mkApp(Lazy.force reify_imply_val,[|build_term l tenv env;build_term r tenv env|])
+  | (APPL (f,l)) -> if Renv.isAC env f || Renv.isA env f then
+                        let ff = functor_from_name f in
+                            build_ac_term ff l tenv env
+                    else
+                        let _ = debug_print "build_term" "Here0" in
+                        let _ = debug_print "build_term" (decode f) in
+                        let _ = debug_print "build_term" (string_of_int (List.length l)) in
+                        let x = List.map (fun x -> build_term x tenv env) l in
+                        let ff = functor_from_name f in
+                        let _ = debug_print "build_term" "Here0.5" in
+                        let tt = get_the_type ff in
+                        let _ = debug_print "build_term" "Here0.7" in
+                        let _ = debug_print_ast "build_name" ff in
+                        let _ = debug_print "build_term" "Here1" in
+                        let _ = List.map (fun x -> debug_print "build_term" (prExp x)) l in
+                        let _ = debug_print "build_term" "Here2" in
+                        let _ = List.map (fun x -> debug_print_ast "build_term" x) x in
+                        let _ = debug_print "build_term" "Here3" in
+                        let _ = debug_print "build_term" ((decode f)^" "^(string_of_int (List.length x))) in
+                        let r = Term.mkApp(ff,Array.of_list x) in
+                        let _ = debug_print "build_term" "Here5" in
+                        let _ = debug_print_ast "build_term" r in
+                        let _ = debug_print "build_term" "Done build term" in r
   | (VAR x) -> build_var (decode x) tenv
   | (QUANT (73,[(v,t)],e,p)) -> 
     let tenv' = push_var (decode v) t tenv in
-        Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_term e tenv')
-  | (CASE (e,t,c)) -> buildMatch e t c tenv
+        Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_term e tenv' env)
+  | (CASE (e,t,c)) -> buildMatch e t c tenv env
   | x -> debug_print "build_term" (" No  match  for " ^ (prExp x) ^ "\n"); raise (BadReify(x))
   (*| _ -> (Lazy.force reify_false_val)*)
-and build_mul_term l tenv = match l with
+and build_ac_term ff l tenv env = match l with
+  | [a] -> build_term a tenv env
+  | (f::r) -> debug_print "build_ac_term" "Here a";Term.mkApp(ff,[|build_term f tenv env;build_ac_term ff r tenv env|])
+and build_mul_term l tenv env = match l with
   | [] -> Lib_coq.Nat.of_int 1
-  | [a] -> build_term a tenv
-  | (f::r) -> debug_print "build_mul_term" "Here a";Term.mkApp(Lazy.force reify_mul,[|build_term f tenv;build_mul_term r tenv|])
-and build_add_term l tenv = match l with
+  | [a] -> build_term a tenv env
+  | (f::r) -> debug_print "build_mul_term" "Here a";Term.mkApp(Lazy.force reify_mul,[|build_term f tenv env;build_mul_term r tenv env|])
+and build_add_term l tenv env = match l with
   | [] -> Lib_coq.Nat.of_int 0
-  | [a] -> build_term a tenv
-  | (f::r) -> debug_print "build_add_term" "Here b";Term.mkApp(Lazy.force reify_add,[|build_term f tenv;build_add_term r tenv|])
-and build_and_term l tenv = match l with
+  | [a] -> build_term a tenv env
+  | (f::r) -> debug_print "build_add_term" "Here b";Term.mkApp(Lazy.force reify_add,[|build_term f tenv env;build_add_term r tenv env|])
+and build_and_term l tenv env = match l with
   | [] -> Lazy.force reify_true_val
-  | [a] -> build_term a tenv
-  | (f::r) -> debug_print "build_and_term" "here c";Term.mkApp(Lazy.force reify_and_val,[|build_term f tenv;build_and_term r tenv|])
-and build_or_term l tenv = match l with
+  | [a] -> build_term a tenv env
+  | (f::r) -> debug_print "build_and_term" "here c";Term.mkApp(Lazy.force reify_and_val,[|build_term f tenv env;build_and_term r tenv env|])
+and build_or_term l tenv env = match l with
   | [] -> Lazy.force reify_false_val
-  | [a] -> build_term a tenv
-  | (f::r) -> debug_print "build_or_term" "here d";Term.mkApp(Lazy.force reify_or_val,[|build_term f tenv;build_or_term r tenv|])
-and buildMatch e (t : Rtype.etype) cases tenv =
+  | [a] -> build_term a tenv env
+  | (f::r) -> debug_print "build_or_term" "here d";Term.mkApp(Lazy.force reify_or_val,[|build_term f tenv env;build_or_term r tenv env|])
+and buildMatch e (t : Rtype.etype) cases tenv env =
     let constructors = constructorList t in
-    let terms = List.map (fun (c,l) -> build_term (buildCase t c cases) tenv) constructors in
-    let eterm = build_term e tenv in
+    let terms = List.map (fun (c,l) -> build_term (buildCase t c cases) tenv env) constructors in
+    let eterm = build_term e tenv env in
     let ci = List.hd (!case_infos) in
     let _ = (case_infos := if List.length (!case_infos) > 0 then List.tl (!case_infos) else (!case_infos)) in
     let tterm = mkLambda (Name (Id.of_string "x"),(build_coq_type t),(get_case_type cases tenv)) in
@@ -1824,32 +1831,32 @@ and buildMatch e (t : Rtype.etype) cases tenv =
 
 exception BadBuild;;
 
-let rec build_predicate e tenv = match e with
+let rec build_predicate e tenv env = match e with
   | (APPL (4,[])) -> (Lazy.force reify_true)
   | (APPL (5,[])) -> (Lazy.force reify_false)
-  | (APPL (9,l)) -> build_and l tenv
-  | (APPL (10,l)) -> build_or l tenv
-  | (APPL (11,[a;b])) -> let t1=build_term a tenv in
-                         let t2=build_term b tenv in
+  | (APPL (9,l)) -> build_and l tenv env
+  | (APPL (10,l)) -> build_or l tenv env
+  | (APPL (11,[a;b])) -> let t1=build_term a tenv env in
+                         let t2=build_term b tenv env in
                          let t = try get_the_type t1 with NoTypeInfo -> get_the_type t2 in
-                  debug_print "build_term" "equal_build";Term.mkApp (Lazy.force reify_eq, [| t;t1;t2 |])
-  | (APPL (17,[x])) -> Term.mkProd(Anonymous,build_predicate x tenv,(Lazy.force reify_false))
-  | (APPL (80,[a;b])) -> debug_print "build_predicate" "here f";Term.mkApp (Lazy.force reify_lt, [| build_term a tenv;build_term b tenv|])
+                  debug_print "build_predicate" "equal_build";Term.mkApp (Lazy.force reify_eq, [| t;t1;t2 |])
+  | (APPL (17,[x])) -> Term.mkProd(Anonymous,build_predicate x tenv env,(Lazy.force reify_false))
+  | (APPL (80,[a;b])) -> debug_print "build_predicate" "here f";Term.mkApp (Lazy.force reify_lt, [| build_term a tenv env;build_term b tenv env|])
   | (APPL (75,[f;e])) -> let _ = debug_print "build_predicate" "building0" in
-                         let te = build_term e tenv in
+                         let te = build_term e tenv env in
                          let t = get_the_type te in
                          let _ = debug_print "build_predicate" ("building1 "^(prExp f)^" "^(prExp(APPL (75,[f;e])))) in
-                         let r = Term.mkApp(build_term f tenv,[|te|]) in
+                         let r = Term.mkApp(build_term f tenv env,[|te|]) in
                          let _ = debug_print_ast "build_predicate" r in
                          let _ = debug_print "build_predicate" "Done building" in r
-  | (APPL (90,[l;r])) -> Term.mkProd(Anonymous,build_predicate l tenv,build_predicate r tenv)
-  | (QUANT (14,vtl,e,p)) -> push_uvars tenv vtl e
-  | (QUANT (15,vtl,e,p)) -> push_evars tenv vtl e
+  | (APPL (90,[l;r])) -> Term.mkProd(Anonymous,build_predicate l tenv env,build_predicate r tenv env)
+  | (QUANT (14,vtl,e,p)) -> push_uvars tenv vtl e env
+  | (QUANT (15,vtl,e,p)) -> push_evars tenv vtl e env
   | (QUANT (73,[(v,t)],e,p)) -> 
     let tenv' = push_var (decode v) t tenv in
-        Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_predicate e tenv')
+        Term.mkLambda (Name (Id.of_string (decode v)),(build_coq_type t),build_predicate e tenv' env)
   | (APPL (f,l)) -> let _ = debug_print "build_predicate" ("Functor " ^ (decode f)) in
-                    let x = List.map (fun x -> build_term x tenv) l in
+                    let x = List.map (fun x -> build_term x tenv env) l in
                     let ff = functor_from_name f in
                     let _ = debug_print "build_predicate" "here g" in
                     let r = Term.mkApp(ff,Array.of_list x) in
@@ -1861,38 +1868,38 @@ let rec build_predicate e tenv = match e with
                             Term.mkApp(Lazy.force reify_eq,[|(Lazy.force reify_bool);true_term;r|]))
                         else (debug_print "build_predicate" "no bool equality";r)
   | _ -> debug_print "build_predicate" ("buildPredicate " ^ (prExp e));raise BadBuild
-and push_uvars tenv vtl e = match vtl with
+and push_uvars tenv vtl e env = match vtl with
   | ((v,t)::r) -> let tenv' = push_var (decode v) t tenv in
                   let _ = debug_print "push_uvars" ("Building uvar type for "^(decode v)) in
                   let ct = build_coq_type t in
                   let _ = debug_print "push_uvars" "Done coq type (now push uvars)" in
-                  let pr = push_uvars tenv' r e in
+                  let pr = push_uvars tenv' r e env in
                   let _ = debug_print_ast "push_uvars" ct in
                   let _ = debug_print_ast "push_uvars" pr in
                   let _ = debug_print "push_uvars" ("Done push_uvars "^(Rtype.unparse t)) in
                   let r = Term.mkProd ((Name (Id.of_string (decode v))),ct,pr) in
                   let _ = debug_print "push_uvars" "Done making r" in r
-  | _ -> build_predicate e tenv
-and push_evars tenv vtl e = match vtl with
+  | _ -> build_predicate e tenv env
+and push_evars tenv vtl e env = match vtl with
   | ((v,t)::r) -> let tenv' = push_var (decode v) t tenv in
                   let _ = debug_print "build_predicate" "build_evars" in
                   let typ = build_coq_type t in
                   let _ = debug_print "build_predicate" ("build_evars1 " ^ (prExp e)) in
-                  let rr = (push_evars tenv' r e) in
+                  let rr = (push_evars tenv' r e env) in
                   let _ = debug_print "build_predicate" "build_evars2" in
                   let lam = Term.mkLambda ((Name (Id.of_string (decode v))),typ,rr) in
                   let _ = debug_print "build_predicate" "build_evars3" in
                   let r = Term.mkApp (Lazy.force reify_ex, [|typ;lam|]) in
                   let _ = debug_print "build_predicate" "end build_evars" in r
-  | _ -> debug_print "build_predicate" "Done evars";build_predicate e tenv
-and build_and l tenv = match l with
+  | _ -> debug_print "build_predicate" "Done evars";build_predicate e tenv env
+and build_and l tenv env = match l with
   | [] -> Lazy.force reify_true
-  | [a] -> build_predicate a tenv
-  | (f::r) -> debug_print "build_and" "here h";Term.mkApp(Lazy.force reify_and,[|build_predicate f tenv;build_and r tenv|])
-and build_or l tenv = match l with
+  | [a] -> build_predicate a tenv env
+  | (f::r) -> debug_print "build_and" "here h";Term.mkApp(Lazy.force reify_and,[|build_predicate f tenv env;build_and r tenv env|])
+and build_or l tenv env = match l with
   | [] -> Lazy.force reify_false
-  | [a] -> build_predicate a tenv
-  | (f::r) -> debug_print "build_or" "here i";Term.mkApp(Lazy.force reify_or,[|build_predicate f tenv;build_or r tenv|])
+  | [a] -> build_predicate a tenv env
+  | (f::r) -> debug_print "build_or" "here i";Term.mkApp(Lazy.force reify_or,[|build_predicate f tenv env;build_or r tenv env|])
   ;;
 
 
@@ -2009,7 +2016,7 @@ let rec add_type_class_rewrite_decl env se =
         ((debug_print "typeclasses" ("REWRITE_RULE " ^ (prExp p)));(process_property env p))
     else
         env
-  | q -> debug_print "typeclasses" "funny def";env
+  | q -> debug_print "typeclasses" "funny def2";env
 
 let rec build_type_class_env env (c : Typeclasses.instance) =
     let _ = debug_print "typeclasses" "build_type_class_env" in
@@ -2111,14 +2118,14 @@ let arewrite cl : unit Proofview.tactic =
              let l2 = if oc=Locus.NoOccurrences then l else
                  let ee2 = List.hd (Inner.rewrite2 rewriteEnv (Renv.flatten rewriteEnv ee)) in
                  let _ = debug_print "arewrite" ("ee2 = " ^ (prExp ee2)) in
-                     (Equality.replace_in_clause_maybe_by t (EConstr.of_constr (build_predicate ee2 [])) cl None)::l in
+                     (Equality.replace_in_clause_maybe_by t (EConstr.of_constr (build_predicate ee2 [] rewriteEnv)) cl None)::l in
              let _ = debug_print "arewrite" ("\n\n" ^ (prExp ee) ^ "\n") in
                  (re2,l2)) (Proofview.Goal.hyps gl) ~init:(rewriteEnv,[]) in
              let tl2 = if Locusops.occurrences_of_goal cl=Locus.NoOccurrences then tl else 
                let e' = List.hd (Inner.rewrite2 renv (Renv.flatten renv e)) in
                let _ = debug_print "arewrite" "Result\n" in
                let _ = debug_print "arewrite" (prExp e') in
-               let pr = build_predicate e' [] in
+               let pr = build_predicate e' [] renv in
                let _ = debug_print "arewrite" "Built predicate\n" in
                let _ = debug_print_ast "arewrite" pr in
                let _ = debug_print "arewrite" "End\n" in

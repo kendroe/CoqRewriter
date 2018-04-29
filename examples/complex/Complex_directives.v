@@ -52,6 +52,16 @@ Instance rule_Cmod_opp : REWRITE_RULE_PROP (forall x, REWRITE_RULE (Cmod (-x)) (
     rewriteRuleProp := rr_Cmod_opp
  }.
 
+Theorem rr_Cmod_n1: REWRITE_RULE (Cmod (-1)) 1 True.
+Proof.
+    admit.
+Admitted.
+
+Instance rule_Cmod_n1 : REWRITE_RULE_PROP (REWRITE_RULE (Cmod (-1)) 1 True) :=
+ {
+    rewriteRuleProp := rr_Cmod_n1
+ }.
+
 Instance prec_Rmult_Cmod: PREC_LESS_PROP Coq.Reals.Rdefinitions.Rmult Complex.Cmod.
 
 Theorem rr_Cmod_mult: forall x y, REWRITE_RULE (Cmod (x * y)) ((Cmod x) * (Cmod y)) True.
@@ -94,12 +104,22 @@ Instance rr_RtoC_minus : REWRITE_RULE_PROP (forall x y, REWRITE_RULE (RtoC (x + 
     rewriteRuleProp := rr_RtoC_minus
  }.*)
 
-Theorem rr_Cplus_0_r: forall r, @REWRITE_RULE R (r+0) (r) True.
+Theorem rr_Rplus_0_r: forall r, @REWRITE_RULE R (r+0) (r) True.
 Proof.
     admit.
 Admitted.
 
-Instance rule_Cplus_0_r : REWRITE_RULE_PROP (forall r, @REWRITE_RULE R (r+0) (r) True) :=
+Instance rule_Rplus_0_r : REWRITE_RULE_PROP (forall r, @REWRITE_RULE R (r+0) (r) True) :=
+ {
+    rewriteRuleProp := rr_Rplus_0_r
+ }.
+
+Theorem rr_Cplus_0_r: forall r, @REWRITE_RULE Complex.C (Cplus r 0) (r) True.
+Proof.
+    admit.
+Admitted.
+
+Instance rule_Cplus_0_r : REWRITE_RULE_PROP (forall r, @REWRITE_RULE Complex.C (Cplus r 0) (r) True) :=
  {
     rewriteRuleProp := rr_Cplus_0_r
  }.
@@ -319,16 +339,26 @@ Instance rule_Csnd : REWRITE_RULE_PROP (forall (c:Complex.C), REWRITE_RULE (snd 
 Instance prec_Rplus_Rmult: PREC_LESS_PROP Coq.Reals.Rdefinitions.Rplus Coq.Reals.Rdefinitions.Rmult.
 Instance prec_Cplus_Cmult: PREC_LESS_PROP Complex.Cplus Complex.Cmult.
 
-Theorem rr_Cinv_mult_distr: forall c1 c2, REWRITE_RULE (/ (c1 * c2)) ((/ c1) * (/ c2)) True.
+Instance prec_Rmult_Rinv: PREC_LESS_PROP Coq.Reals.Rdefinitions.Rmult Coq.Reals.Rdefinitions.Rinv.
+
+Theorem rr_Cinv_mult_distr: forall c1 c2, REWRITE_RULE ((/ (c1 * c2))%C) (((/ c1) * (/ c2))%C) True.
 Proof.
     admit.
 Admitted.
 
-Instance prec_Rmult_Rinv: PREC_LESS_PROP Coq.Reals.Rdefinitions.Rmult Coq.Reals.Rdefinitions.Rinv.
-
-Instance rule_Cinv_mult_distr : REWRITE_RULE_PROP (forall c1 c2, REWRITE_RULE (/ (c1 * c2)) ((/ c1) * (/ c2)) True) :=
+Instance rule_Cinv_mult_distr : REWRITE_RULE_PROP (forall c1 c2, REWRITE_RULE ((/ (c1 * c2))%C) (((/ c1) * (/ c2))%C) True) :=
  {
     rewriteRuleProp := rr_Cinv_mult_distr
+ }.
+
+Theorem rr_Rinv_mult_distr: forall c1 c2, REWRITE_RULE (/ (c1 * c2)) ((/ c1) * (/ c2)) True.
+Proof.
+    admit.
+Admitted.
+
+Instance rule_Rinv_mult_distr : REWRITE_RULE_PROP (forall c1 c2, REWRITE_RULE (/ (c1 * c2)) ((/ c1) * (/ c2)) True) :=
+ {
+    rewriteRuleProp := rr_Rinv_mult_distr
  }.
 
 
