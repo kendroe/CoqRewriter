@@ -1,0 +1,17 @@
+This directory contains the complex number rewriting sample.  Here is a
+description of the files:
+
+Complex.v - declarations for complex numbers
+Monad.v - Monads (needed for Complex.v)
+Prelim.v - Other declarations needed by Complex.v
+Complex_directives.v - Declarations for rewrite rules and AC properties of
+    complex and real numbers
+Complex_test.v - tests for complex numbers
+
+To run the complex samples, execute the following commands (in order):
+
+coqc Monad.v
+coqc Prelim.v
+coqc Complex.v
+coqc Complex_directives.v
+coqtop <  Complex_test.v
