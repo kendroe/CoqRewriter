@@ -1843,8 +1843,10 @@ let rec build_predicate e tenv env = match e with
   | (APPL (17,[x])) -> Term.mkProd(Anonymous,build_predicate x tenv env,(Lazy.force reify_false))
   | (APPL (80,[a;b])) -> debug_print "build_predicate" "here f";Term.mkApp (Lazy.force reify_lt, [| build_term a tenv env;build_term b tenv env|])
   | (APPL (75,[f;e])) -> let _ = debug_print "build_predicate" "building0" in
+                         let _ = debug_print "build_predicate" (prExp e) in
                          let te = build_term e tenv env in
-                         let t = get_the_type te in
+                         let _ = debug_print "build_predicate" "Test" in
+                         (*let t = get_the_type te in*)
                          let _ = debug_print "build_predicate" ("building1 "^(prExp f)^" "^(prExp(APPL (75,[f;e])))) in
                          let r = Term.mkApp(build_term f tenv env,[|te|]) in
                          let _ = debug_print_ast "build_predicate" r in

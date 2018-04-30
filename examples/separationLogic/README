@@ -1,0 +1,6 @@
+A simple separation Logic.  To run:
+
+coqc sepLogic.v
+coqtop sepLogcTests.v
+
+
