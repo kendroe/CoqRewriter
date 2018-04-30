@@ -1747,7 +1747,8 @@ let buildCase t constructor cases =
 exception BadReify of exp
 
 let get_the_type t =
-    EConstr.Unsafe.to_constr (Typing.unsafe_type_of (Global.env()) (Evd.empty) (EConstr.of_constr t))
+    let (evm, env) = Lemmas.get_current_context() in
+        EConstr.Unsafe.to_constr (Typing.unsafe_type_of env (Evd.empty) (EConstr.of_constr t))
 
 let rec build_term e tenv env = match e with
   | (NUM x) -> Lib_coq.Nat.of_int x
